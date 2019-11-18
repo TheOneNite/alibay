@@ -48,6 +48,8 @@ const PurchaseDiv = styled.div`
 const AddButton = styled.button``;
 const Main = styled.div`
   display: flex;
+  background-color: pink;
+  padding: 15px;
 `;
 
 /**THINGS TO DISPLAY
@@ -124,7 +126,7 @@ class UnconnectedItemDetails extends Component {
   render() {
     return (
       <Main>
-        <div className="detailedImage">
+        <div margin="15px" className="detailedImage">
           <img src={this.item.img} />
         </div>
         <ItemCard>
