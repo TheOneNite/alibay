@@ -25,19 +25,19 @@ class UnconnectedItemDetails extends Component {
     };
     this.state = { display: "details" }; //can display item description, reviews, i dunno
   }
-  componentDidMount() {
-    let getDetails = async () => {
-      let req = await fetch("SOME ENDPOINT");
-      let resp = await req.text();
-      let details = JSON.parse(resp);
-      if (details.success === false) {
-        console.log("failed to receive item details");
-        return;
-      }
-      /**DO SOMETHING WITH THIS RESPONSE */
-    };
-    getDetails();
-  }
+  // componentDidMount() {
+  //   let getDetails = async () => {
+  //     let req = await fetch("SOME ENDPOINT");
+  //     let resp = await req.text();
+  //     let details = JSON.parse(resp);
+  //     if (details.success === false) {
+  //       console.log("failed to receive item details");
+  //       return;
+  //     }
+  //     /**DO SOMETHING WITH THIS RESPONSE */
+  //   };
+  //   getDetails();
+  // }
   displayContent = () => {
     switch (this.state.display) {
       case "details": {
@@ -48,7 +48,9 @@ class UnconnectedItemDetails extends Component {
       }
       case "seller": {
         return (
-          <Link to={"/" + this.props.item.seller}>{this.props.item.seller}</div>
+          <Link to={"/" + this.props.item.seller}>
+            {this.props.item.seller}
+          </Link>
         );
       }
     }
