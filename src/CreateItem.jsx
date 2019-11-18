@@ -7,7 +7,7 @@ class unconnectedCreateItem extends Component {
     description: "",
     image: "",
     largeImage: "",
-    price: undefined,
+    price: "",
     city: ""
   };
   handleChange = event => {
