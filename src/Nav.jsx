@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 class unconnectedNav extends Component {
   signout = () => {
+    console.log("signout pressed");
     this.props.dispatch({
       type: "signout"
     });

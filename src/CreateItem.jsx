@@ -17,7 +17,7 @@ class unconnectedCreateItem extends Component {
   };
 
   sendData = async event => {
-    event.preventdefault();
+    event.preventDefault();
     let data = new FormData();
     data.append("title", this.state.title);
     data.append("user", this.props.currentUser);
@@ -124,7 +124,7 @@ class unconnectedCreateItem extends Component {
               value={this.state.city}
               onChange={this.handleChange}
             />
-            <button stype="submit">Submit</button>
+            <button type="submit">Submit</button>
           </form>
         )}
       </div>
