@@ -14,7 +14,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
-databaseURI.js
+dbURI.js
 
 npm-debug.log*
 yarn-debug.log*
