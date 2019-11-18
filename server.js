@@ -62,6 +62,7 @@ app.get("/items", upload.none(), (req, res) => {
     });
 });
 
+//user authentication endpoints------------------------------------------------------------------------------------------
 app.post("/login", upload.none(), (req, res) => {
   // testing endpoint
 
@@ -169,6 +170,12 @@ app.post("/signup", upload.none(), async (req, res) => {
   });
 });
 
+app.get("/logout", (req, res) => {
+  sessions[req.cookies.sid] = undefined;
+  res.send(JSON.stringify({ success: true }));
+});
+
+//commerce endpoints------------------------------------------------------------------------------------------
 app.post("/additem", upload.none(), (req, res) => {
   //add new sale item from form data
   let sellerId = sessions[req.cookies.sid];
@@ -208,23 +215,33 @@ app.post("/additem", upload.none(), (req, res) => {
   });
 });
 
+app.post("/cart", upload.none(), (req, res) => {});
+
+app.post("/checkout", upload.none(), (req, res) => {
+  const uid = sessions[req.cookies.sid];
+});
+
+//account management endpoints---------------------------------------------------------------------------------------
 app.post("/account", upload.none(), (req, res) => {
   //updates user info from form submission
   let userData = {};
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    const mongoUid = dbResult.data._id;
     if (dbResult) {
       console.log("user data retreived");
       userData = dbResult.data;
       userData = updateUser(userData, req);
       console.log("user data updated");
-      aliDb.collections("users").save(userData, (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-        res.send(JSON.stringify({ success: true, data: userData }));
-        return;
-      });
+      aliDb
+        .collections("users")
+        .save({ _id: mongoUid }, userData, (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          res.send(JSON.stringify({ success: true, data: result }));
+          return;
+        });
       return;
     } else {
       console.log(err);
