@@ -12,6 +12,7 @@ const auth = require("password-hash");
 //setup and initialzie mongo db
 const mongoClient = require("mongodb").MongoClient;
 const dbCredientials = require("./mongo/dbURI.js");
+const retreive = require("./mongo/retreive.js");
 
 let mongoDb = undefined;
 let aliDb = undefined;
@@ -34,6 +35,15 @@ app.use("/", express.static("public")); // Needed for local assets
 
 //global vars grr
 let sessions = {};
+
+//modules and stuff
+
+//updating user data
+const updateUser = (userData, req) => {
+  const newData = req.body;
+  const updatedUser = { ...userData, ...newData };
+  return updatedUser;
+};
 
 // Your endpoints go after this line
 
@@ -81,7 +91,7 @@ app.post("/login", upload.none(), (req, res) => {
         let chal = dbResult.password;
         if (auth.verify(req.body.password, chal)) {
           let pkg = { success: true };
-          sessions[tools.generateId(6)] = req.body.userGiven;
+          sessions[tools.generateId(6)] = dbResult.id;
           res.send(JSON.stringify(pkg));
           return;
         } else {
@@ -122,10 +132,11 @@ app.post("/signup", upload.none(), async (req, res) => {
       return;
     } else {
       let hpass = auth.generate(req.body.pass);
+      let uid = tools.generateId(6);
       alidDb
         .collections("auth")
         .insertOne(
-          { username: userGiven, password: hpass },
+          { username: userGiven, password: hpass, id: uid },
           (err, dbResult) => {
             if (err) {
               console.log(err);
@@ -135,7 +146,7 @@ app.post("/signup", upload.none(), async (req, res) => {
           }
         );
       let userdata = {
-        userId: tools.generateId(6),
+        userId: uid,
         username: userGiven,
         displayName: userGiven,
         location: "",
@@ -158,7 +169,86 @@ app.post("/signup", upload.none(), async (req, res) => {
   });
 });
 
-app.post("/settings", upload.none(), (req, res) => {});
+app.post("/additem", upload.none(), (req, res) => {
+  //add new sale item from form data
+  let sellerId = sessions[req.cookies.sid];
+  let sellerData = {};
+  retreive("users", { userId: sellerId }, aliDb).then(dbResult => {
+    if (dbResult.success === false) {
+      console.log("retreiving seller data failed");
+      res.send(
+        JSON.stringify({
+          success: false,
+          msg: "seller data could not be found"
+        })
+      );
+      return;
+    }
+    sellerData = dbResult.data;
+  });
+  let newItem = {
+    itemId: tools.generateId(10),
+    price: parseInt(req.body.price),
+    title: req.body.title,
+    description: req.body.description,
+    sellerId: sellerData.userId,
+    shipsFrom: req.body.location,
+    smallImage: req.body.image,
+    largeImage: req.body.largeImage
+  };
+  aliDb.collections("items").insertOne(newItem, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.send(JSON.stringify({ success: false }));
+      return;
+    }
+    console.log("new item pushed to db");
+    res.send(JSON.stringify({ success: true }));
+    return;
+  });
+});
+
+app.post("/account", upload.none(), (req, res) => {
+  //updates user info from form submission
+  let userData = {};
+  const uid = sessions[req.cookies.sid];
+  retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    if (dbResult) {
+      console.log("user data retreived");
+      userData = dbResult.data;
+      userData = updateUser(userData, req);
+      console.log("user data updated");
+      aliDb.collections("users").save(userData, (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        res.send(JSON.stringify({ success: true, data: userData }));
+        return;
+      });
+      return;
+    } else {
+      console.log(err);
+      res.send(
+        JSON.stringify({
+          success: false,
+          msg: "user data could not be retreived"
+        })
+      );
+      return;
+    }
+  });
+});
+app.get("/account", (req, res) => {
+  //sends current user data to populate form
+  let uid = sessions[req.cookies.sid];
+  aliDb.users.findOne({ userId: uid }, (err, dbResult) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log("user data retreived");
+    res.send(JSON.stringify(dbResult));
+  });
+});
 
 // Your endpoints go before this line
 
