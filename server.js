@@ -49,7 +49,7 @@ const updateUser = (userData, req) => {
 
 app.get("/items", upload.none(), (req, res) => {
   aliDb
-    .collections("items")
+    .collection("items")
     .find({})
     .toArray((err, data) => {
       if (err) {
@@ -62,6 +62,7 @@ app.get("/items", upload.none(), (req, res) => {
     });
 });
 
+//user authentication endpoints------------------------------------------------------------------------------------------
 app.post("/login", upload.none(), (req, res) => {
   // testing endpoint
 
@@ -70,28 +71,34 @@ app.post("/login", upload.none(), (req, res) => {
     res.send(JSON.stringify(pkg));
     return;
   }
-  pkg = { success: false };
-  res.send(JSON.stringify(pkg));
+  if (req.body.username === "guest") {
+    pkg = { success: false };
+    res.send(JSON.stringify(pkg));
+    return;
+  }
   // start real endpoint
   const sid = req.cookies.sid;
   if (sessions[sid] != undefined) {
+    console.log("active session found");
     let pkg = { success: true };
     res.send(JSON.stringify(pkg));
     return;
   } else {
     const userGiven = req.body.username;
-    aliDb.auth.findOne(
-      { username: userGiven },
-      (err,
-      dbResult => {
+    aliDb
+      .collection("auth")
+      .findOne({ username: userGiven }, (err, dbResult) => {
         if (err) {
           console.log(err);
         }
         console.log("user auth retrevied");
         let chal = dbResult.password;
         if (auth.verify(req.body.password, chal)) {
+          console.log("logged in " + dbResult.username);
           let pkg = { success: true };
-          sessions[tools.generateId(6)] = dbResult.id;
+          let newSid = tools.generateId(6);
+          sessions[newSid] = dbResult.id;
+          res.cookie("sid", newSid);
           res.send(JSON.stringify(pkg));
           return;
         } else {
@@ -99,8 +106,7 @@ app.post("/login", upload.none(), (req, res) => {
           res.send(JSON.stringify(pkg));
           return;
         }
-      })
-    );
+      });
   }
 });
 
@@ -118,57 +124,67 @@ app.post("/signup", upload.none(), async (req, res) => {
   }
   //begins real endpoint
   let userGiven = req.body.username;
-  aliDb.auth.find({ username: userGiven }).toArray((err, dbResult) => {
-    if (err) {
-      console.log(err);
-    }
-    if (dbResult.length > 0) {
-      console.log("username exists");
-      pkg = {
-        success: false,
-        msg: "that username is taken, please try another"
-      };
-      res.send(JSON.stringify(pkg));
-      return;
-    } else {
-      let hpass = auth.generate(req.body.pass);
-      let uid = tools.generateId(6);
-      alidDb
-        .collections("auth")
-        .insertOne(
-          { username: userGiven, password: hpass, id: uid },
-          (err, dbResult) => {
+  aliDb
+    .collection("auth")
+    .find({ username: userGiven })
+    .toArray((err, dbResult) => {
+      if (err) {
+        console.log(err);
+      }
+      if (dbResult.length > 0) {
+        console.log("username exists");
+        pkg = {
+          success: false,
+          msg: "that username is taken, please try another"
+        };
+        res.send(JSON.stringify(pkg));
+        return;
+      } else {
+        let hpass = auth.generate(req.body.password);
+        let uid = tools.generateId(6);
+        aliDb
+          .collection("auth")
+          .insertOne(
+            { username: userGiven, password: hpass, id: uid },
+            (err, dbResult) => {
+              if (err) {
+                console.log(err);
+              }
+              console.log("user auth info stored");
+              let pkg = { success: true };
+              res.send(JSON.stringify(pkg));
+            }
+          );
+        let userdata = {
+          userId: uid,
+          username: userGiven,
+          displayName: userGiven,
+          location: "",
+          paymentMethods: [],
+          orders: [],
+          sales: [],
+          cart: []
+        };
+        aliDb.collection("users").insertOne(
+          { userdata },
+          (err,
+          dbResult => {
             if (err) {
               console.log(err);
             }
-            console.log("user auth info stored");
-            return true;
-          }
+            console.log("user data pushed to db");
+          })
         );
-      let userdata = {
-        userId: uid,
-        username: userGiven,
-        displayName: userGiven,
-        location: "",
-        paymentMethods: [],
-        orders: [],
-        sales: [],
-        cart: []
-      };
-      aliDb.collections("users").insertOne(
-        { userdata },
-        (err,
-        dbResult => {
-          if (err) {
-            console.log(err);
-          }
-          console.log("user data pushed to db");
-        })
-      );
-    }
-  });
+      }
+    });
 });
 
+app.get("/logout", (req, res) => {
+  sessions[req.cookies.sid] = undefined;
+  res.send(JSON.stringify({ success: true }));
+});
+
+//commerce endpoints------------------------------------------------------------------------------------------
 app.post("/additem", upload.none(), (req, res) => {
   //add new sale item from form data
   let sellerId = sessions[req.cookies.sid];
@@ -196,7 +212,7 @@ app.post("/additem", upload.none(), (req, res) => {
     smallImage: req.body.image,
     largeImage: req.body.largeImage
   };
-  aliDb.collections("items").insertOne(newItem, (err, result) => {
+  aliDb.collection("items").insertOne(newItem, (err, result) => {
     if (err) {
       console.log(err);
       res.send(JSON.stringify({ success: false }));
@@ -208,23 +224,33 @@ app.post("/additem", upload.none(), (req, res) => {
   });
 });
 
+app.post("/cart", upload.none(), (req, res) => {});
+
+app.post("/checkout", upload.none(), (req, res) => {
+  const uid = sessions[req.cookies.sid];
+});
+
+//account management endpoints---------------------------------------------------------------------------------------
 app.post("/account", upload.none(), (req, res) => {
   //updates user info from form submission
   let userData = {};
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    const mongoUid = dbResult.data._id;
     if (dbResult) {
       console.log("user data retreived");
       userData = dbResult.data;
       userData = updateUser(userData, req);
       console.log("user data updated");
-      aliDb.collections("users").save(userData, (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-        res.send(JSON.stringify({ success: true, data: userData }));
-        return;
-      });
+      aliDb
+        .collection("users")
+        .save({ _id: mongoUid }, userData, (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          res.send(JSON.stringify({ success: true, data: result }));
+          return;
+        });
       return;
     } else {
       console.log(err);
