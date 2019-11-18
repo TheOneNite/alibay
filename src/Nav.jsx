@@ -12,6 +12,8 @@ const NavStyles = styled.ul`
   a,
   link,
   button {
+    text-decoration: none;
+    color: black;
     padding: 1rem 3rem;
     display: flex;
     align-items: center;
