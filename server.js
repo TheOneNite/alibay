@@ -24,6 +24,7 @@ mongoClient.connect(dbCredientials, (err, dbRef) => {
 //boilerplate
 let reloadMagic = require("./reload-magic.js");
 reloadMagic(app);
+const tools = require("./custom_modules/tools.js");
 
 app.use("/", express.static("build")); // Needed for the HTML and JS files
 app.use("/", express.static("public")); // Needed for local assets
