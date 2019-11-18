@@ -11,7 +11,7 @@ const auth = require("password-hash");
 
 //setup and initialzie mongo db
 const mongoClient = require("mongodb").MongoClient;
-const dbCredientials = require("./custom_modules/mongo/dbURI.js");
+const dbCredientials = require("./mongo/dbURI.js");
 
 let mongoDb = undefined;
 let aliDb = undefined;
