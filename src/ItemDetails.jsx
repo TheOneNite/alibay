@@ -4,11 +4,42 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 // STYLED COMPONENTS
+const ItemCard = styled.div``;
+
+const Title = styled.h3`
+  margin: 5px;
+`;
+
+const ContentCard = styled.div`
+  width: 50vw;
+  height: 30vh;
+  background-color: rgb(0, 162, 255);
+  border-radius: 5px;
+  overflow: hidden;
+`;
+const Nav = styled.div`
+  display: grid;
+  grid-template-columns: 34% 33% 33%;
+`;
+const SelectedNavButton = styled.button`
+border-width: 0px;
+border-left: 1px solid;
+border-right: 1px solid;
+background-color: rgb(0, 162, 255);
+}
+`;
+
 const NavButton = styled.button`
-  background-color: light-purple;
+  border-width: 0px;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  background-color: teal
   &:hover {
-    background-color: purple;
+    background-color: rgb(0, 162, 255);
   }
+`;
+const Main = styled.div`
+  display: flex;
 `;
 
 /**THINGS TO DISPLAY
@@ -24,12 +55,12 @@ const NavButton = styled.button`
 class UnconnectedItemDetails extends Component {
   constructor(props) {
     super(props);
-    this.props.item = {
+    this.item = {
       name: "Alfred the Cat",
       description: `a cute kitty. yada yada yada. a lot more details. 
         15 meows per minute. cleans himself and your floors. 
         great cat. would recomment 10/10`,
-      img: "www.placekitten.com/100/200",
+      img: "http://www.placekitten.com/150/200",
       price: 35,
       sellerID: "1337"
     };
@@ -51,47 +82,54 @@ class UnconnectedItemDetails extends Component {
   displayContent = () => {
     switch (this.state.display) {
       case "details": {
-        return <div>{this.props.item.description}</div>;
+        return <div>{this.item.description}</div>;
       }
       case "reviews": {
         return <div>{"no reviews. Be the first!"}</div>;
       }
       case "seller": {
-        return (
-          <Link to={"/" + this.props.item.seller}>
-            {this.props.item.seller}
-          </Link>
-        );
+        return <div>{"Seller info"}</div>;
+        //<Link to={"/" + this.item.seller}>{this.item.seller}</Link>;
       }
     }
   };
   clickHandler = ev => {
-    this.setState({ display: ev.target.id });
-  };
+    let newState = { display: ev.target.id };
 
+    this.setState(newState);
+  };
+  renderNavButtons = () => {
+    let buttons = ["details", "reviews", "seller"];
+    return buttons.map(button => {
+      if (button === this.state.display) {
+        return (
+          <SelectedNavButton id={button} onClick={this.clickHandler}>
+            {button}
+          </SelectedNavButton>
+        );
+      }
+      return (
+        <NavButton id={button} onClick={this.clickHandler}>
+          {button}
+        </NavButton>
+      );
+    });
+  };
   render() {
     return (
-      <div className="details container">
+      <Main>
         <div className="detailedImage">
-          <img src={this.props.item.img} />>
+          <img src={this.item.img} />
         </div>
-        <div>
-          <div className="item header">{this.props.item.name}</div>
-          <div className="price">${this.props.item.price}</div>
-          <div className="detailBar" display="flex">
-            <NavButton id="details" onClick={this.clickHandler}>
-              details
-            </NavButton>
-            <NavButton id="reviews" onClick={this.clickHandler}>
-              reviews
-            </NavButton>
-            <NavButton id="seller" onClick={this.clickHandler}>
-              seller
-            </NavButton>
-          </div>
-          <div>{this.displayContent()}</div>
-        </div>
-      </div>
+        <ItemCard>
+          <Title>{this.item.name}</Title>
+          <div className="price">${this.item.price}</div>
+          <ContentCard>
+            <Nav>{this.renderNavButtons()}</Nav>
+            <div>{this.displayContent()}</div>
+          </ContentCard>
+        </ItemCard>
+      </Main>
     );
   }
 }
