@@ -13,11 +13,13 @@ const mongoClient = require("mongodb").MongoClient;
 const dbCredientials = require("./custom_modules/mongo/dbURI.js");
 
 let mongoDb = undefined;
+let aliDb = undefined;
 mongoClient.connect(dbCredientials, (err, dbRef) => {
   if (err) {
     console.log(err);
   }
   mongoDb = dbRef;
+  aliDb = mongoDb.db("alibay");
   console.log("-----------database initialized-----------");
 });
 
@@ -31,7 +33,40 @@ app.use("/", express.static("public")); // Needed for local assets
 
 // Your endpoints go after this line
 
-app.get("/items");
+app.get("/items", (req, res) => {
+  aliDb
+    .collections("items")
+    .find({})
+    .toArray((err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("data retreived (array) eg:");
+      console.log(console.log(data[0]));
+      let pkg = JSON.stringify(data);
+      //res.send(pkg);
+    });
+});
+
+app.post("/login", (req, res) => {
+  if (req.body.username === "user") {
+    pkg = { success: true };
+    res.send(JSON.stringify(pkg));
+    return;
+  }
+  pkg = { success: false };
+  res.send(JSON.stringify(pkg));
+});
+
+app.post("/signup", (req, res) => {
+  if (req.body.username === "user") {
+    pkg = { success: true };
+    res.send(JSON.stringify(pkg));
+    return;
+  }
+  pkg = { success: false };
+  res.send(JSON.stringify(pkg));
+});
 
 // Your endpoints go before this line
 
