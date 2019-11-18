@@ -7,15 +7,14 @@ class unconnectedNav extends Component {
     let me = this.props.currentUser;
     return (
       <div>
-        <Link to="/">
-          <a>Shop</a>
-        </Link>
+        <span>{me}</span>
+        <Link to="/">Shop</Link>
         {me && (
           <>
             <Link to="/sell">Sell an Item</Link>
             <Link to="/orders">Past Orders</Link>
-            <Link href="/account">My Account</Link>
-            <Signout />
+            <Link to="/account">My Account</Link>
+            <Link to="/signout">Sign Out</Link>
           </>
         )}
         {!me && <Link to="/login">Sign In</Link>}

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Link } from "react-router-dom";
 import Login from "./Login.jsx";
 import Signup from "./Signup.jsx";
 import Nav from "./Nav.jsx";
+import CreateItem from "./CreateItem.jsx";
 
 let login = () => {
   return <Login />;
@@ -10,6 +11,10 @@ let login = () => {
 
 let signup = () => {
   return <Signup />;
+};
+
+let createItem = () => {
+  return <CreateItem />;
 };
 
 class App extends Component {
@@ -20,6 +25,7 @@ class App extends Component {
           <Nav />
           <Route exact={true} path="/login" render={login} />
           <Route exact={true} path="/signup" render={signup} />
+          <Route exact={true} path="/sell" render={createItem} />
         </div>
       </BrowserRouter>
     );

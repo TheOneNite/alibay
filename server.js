@@ -47,7 +47,7 @@ const updateUser = (userData, req) => {
 
 // Your endpoints go after this line
 
-app.get("/items", (req, res) => {
+app.get("/items", upload.none(), (req, res) => {
   aliDb
     .collections("items")
     .find({})
@@ -64,6 +64,7 @@ app.get("/items", (req, res) => {
 
 app.post("/login", upload.none(), (req, res) => {
   // testing endpoint
+
   if (req.body.username === "user") {
     pkg = { success: true };
     res.send(JSON.stringify(pkg));

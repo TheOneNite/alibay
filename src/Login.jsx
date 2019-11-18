@@ -11,11 +11,11 @@ class UnconnectedLogin extends Component {
     };
   }
   handleUsernameChange = event => {
-    console.log("new username", event.target.value);
+    //console.log("new username", event.target.value);
     this.setState({ username: event.target.value });
   };
   handlePasswordChange = event => {
-    console.log("new password", event.target.value);
+    //console.log("new password", event.target.value);
     this.setState({ password: event.target.value });
   };
   handleSubmit = async evt => {
@@ -24,6 +24,7 @@ class UnconnectedLogin extends Component {
     let data = new FormData();
     data.append("username", this.state.username);
     data.append("password", this.state.password);
+    console.log(data);
     let response = await fetch("/login", {
       method: "POST",
       body: data,
@@ -38,12 +39,14 @@ class UnconnectedLogin extends Component {
       return;
     }
     this.props.dispatch({
-      type: "login-success"
+      type: "login-success",
+      currentUser: this.state.username
     });
   };
   render = () => {
     return (
       <>
+        <h3>Login</h3>
         <form onSubmit={this.handleSubmit}>
           Username
           <input type="text" onChange={this.handleUsernameChange} />
