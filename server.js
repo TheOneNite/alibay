@@ -14,15 +14,15 @@ const mongoClient = require("mongodb").MongoClient;
 const dbCredientials = require("./mongo/dbURI.js");
 
 let mongoDb = undefined;
-// let aliDb = undefined;
-// mongoClient.connect(dbCredientials, (err, dbRef) => {
-//   if (err) {
-//     console.log(err);
-//   }
-//   mongoDb = dbRef;
-//   aliDb = mongoDb.db("alibay");
-//   console.log("-----------database initialized-----------");
-// });
+let aliDb = undefined;
+mongoClient.connect(dbCredientials, (err, dbRef) => {
+  if (err) {
+    console.log(err);
+  }
+  mongoDb = dbRef;
+  aliDb = mongoDb.db("alibay");
+  console.log("-----------database initialized-----------");
+});
 
 //boilerplate
 let reloadMagic = require("./reload-magic.js");
