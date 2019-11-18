@@ -12,9 +12,12 @@ const Title = styled.h3`
 
 const ContentCard = styled.div`
   width: 50vw;
-  height: 30vh;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   background-color: rgb(0, 162, 255);
   border-radius: 5px;
+  border: 1px solid;
   overflow: hidden;
 `;
 const Nav = styled.div`
@@ -28,7 +31,6 @@ border-right: 1px solid;
 background-color: rgb(0, 162, 255);
 }
 `;
-
 const NavButton = styled.button`
   border-width: 0px;
   border-left: 1px solid;
@@ -38,6 +40,12 @@ const NavButton = styled.button`
     background-color: rgb(0, 162, 255);
   }
 `;
+const PurchaseDiv = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto;
+  border-top: 1px solid;
+`;
+const AddButton = styled.button``;
 const Main = styled.div`
   display: flex;
 `;
@@ -94,9 +102,7 @@ class UnconnectedItemDetails extends Component {
     }
   };
   clickHandler = ev => {
-    let newState = { display: ev.target.id };
-
-    this.setState(newState);
+    this.setState({ display: ev.target.id });
   };
   renderNavButtons = () => {
     let buttons = ["details", "reviews", "seller"];
@@ -123,10 +129,15 @@ class UnconnectedItemDetails extends Component {
         </div>
         <ItemCard>
           <Title>{this.item.name}</Title>
-          <div className="price">${this.item.price}</div>
           <ContentCard>
             <Nav>{this.renderNavButtons()}</Nav>
             <div>{this.displayContent()}</div>
+            <PurchaseDiv>
+              <div className="price" text-align="right">
+                ${this.item.price}
+              </div>
+              <AddButton onClick={this.addToCart}>Add to cart</AddButton>
+            </PurchaseDiv>
           </ContentCard>
         </ItemCard>
       </Main>
