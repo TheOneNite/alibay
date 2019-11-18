@@ -1,12 +1,13 @@
-//setup of express library
+//libraries setup
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
-//setup of multer lib
 const multer = require("multer");
 const upload = multer();
+
+const auth = require("password-hash");
 
 //setup and initialzie mongo db
 const mongoClient = require("mongodb").MongoClient;
@@ -31,6 +32,9 @@ const tools = require("./custom_modules/tools.js");
 app.use("/", express.static("build")); // Needed for the HTML and JS files
 app.use("/", express.static("public")); // Needed for local assets
 
+//global vars grr
+let sessions = {};
+
 // Your endpoints go after this line
 
 app.get("/items", (req, res) => {
@@ -43,12 +47,13 @@ app.get("/items", (req, res) => {
       }
       console.log("data retreived (array) eg:");
       console.log(console.log(data[0]));
-      let pkg = JSON.stringify(data);
-      //res.send(pkg);
+      let pkg = data;
+      res.send(pkg);
     });
 });
 
 app.post("/login", (req, res) => {
+  // testing endpoint
   if (req.body.username === "user") {
     pkg = { success: true };
     res.send(JSON.stringify(pkg));
@@ -56,16 +61,76 @@ app.post("/login", (req, res) => {
   }
   pkg = { success: false };
   res.send(JSON.stringify(pkg));
+  // start real endpoint
+  const sid = req.cookies.sid;
+  if (sessions[sid] === undefined) {
+  }
+  const userGiven = req.body.username;
+  aliDb.auth.findOne(
+    { username: userGiven },
+    (err,
+    dbResult => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("user auth retrevied");
+      let chal = dbResult.password;
+      if (auth.verify(req.body.password, chal)) {
+        let pkg = { success: true };
+        res.send(JSON.stringify(pkg));
+        return;
+      } else {
+        let pkg = { success: false, msg: "invalid username or password" };
+        res.send(JSON.stringify(pkg));
+        return;
+      }
+    })
+  );
 });
 
 app.post("/signup", (req, res) => {
+  //mocked endpont
   if (req.body.username === "user") {
     pkg = { success: true };
     res.send(JSON.stringify(pkg));
     return;
   }
-  pkg = { success: false };
-  res.send(JSON.stringify(pkg));
+  if (req.body.username === "guest") {
+    pkg = { success: false };
+    res.send(JSON.stringify(pkg));
+    return;
+  }
+  //begins real endpoint
+  let userGiven = req.body.username;
+  aliDb.auth.find({ username: userGiven }).toArray((err, dbResult) => {
+    if (err) {
+      console.log(err);
+    }
+    if (dbResult.length > 0) {
+      console.log("username exists");
+      pkg = {
+        success: false,
+        msg: "that username is taken, please try another"
+      };
+      res.send(JSON.stringify(pkg));
+      return;
+    } else {
+      let hpass = auth.generate(req.body.pass);
+      alidDb
+        .collections("auth")
+        .insertOne(
+          { username: userGiven, password: hpass },
+          (err, dbResult) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log("user auth info stored");
+            let pkg = { success: true };
+            res.send(JSON.stringify(pkg));
+          }
+        );
+    }
+  });
 });
 
 // Your endpoints go before this line
