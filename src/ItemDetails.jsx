@@ -1,6 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+// STYLED COMPONENTS
+const NavButton = styled.button`
+  background-color: light-purple;
+  &:hover {
+    background-color: purple;
+  }
+`;
 
 /**THINGS TO DISPLAY
  * image
@@ -17,8 +26,9 @@ class UnconnectedItemDetails extends Component {
     super(props);
     this.props.item = {
       name: "Alfred the Cat",
-      description:
-        "a cute kitty. yada yada yada. a lot more details. 15 meows per minute. cleans himself and your floors. great cat. would recomment 10/10",
+      description: `a cute kitty. yada yada yada. a lot more details. 
+        15 meows per minute. cleans himself and your floors. 
+        great cat. would recomment 10/10`,
       img: "www.placekitten.com/100/200",
       price: 35,
       sellerID: "1337"
@@ -69,15 +79,15 @@ class UnconnectedItemDetails extends Component {
           <div className="item header">{this.props.item.name}</div>
           <div className="price">${this.props.item.price}</div>
           <div className="detailBar" display="flex">
-            <button id="details" onClick={this.clickHandler}>
+            <NavButton id="details" onClick={this.clickHandler}>
               details
-            </button>
-            <button id="reviews" onClick={this.clickHandler}>
+            </NavButton>
+            <NavButton id="reviews" onClick={this.clickHandler}>
               reviews
-            </button>
-            <button id="seller" onClick={this.clickHandler}>
+            </NavButton>
+            <NavButton id="seller" onClick={this.clickHandler}>
               seller
-            </button>
+            </NavButton>
           </div>
           <div>{this.displayContent()}</div>
         </div>
