@@ -65,51 +65,57 @@ class unconnectedCreateItem extends Component {
     });
   };
   render() {
+    let me = this.props.currentUser;
     return (
-      <form onSubmit={this.sendData}>
-        Image
-        <input
-          type="file"
-          id="file"
-          name="file"
-          placeholder="Upload an Image"
-          required
-          onChange={this.uploadFile}
-        />
-        {this.state.image && (
-          <img src={this.state.image} width="200" alt="Preview" />
+      <div>
+        {!me && <h1>Must be signed in to create items to sell</h1>}
+        {me && (
+          <form onSubmit={this.sendData}>
+            Image
+            <input
+              type="file"
+              id="file"
+              name="file"
+              placeholder="Upload an Image"
+              required
+              onChange={this.uploadFile}
+            />
+            {this.state.image && (
+              <img src={this.state.image} width="200" alt="Preview" />
+            )}
+            Title
+            <input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="Title"
+              required
+              value={this.state.title}
+              onChange={this.handleChange}
+            />
+            Price
+            <input
+              type="number"
+              id="price"
+              name="price"
+              placeholder="Price"
+              required
+              value={this.state.price}
+              onChange={this.handleChange}
+            />
+            Description
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Please enter a description"
+              required
+              value={this.state.description}
+              onChange={this.handleChange}
+            />
+            <button stype="submit">Submit</button>
+          </form>
         )}
-        Title
-        <input
-          type="text"
-          id="title"
-          name="title"
-          placeholder="Title"
-          required
-          value={this.state.title}
-          onChange={this.handleChange}
-        />
-        Price
-        <input
-          type="number"
-          id="price"
-          name="price"
-          placeholder="Price"
-          required
-          value={this.state.price}
-          onChange={this.handleChange}
-        />
-        Description
-        <textarea
-          id="description"
-          name="description"
-          placeholder="Please enter a description"
-          required
-          value={this.state.description}
-          onChange={this.handleChange}
-        />
-        <button stype="submit">Submit</button>
-      </form>
+      </div>
     );
   }
 }
