@@ -54,7 +54,7 @@ app.get("/items", upload.none(), (req, res) => {
 
 app.post("/login", upload.none(), (req, res) => {
   // testing endpoint
-  console.log(req.body.data);
+
   if (req.body.username === "user") {
     pkg = { success: true };
     res.send(JSON.stringify(pkg));
