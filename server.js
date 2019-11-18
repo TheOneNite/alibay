@@ -64,32 +64,37 @@ app.post("/login", upload.none(), (req, res) => {
   res.send(JSON.stringify(pkg));
   // start real endpoint
   const sid = req.cookies.sid;
-  if (sessions[sid] === undefined) {
+  if (sessions[sid] != undefined) {
+    let pkg = { success: true };
+    res.send(JSON.stringify(pkg));
+    return;
+  } else {
+    const userGiven = req.body.username;
+    aliDb.auth.findOne(
+      { username: userGiven },
+      (err,
+      dbResult => {
+        if (err) {
+          console.log(err);
+        }
+        console.log("user auth retrevied");
+        let chal = dbResult.password;
+        if (auth.verify(req.body.password, chal)) {
+          let pkg = { success: true };
+          sessions[tools.generateId(6)] = req.body.userGiven;
+          res.send(JSON.stringify(pkg));
+          return;
+        } else {
+          let pkg = { success: false, msg: "invalid username or password" };
+          res.send(JSON.stringify(pkg));
+          return;
+        }
+      })
+    );
   }
-  const userGiven = req.body.username;
-  aliDb.auth.findOne(
-    { username: userGiven },
-    (err,
-    dbResult => {
-      if (err) {
-        console.log(err);
-      }
-      console.log("user auth retrevied");
-      let chal = dbResult.password;
-      if (auth.verify(req.body.password, chal)) {
-        let pkg = { success: true };
-        res.send(JSON.stringify(pkg));
-        return;
-      } else {
-        let pkg = { success: false, msg: "invalid username or password" };
-        res.send(JSON.stringify(pkg));
-        return;
-      }
-    })
-  );
 });
 
-app.post("/signup", upload.none(), (req, res) => {
+app.post("/signup", upload.none(), async (req, res) => {
   //mocked endpont
   if (req.body.username === "user") {
     pkg = { success: true };
@@ -126,13 +131,34 @@ app.post("/signup", upload.none(), (req, res) => {
               console.log(err);
             }
             console.log("user auth info stored");
-            let pkg = { success: true };
-            res.send(JSON.stringify(pkg));
+            return true;
           }
         );
+      let userdata = {
+        userId: tools.generateId(6),
+        username: userGiven,
+        displayName: userGiven,
+        location: "",
+        paymentMethods: [],
+        orders: [],
+        sales: [],
+        cart: []
+      };
+      aliDb.collections("users").insertOne(
+        { userdata },
+        (err,
+        dbResult => {
+          if (err) {
+            console.log(err);
+          }
+          console.log("user data pushed to db");
+        })
+      );
     }
   });
 });
+
+app.post("/settings", upload.none(), (req, res) => {});
 
 // Your endpoints go before this line
 
