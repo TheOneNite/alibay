@@ -7,7 +7,8 @@ class unconnectedCreateItem extends Component {
     description: "",
     image: "",
     largeImage: "",
-    price: undefined
+    price: undefined,
+    city: ""
   };
   handleChange = event => {
     let { name, type, value } = event.target;
@@ -110,6 +111,16 @@ class unconnectedCreateItem extends Component {
               placeholder="Please enter a description"
               required
               value={this.state.description}
+              onChange={this.handleChange}
+            />
+            City
+            <input
+              type="text"
+              id="city"
+              name="city"
+              placeholder="City"
+              required
+              value={this.state.city}
               onChange={this.handleChange}
             />
             <button stype="submit">Submit</button>
