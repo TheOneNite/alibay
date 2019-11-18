@@ -32,6 +32,7 @@
     "db": "^1.1.1",
     "express": "^4.16.4",
     "mongo": "^0.1.0",
+    "mongodb": "^3.3.4",
     "multer": "^1.4.2",
     "password-hash": "^1.2.2",
     "react-redux": "6.0.1",

@@ -48,6 +48,7 @@ const PurchaseDiv = styled.div`
 const AddButton = styled.button``;
 const Main = styled.div`
   display: flex;
+  padding: 15px;
 `;
 
 /**THINGS TO DISPLAY
@@ -65,7 +66,7 @@ class UnconnectedItemDetails extends Component {
     super(props);
     this.item = {
       name: "Alfred the Cat",
-      description: `a cute kitty. yada yada yada. a lot more details. 
+      description: `a cute kitty. yada yada yada. likes back scratches and tuna fish. 
         15 meows per minute. cleans himself and your floors. 
         great cat. would recomment 10/10`,
       img: "http://www.placekitten.com/150/200",
@@ -124,7 +125,7 @@ class UnconnectedItemDetails extends Component {
   render() {
     return (
       <Main>
-        <div className="detailedImage">
+        <div margin="15px" className="detailedImage">
           <img src={this.item.img} />
         </div>
         <ItemCard>
