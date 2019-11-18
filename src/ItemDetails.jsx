@@ -48,7 +48,6 @@ const PurchaseDiv = styled.div`
 const AddButton = styled.button``;
 const Main = styled.div`
   display: flex;
-  background-color: pink;
   padding: 15px;
 `;
 

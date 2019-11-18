@@ -4,12 +4,22 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Card = styled.div`
+  padding: 10px;
+  margin: 15px;
   border: 1px solid;
   width: 250px;
   background-color: teal;
 `;
 const PriceDiv = styled.div`
+  padding: 5px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+`;
+const FlexDiv = styled.div`
   display: flex;
+`;
+const Description = styled.div`
+  padding: 10px;
 `;
 
 class ItemSearch extends Component {
@@ -30,10 +40,12 @@ class ItemSearch extends Component {
     return (
       <Card>
         <Link to="/sampleitem">{this.item.name}</Link>
-        <div>
-          <img height="100px" src={this.item.img}></img>
-        </div>
-        <div>{this.item.description.slice(0, 50) + "..."}</div>
+        <FlexDiv>
+          <img height="100px" src={this.item.img} />
+          <Description>
+            {this.item.description.slice(0, 50) + "..."}
+          </Description>
+        </FlexDiv>
         <PriceDiv>
           <div>${this.item.price}</div>
           <button onClick={this.addToCart}>Add to cart</button>
