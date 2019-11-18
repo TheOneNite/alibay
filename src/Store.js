@@ -3,6 +3,9 @@ let reducer = (state, action) => {
   if (action.type === "login-success") {
     return { ...state, loggedIn: true, currentUser: action.currentUser };
   }
+  if (action.type === "signout") {
+    return { ...state, loggedIn: false, currentUser: "" };
+  }
   return state;
 };
 const store = createStore(

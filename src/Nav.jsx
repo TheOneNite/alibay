@@ -1,10 +1,17 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { BrowserRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 class unconnectedNav extends Component {
+  signout = () => {
+    this.props.dispatch({
+      type: "signout"
+    });
+  };
+
   render() {
     let me = this.props.currentUser;
+
     return (
       <div>
         <span>{me}</span>
@@ -14,7 +21,7 @@ class unconnectedNav extends Component {
             <Link to="/sell">Sell an Item</Link>
             <Link to="/orders">Past Orders</Link>
             <Link to="/account">My Account</Link>
-            <Link to="/signout">Sign Out</Link>
+            <button onClick={this.signout}>Sign Out</button>
           </>
         )}
         {!me && <Link to="/login">Sign In</Link>}
