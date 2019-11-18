@@ -13,8 +13,8 @@ class unconnectedNav extends Component {
           <>
             <Link to="/sell">Sell an Item</Link>
             <Link to="/orders">Past Orders</Link>
-            <Link href="/account">My Account</Link>
-            Sign Out
+            <Link to="/account">My Account</Link>
+            <Link to="/signout">Sign Out</Link>
           </>
         )}
         {!me && <Link to="/login">Sign In</Link>}
