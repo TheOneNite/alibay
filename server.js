@@ -37,7 +37,7 @@ let sessions = {};
 
 // Your endpoints go after this line
 
-app.get("/items", (req, res) => {
+app.get("/items", upload.none(), (req, res) => {
   aliDb
     .collections("items")
     .find({})
@@ -52,8 +52,9 @@ app.get("/items", (req, res) => {
     });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", upload.none(), (req, res) => {
   // testing endpoint
+  console.log(req.body.data);
   if (req.body.username === "user") {
     pkg = { success: true };
     res.send(JSON.stringify(pkg));
@@ -88,7 +89,7 @@ app.post("/login", (req, res) => {
   );
 });
 
-app.post("/signup", (req, res) => {
+app.post("/signup", upload.none(), (req, res) => {
   //mocked endpont
   if (req.body.username === "user") {
     pkg = { success: true };
