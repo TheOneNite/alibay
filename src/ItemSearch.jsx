@@ -5,6 +5,11 @@ import styled from "styled-components";
 
 const Card = styled.div`
   border: 1px solid;
+  width: 250px;
+  background-color: teal;
+`;
+const PriceDiv = styled.div`
+  display: flex;
 `;
 
 class ItemSearch extends Component {
@@ -12,7 +17,7 @@ class ItemSearch extends Component {
     super(props);
     this.item = {
       name: "Alfred the Cat",
-      description: `a cute kitty. yada yada yada. a lot more details. 
+      description: `a cute kitty. yada yada yada. likes back scratches and tuna fish. 
           15 meows per minute. cleans himself and your floors. 
           great cat. would recomment 10/10`,
       img: "http://www.placekitten.com/150/200",
@@ -26,13 +31,13 @@ class ItemSearch extends Component {
       <Card>
         <Link to="/sampleitem">{this.item.name}</Link>
         <div>
-          <img src={this.item.img}></img>
+          <img height="100px" src={this.item.img}></img>
         </div>
         <div>{this.item.description.slice(0, 50) + "..."}</div>
-        <div display="flex">
+        <PriceDiv>
           <div>${this.item.price}</div>
           <button onClick={this.addToCart}>Add to cart</button>
-        </div>
+        </PriceDiv>
       </Card>
     );
   }
