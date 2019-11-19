@@ -15,6 +15,7 @@ class UnconnecteCart extends Component {
     super(props);
     this.state = { cartItems: [] };
   }
+
   componentDidMount() {
     let fetchAll = async () => {
       let response = await fetch("/cart", {
@@ -29,6 +30,43 @@ class UnconnecteCart extends Component {
     fetchAll();
   }
 
+  sendData = async (res, event) => {
+    let total = 0;
+    this.state.cartItems.forEach(item => {
+      total = total + item.price;
+    });
+
+    event.preventDefault();
+    let data = new FormData();
+    data.append("token", res);
+    data.append("total", total);
+    data.append("cart", this.state.cartItems);
+
+    let response = await fetch("/checkout", {
+      method: "POST",
+      body: data,
+      credentials: "include"
+    });
+    let responseBody = await response.text();
+    console.log("responseBody from create itenm", responseBody);
+    let body = JSON.parse(responseBody);
+    console.log("parsed checkout body", body);
+    if (!body.success) {
+      alert("checkout failedd");
+      return;
+    }
+    // this.props.dispatch({
+    //   type: "item-success"
+    // });
+    this.props.history.push("/");
+  };
+
+  onToken = res => {
+    console.log("On token called");
+    console.log(res.id);
+    this.sendData(res, event);
+  };
+
   render = () => {
     let total = 0;
     this.state.cartItems.forEach(item => {
@@ -41,16 +79,22 @@ class UnconnecteCart extends Component {
           {this.state.cartItems.map(item => {
             //display items
             return (
-              <div>
-                <ItemSearch key={item.itemId} item={item} />
+              <div key={item.itemId}>
+                <ItemSearch item={item} />
               </div>
             );
           })}
         </SearchDisplay>
         <div>Cart Total: {formatMoney(total)}</div>
-        {/* <StripeCheckout>
+        <StripeCheckout
+          amount={total}
+          name="Stuff Zone"
+          stripeKey="pk_test_Hix3x69AC2ga6zwVuJn5Ya1i00PmSOBgCh"
+          currency="USD"
+          token={res => this.onToken(res)}
+        >
           <button>Checkout</button>
-        </StripeCheckout> */}
+        </StripeCheckout>
       </>
     );
   };
