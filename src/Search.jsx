@@ -12,11 +12,7 @@ class UnconnectedSearch extends Component {
   submitHandler = evt => {
     evt.preventDefault();
     console.log("submitting search");
-    let displayItems = this.props.allItems.filter(item => {
-      return item.title.includes(this.state.query);
-    });
-    this.props.dispatch({ type: "displayItems", items: displayItems });
-    // this.props.dispatch({ type: "searchQuery", search: this.state.query });
+    this.props.dispatch({ type: "searchQuery", search: this.state.query });
   };
   render = () => {
     return (

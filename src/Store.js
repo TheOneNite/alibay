@@ -10,9 +10,6 @@ let reducer = (state, action) => {
   if (action.type === "allItems") {
     return { ...state, allItems: action.items };
   }
-  if (action.type === "displayItems") {
-    return { ...state, displayedItems: action.items };
-  }
   if (action.type === "searchQuery") {
     return { ...state, searchQuery: action.search };
   }
@@ -25,7 +22,6 @@ const store = createStore(
     currentUser: "",
     loggedIn: false,
     allItems: [],
-    displayedItems: [],
     searchQuery: ""
   },
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
