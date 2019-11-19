@@ -12,6 +12,14 @@ class MyAccount extends Component {
             order:[]
         }
 }
+componentDidMount = async()=>{
+//fetch the userinfo from database
+    let  response = await fetch('/account') 
+    let body = await response.text() 
+    let userInfo = JSON.parse(body) 
+    this.setState({username: userInfo.username,address: userInfo.location,
+        payment:userInfo.paymentMethods,orders:userInfo.orders})
+}
 onChangeUsername=(event)=>{
     this.setState({username:event.target.value})
 }
@@ -59,12 +67,7 @@ renderPayment =()=>{
 }
 
 render() { 
-    //fetch the userinfo from database
-    let  response = await fetch('/account') 
-    let body = await response.text() 
-    userInfo = JSON.parse(body) 
-    this.setState({username: userInfo.username,address: userInfo.location,
-        payment:userInfo.paymentMethods,orders:userInfo.orders})
+    
     return (
       <div> 
         <Link to={"/account/orders"}>my past orders</Link>

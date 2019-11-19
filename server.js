@@ -104,7 +104,7 @@ app.get("/items", (req, res) => {
   //sends an array of itemData objects if body.search is undefined
   //WIP - expects body.search to be a JSON formatted object
   //possible (but not required properties) are:
-  //title, description, minPrice, maxPrice, location
+  //keyword, minPrice, maxPrice, location
   console.log("GET: /items");
   if (req.body.search === undefined) {
     aliDb
@@ -306,13 +306,22 @@ app.get("/cart", (req, res) => {
 });
 
 app.post("/cart", upload.none(), (req, res) => {
-  //expects a json formatted array of itemId strings
-  console.log(req.body.cart);
-  let newCart = JSON.parse(req.body.cart);
+  //expects body with adding:true if adding and adding:false if removing, and itemId:string id of item
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
-    let userData = dbResult.data.userdata;
+    let userData = dbResult.userdata;
     let oldCart = userData.cart;
+    let newCart = [];
+    if (req.body.adding) {
+      newCart = oldCart.concat(req.body.itemId);
+    } else {
+      newCart = oldCart.filter(id => {
+        if (id === req.body.itemId) {
+          return false;
+        }
+        return true;
+      });
+    }
     userData = { ...userData, cart: newCart };
     aliDb
       .collection("users")
@@ -321,6 +330,7 @@ app.post("/cart", upload.none(), (req, res) => {
           console.log(err);
         }
         console.log("new cart written to db");
+        res.send(JSON.stringify({ success: true }));
       });
   });
 });
@@ -366,7 +376,7 @@ app.post("/account", upload.none(), (req, res) => {
 app.get("/account", (req, res) => {
   //sends current user data to populate form
   let uid = sessions[req.cookies.sid];
-  aliDb.users.findOne({ userId: uid }, (err, dbResult) => {
+  aliDb.collection("users").findOne({ userId: uid }, (err, dbResult) => {
     if (err) {
       console.log(err);
     }
