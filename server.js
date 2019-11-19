@@ -248,6 +248,7 @@ app.get("/logout", (req, res) => {
 app.post("/additem", upload.none(), (req, res) => {
   //expects formdata with the following fields:
   //title, price, description, location, image, largeImage
+  console.log("POST:/additem");
   let sellerId = sessions[req.cookies.sid];
   let sellerData = {};
   retreive("users", { userId: sellerId }, aliDb).then(dbResult => {
@@ -262,26 +263,26 @@ app.post("/additem", upload.none(), (req, res) => {
       return;
     }
     sellerData = dbResult.data;
-  });
-  let newItem = {
-    itemId: tools.generateId(10),
-    price: parseInt(req.body.price),
-    title: req.body.title,
-    description: req.body.description,
-    sellerId: sellerData.userId,
-    shipsFrom: req.body.location,
-    smallImage: req.body.image,
-    largeImage: req.body.largeImage
-  };
-  aliDb.collection("items").insertOne(newItem, (err, result) => {
-    if (err) {
-      console.log(err);
-      res.send(JSON.stringify({ success: false }));
+    let newItem = {
+      itemId: tools.generateId(10),
+      price: parseInt(req.body.price),
+      title: req.body.title,
+      description: req.body.description,
+      sellerId: sellerData.userId,
+      shipsFrom: req.body.location,
+      smallImage: req.body.image,
+      largeImage: req.body.largeImage
+    };
+    aliDb.collection("items").insertOne(newItem, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(JSON.stringify({ success: false }));
+        return;
+      }
+      console.log("new item pushed to db");
+      res.send(JSON.stringify({ success: true }));
       return;
-    }
-    console.log("new item pushed to db");
-    res.send(JSON.stringify({ success: true }));
-    return;
+    });
   });
 });
 
@@ -347,8 +348,26 @@ app.get("/checkout", (req, res) => {
 });
 
 app.post("/checkout", upload.none(), (req, res) => {
-  //expects an array of itemIds
+  //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
+  let items = req.body.cart;
+  Promise.all((resolve, reject) => {
+    items.map(id => {
+      retreive("items", { itemId: id }, aliDb).then(dbResult => {
+        if (!dbResult.success) {
+          console.log(err);
+          reject("database error");
+        }
+        console.log(dbResult);
+        resolve(dbResult.data);
+      });
+    });
+  }).then(cartItems => {
+    let total = 0;
+    cartItems.forEach(item => {
+      total = total + item.price;
+    });
+  });
 
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
     if (err) {
