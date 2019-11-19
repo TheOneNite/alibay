@@ -306,13 +306,22 @@ app.get("/cart", (req, res) => {
 });
 
 app.post("/cart", upload.none(), (req, res) => {
-  //expects a json formatted array of itemId strings
-  console.log(req.body.cart);
-  let newCart = JSON.parse(req.body.cart);
+  //expects body with adding:true if adding and adding:false if removing, and itemId:string id of item
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
     let userData = dbResult.data.userdata;
     let oldCart = userData.cart;
+    let newCart = [];
+    if (req.body.adding) {
+      newCart = oldCart.concat(req.body.itemId);
+    } else {
+      newCart = oldCart.filter(id => {
+        if (id === req.body.itemId) {
+          return false;
+        }
+        return true;
+      });
+    }
     userData = { ...userData, cart: newCart };
     aliDb
       .collection("users")
