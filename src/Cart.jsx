@@ -57,7 +57,7 @@ class UnconnecteCart extends Component {
     let body = JSON.parse(responseBody);
     console.log("parsed checkout body", body);
     if (!body.success) {
-      alert("checkout failedd");
+      alert("checkout failed");
       return;
     }
     // this.props.dispatch({
@@ -96,6 +96,7 @@ class UnconnecteCart extends Component {
           name="Stuff Zone"
           stripeKey="pk_test_Hix3x69AC2ga6zwVuJn5Ya1i00PmSOBgCh"
           currency="USD"
+          email="no@dice.com"
           token={res => this.onToken(res)}
         >
           <button>Checkout</button>
