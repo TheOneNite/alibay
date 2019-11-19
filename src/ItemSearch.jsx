@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import formatMoney from "./formatMoney.js";
 
 const Card = styled.div`
   padding: 10px;
@@ -58,7 +59,7 @@ class ItemSearch extends Component {
           </Description>
         </FlexDiv>
         <PriceDiv>
-          <div>${this.props.item.price}</div>
+          <div>{formatMoney(this.props.item.price)}</div>
           <button onClick={this.addToCart}>Add to cart</button>
         </PriceDiv>
       </Card>
