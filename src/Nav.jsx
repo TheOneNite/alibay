@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { withRouter } from "react-router-dom";
 
 const NavStyles = styled.ul`
   margin: 0;
@@ -74,9 +75,13 @@ const NavStyles = styled.ul`
 class unconnectedNav extends Component {
   signout = () => {
     console.log("signout pressed");
+    fetch("/logout", {
+      method: "GET"
+    });
     this.props.dispatch({
       type: "signout"
     });
+    this.props.history.push("/login");
   };
 
   render() {
@@ -108,4 +113,4 @@ let mapStateToProps = st => {
 };
 
 let Nav = connect(mapStateToProps)(unconnectedNav);
-export default Nav;
+export default withRouter(Nav);

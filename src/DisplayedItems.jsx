@@ -11,7 +11,6 @@ const SearchDisplay = styled.div`
 class UnconnecteDisplayedItems extends Component {
   constructor(props) {
     super(props);
-    this.state = { allItems: [] };
   }
   componentDidMount() {
     let fetchAll = async () => {
@@ -24,33 +23,30 @@ class UnconnecteDisplayedItems extends Component {
       let body = await response.text();
       let allItems = JSON.parse(body);
       this.props.dispatch({ type: "allItems", items: allItems });
-      this.renderItems();
     };
     fetchAll();
   }
 
   renderItems = () => {
-    let displayItems = this.props.allItems.slice(0, 6);
-    this.props.dispatch({ type: "displayItems", items: displayItems });
+    let displayItems = this.props.allItems.filter(item => {
+      return item.title.includes(this.props.searchQuery);
+    });
+    return displayItems.map(item => {
+      //display items
+      return (
+        <div key={item.itemId}>
+          <ItemSearch item={item} />
+        </div>
+      );
+    });
   };
   render = () => {
-    return (
-      <SearchDisplay>
-        {this.props.displayItems.map(item => {
-          //display items
-          return (
-            <div key={item.itemId}>
-              <ItemSearch item={item} />
-            </div>
-          );
-        })}
-      </SearchDisplay>
-    );
+    console.log("rendering with state: ", this.state);
+    return <SearchDisplay>{this.renderItems()}</SearchDisplay>;
   };
 }
 let mapStateToProps = st => {
   return {
-    displayItems: st.displayedItems,
     allItems: st.allItems,
     searchQuery: st.searchQuery
   };
