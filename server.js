@@ -93,7 +93,7 @@ const itemSearch = searchObj => {
 
 //updating user data
 const updateUser = (userData, req) => {
-  const newData = req.body;
+  const newData = JSON.parse(req.body.update);
   const updatedUser = { ...userData, ...newData };
   return updatedUser;
 };
@@ -343,7 +343,8 @@ app.get("/checkout", (req, res) => {
 app.post("/checkout", upload.none(), (req, res) => {
   //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
-  let items = JSON.parse(req.body.cart);
+  let transaction = JSON.parse(req.body.data);
+  let items = transaction.cart;
   console.log(items);
   Promise.all(
     items.map(id => {
@@ -409,6 +410,34 @@ app.post("/checkout", upload.none(), (req, res) => {
     if (err) {
       console.log(err);
     }
+  });
+});
+
+app.get("/orders", (req, res) => {
+  // sends an array of order data objects
+  console.log("GET: /orders");
+  let uid = sessions[req.cookies.sid];
+  aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.send({ success: false, msg: "user data could not be found" });
+    }
+    console.log("user data retreived");
+    let userData = result;
+    let orders = userData.orders;
+    Promise.all(
+      orders.map(orderId => {
+        return retreive("orders", { orderId: orderId }, aliDb).then(result => {
+          if (result.success === false) {
+            console.log(result.err);
+            return result;
+          }
+          return result.data;
+        });
+      })
+    ).then(orderData => {
+      res.send(JSON.stringify(orderData));
+    });
   });
 });
 
