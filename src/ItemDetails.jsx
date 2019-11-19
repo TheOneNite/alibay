@@ -69,7 +69,7 @@ class UnconnectedItemDetails extends Component {
   displayContent = () => {
     switch (this.state.display) {
       case "details": {
-        return <div>{this.item.description}</div>;
+        return <div>{this.props.item.description}</div>;
       }
       case "reviews": {
         return <div>{"no reviews. Be the first!"}</div>;
@@ -121,7 +121,7 @@ class UnconnectedItemDetails extends Component {
     return (
       <Main>
         <div margin="15px" className="detailedImage">
-          <img src={this.props.item.largeImage} />
+          <img height="200px" src={this.props.item.largeImage} />
         </div>
         <ItemCard>
           <Title>{this.props.item.title}</Title>
