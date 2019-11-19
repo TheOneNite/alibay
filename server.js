@@ -309,7 +309,7 @@ app.post("/cart", upload.none(), (req, res) => {
   //expects body with adding:true if adding and adding:false if removing, and itemId:string id of item
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
-    let userData = dbResult.data.userdata;
+    let userData = dbResult.userdata;
     let oldCart = userData.cart;
     let newCart = [];
     if (req.body.adding) {
