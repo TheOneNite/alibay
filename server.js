@@ -280,7 +280,7 @@ app.post("/additem", upload.none(), (req, res) => {
         return;
       }
       console.log("new item pushed to db");
-      res.send(JSON.stringify({ success: true }));
+      res.send(JSON.stringify({ success: true, item: newItem }));
       return;
     });
   });
@@ -343,7 +343,9 @@ app.get("/checkout", (req, res) => {
     if (err) {
       console.log(err);
     }
-    res.send(JSON.stringify(result.paymentMethods));
+    res.send(
+      JSON.stringify({ cart: result.cart, payments: result.paymentMethods })
+    );
   });
 });
 
