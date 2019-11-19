@@ -343,8 +343,9 @@ app.get("/checkout", (req, res) => {
 app.post("/checkout", upload.none(), (req, res) => {
   //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
-  let transaction = JSON.parse(req.body.data);
-  let items = transaction.cart;
+  let clientTotal = req.body.total;
+  let token = req.body.token;
+  let items = JSON.parse(req.body.cart);
   console.log(items);
   Promise.all(
     items.map(id => {
