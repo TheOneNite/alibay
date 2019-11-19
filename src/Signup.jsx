@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 class unconnectedSignup extends Component {
   constructor(props) {
@@ -18,13 +19,30 @@ class unconnectedSignup extends Component {
     console.log("new password", event.target.value);
     this.setState({ password: event.target.value });
   };
-  handleSubmit = evt => {
+  handleSubmit = async evt => {
     evt.preventDefault();
     console.log("signup form submitted");
     let data = new FormData();
     data.append("username", this.state.username);
     data.append("password", this.state.password);
-    fetch("/signup", { method: "POST", body: data });
+    let response = await fetch("/signup", {
+      method: "POST",
+      body: data,
+      credentials: "include"
+    });
+    let responseBody = await response.text();
+    console.log("responseBody from login", responseBody);
+    let body = JSON.parse(responseBody);
+    console.log("parsed body", body);
+    if (!body.success) {
+      alert("Signup failed");
+      return;
+    }
+    this.props.dispatch({
+      type: "login-success",
+      currentUser: this.state.username
+    });
+    this.props.history.push("/");
   };
   render = () => {
     return (
@@ -44,4 +62,4 @@ class unconnectedSignup extends Component {
 }
 
 let Signup = connect()(unconnectedSignup);
-export default Signup;
+export default withRouter(Signup);
