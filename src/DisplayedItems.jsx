@@ -11,37 +11,36 @@ const SearchDisplay = styled.div`
 class UnconnecteDisplayedItems extends Component {
   constructor(props) {
     super(props);
-    this.state = { allItems: [], displayItems: [] };
+    this.state = { allItems: [] };
   }
   componentDidMount() {
     let fetchAll = async () => {
       let data = new FormData();
+      // data.append("search", this.props.searchQuery)
       let response = await fetch("/items", {
         method: "POST",
         body: data
       });
       let body = await response.text();
       let allItems = JSON.parse(body);
-      this.setState({ ...this.state, allItems });
-      console.log("allItems, ", this.state.allItems);
+      this.props.dispatch({ type: "allItems", items: allItems });
       this.renderItems();
     };
     fetchAll();
   }
 
   renderItems = () => {
-    let displayItems = this.state.allItems.slice(0, 6);
-    this.setState({ ...this.state, displayItems });
-    return this.state.displayItems;
+    let displayItems = this.props.allItems.slice(0, 6);
+    this.props.dispatch({ type: "displayItems", items: displayItems });
   };
   render = () => {
     return (
       <SearchDisplay>
-        {this.state.displayItems.map(item => {
+        {this.props.displayItems.map(item => {
           //display items
           return (
-            <div>
-              <ItemSearch key={item.itemId} item={item} />
+            <div key={item.itemId}>
+              <ItemSearch item={item} />
             </div>
           );
         })}
@@ -51,7 +50,9 @@ class UnconnecteDisplayedItems extends Component {
 }
 let mapStateToProps = st => {
   return {
-    items: st.displayedItems
+    displayItems: st.displayedItems,
+    allItems: st.allItems,
+    searchQuery: st.searchQuery
   };
 };
 let DisplayedItems = connect(mapStateToProps)(UnconnecteDisplayedItems);

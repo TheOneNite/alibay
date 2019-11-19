@@ -124,19 +124,6 @@ app.post("/items", upload.none(), (req, res) => {
 
 //user authentication endpoints------------------------------------------------------------------------------------------
 app.post("/login", upload.none(), (req, res) => {
-  // testing endpoint
-
-  if (req.body.username === "user") {
-    pkg = { success: true };
-    res.send(JSON.stringify(pkg));
-    return;
-  }
-  if (req.body.username === "guest") {
-    pkg = { success: false };
-    res.send(JSON.stringify(pkg));
-    return;
-  }
-  // start real endpoint
   const sid = req.cookies.sid;
   if (sessions[sid] != undefined) {
     console.log("active session found");
@@ -171,18 +158,6 @@ app.post("/login", upload.none(), (req, res) => {
 });
 
 app.post("/signup", upload.none(), async (req, res) => {
-  //mocked endpont
-  if (req.body.username === "user") {
-    pkg = { success: true };
-    res.send(JSON.stringify(pkg));
-    return;
-  }
-  if (req.body.username === "guest") {
-    pkg = { success: false };
-    res.send(JSON.stringify(pkg));
-    return;
-  }
-  //begins real endpoint
   let userGiven = req.body.username;
   aliDb
     .collection("auth")
@@ -265,7 +240,7 @@ app.post("/additem", upload.none(), (req, res) => {
     sellerData = dbResult.data;
     let newItem = {
       itemId: tools.generateId(10),
-      price: parseInt(req.body.price),
+      price: parseFloat(req.body.price),
       title: req.body.title,
       description: req.body.description,
       sellerId: sellerData.userId,
@@ -311,7 +286,13 @@ app.post("/cart", upload.none(), (req, res) => {
   //expects body with adding:true if adding and adding:false if removing, and itemId:string id of item
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
-    let userData = dbResult.userdata;
+    if (dbResult.success === false) {
+      console.log(dbResult.err);
+      res.send({ success: false });
+      return;
+    }
+    let userData = dbResult.data;
+    console.log(userData);
     let oldCart = userData.cart;
     let newCart = [];
     if (req.body.adding) {
@@ -327,17 +308,22 @@ app.post("/cart", upload.none(), (req, res) => {
     userData = { ...userData, cart: newCart };
     aliDb
       .collection("users")
-      .updateOne({ userId: userData.userId }, userData, (err, result) => {
-        if (err) {
-          console.log(err);
+      .updateOne(
+        { userId: userData.userId },
+        { $set: { ...userData } },
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log("new cart written to db");
+          res.send(JSON.stringify({ success: true }));
         }
-        console.log("new cart written to db");
-        res.send(JSON.stringify({ success: true }));
-      });
+      );
   });
 });
 
 app.get("/checkout", (req, res) => {
+  // sends an array of payment method objects and and array of
   const uid = sessions[req.cookies.sid];
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
     if (err) {
@@ -350,6 +336,7 @@ app.get("/checkout", (req, res) => {
 });
 
 app.post("/checkout", upload.none(), (req, res) => {
+  const taxrate = 0.15;
   //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
   let items = req.body.cart;
@@ -365,10 +352,12 @@ app.post("/checkout", upload.none(), (req, res) => {
       });
     });
   }).then(cartItems => {
-    let total = 0;
+    let subtotal = 0;
     cartItems.forEach(item => {
-      total = total + item.price;
+      subtotal = subtotal + item.price;
     });
+    let total = subtotal * taxrate;
+    total = total + subtotal;
   });
 
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
