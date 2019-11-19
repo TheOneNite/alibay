@@ -41,8 +41,8 @@ class UnconnecteCart extends Component {
           {this.state.cartItems.map(item => {
             //display items
             return (
-              <div>
-                <ItemSearch key={item.itemId} item={item} />
+              <div key={item.itemId}>
+                <ItemCart item={item} />
               </div>
             );
           })}
