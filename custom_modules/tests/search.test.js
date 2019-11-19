@@ -18,7 +18,7 @@ beforeAll(done => {
 });
 
 test("should find some stuff maybe idk", done => {
-  const testQuery = { title: "user", minPrice: 40, maxPrice: 60 };
+  const testQuery = { keyword: "user", minPrice: 40, maxPrice: 60 };
 
   let searchResult = undefined;
   itemSearch(testQuery, aliDb).then(result => {
