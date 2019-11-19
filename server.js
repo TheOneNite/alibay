@@ -313,8 +313,11 @@ app.post("/cart", upload.none(), (req, res) => {
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
     if (dbResult.success === false) {
       console.log(dbResult.err);
+      res.send({ success: false });
+      return;
     }
-    let userData = dbResult.userdata;
+    let userData = dbResult.data;
+    console.log(userData);
     let oldCart = userData.cart;
     let newCart = [];
     if (req.body.adding) {
@@ -330,13 +333,17 @@ app.post("/cart", upload.none(), (req, res) => {
     userData = { ...userData, cart: newCart };
     aliDb
       .collection("users")
-      .updateOne({ userId: userData.userId }, userData, (err, result) => {
-        if (err) {
-          console.log(err);
+      .updateOne(
+        { userId: userData.userId },
+        { $set: { ...userData } },
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log("new cart written to db");
+          res.send(JSON.stringify({ success: true }));
         }
-        console.log("new cart written to db");
-        res.send(JSON.stringify({ success: true }));
-      });
+      );
   });
 });
 
