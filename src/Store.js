@@ -7,6 +7,9 @@ let reducer = (state, action) => {
   if (action.type === "signout") {
     return { ...state, loggedIn: false, currentUser: "" };
   }
+  if (action.type === "allItems") {
+    return { ...state, allItems: action.items };
+  }
   if (action.type === "displayItems") {
     return { ...state, displayedItems: action.items };
   }
