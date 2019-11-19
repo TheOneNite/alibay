@@ -36,11 +36,16 @@ class UnconnecteCart extends Component {
       total = total + item.price;
     });
 
+    let cart = this.state.cartItems.map(item => {
+      return item.itemId;
+    });
+    console.log(cart);
+
     event.preventDefault();
     let data = new FormData();
     data.append("token", res);
     data.append("total", total);
-    data.append("cart", this.state.cartItems);
+    data.append("cart", cart);
 
     let response = await fetch("/checkout", {
       method: "POST",
@@ -64,7 +69,7 @@ class UnconnecteCart extends Component {
   onToken = res => {
     console.log("On token called");
     console.log(res.id);
-    this.sendData(res, event);
+    this.sendData(res.id, event);
   };
 
   render = () => {
