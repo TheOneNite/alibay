@@ -6,9 +6,10 @@ class MyAccount extends Component {
         super()
         this.state={
             username:"",
-            password: "",
+            oldPassword: "",
+            newPassword:"",
             address:"",
-            payment:"",
+            payment:[],
             order:[]
         }
 }
@@ -17,14 +18,18 @@ componentDidMount = async()=>{
     let  response = await fetch('/account') 
     let body = await response.text() 
     let userInfo = JSON.parse(body) 
+    console.log("userInfo", userInfo)
     this.setState({username: userInfo.username,address: userInfo.location,
         payment:userInfo.paymentMethods,orders:userInfo.orders})
 }
 onChangeUsername=(event)=>{
     this.setState({username:event.target.value})
 }
-onChangePassword=(event)=>{
-    this.setState({password:event.target.value})
+onChangeNewPassword=(event)=>{
+    this.setState({newPassword:event.target.value})
+}
+onChangeOldPassword=(event)=>{
+    this.setState({oldPassword:event.target.value})
 }
 onChangePayment=(event)=>{
     this.setState({payment:event.target.value})
@@ -42,43 +47,24 @@ submitHandler = evt => {
   fetch('/account', { method: "POST", body: data }) 
 }
 
-renderOrders =()=>{}
-    
-renderSecurity =()=>{
-    return (<form onSubmit={this.submitHandler}> 
-        username: <input type="text" value={this.state.username} onChange={this.onChangeUsername} /> 
-        password: <input type="text" value={this.state.password} onChange={this.onChangePassword} /> 
-        <input type="submit" value="update" />
-    </form>)
-    
-}
-renderAddress =()=>{
-    return (<form onSubmit={this.submitHandler}> 
-        address: <input type="text" value={this.state.address} onChange={this.onChangeAddress} /> 
-        <input type="submit" value="update" />
-    </form>)
-    
-}
-renderPayment =()=>{  
-    return (<form onSubmit={this.submitHandler}> 
-        payment: <input type="text" value={this.state.payment} onChange={this.onChangePayment} /> 
-        <input type="submit" value="update" />
-    </form>)  
-}
 
 render() { 
     
     return (
       <div> 
-        <Link to={"/account/orders"}>my past orders</Link>
-        <Link to={"/account/login"}> login&security </Link>
-        <Link to={"/account/address"}>my address</Link>
-        <Link to={"/account/payment"}>payment method</Link>
-
-        <Route exact={true} path="/account/orders" render={this.renderOrders} />
-        <Route exact={true} path="/account/login" render={this.renderSecurity} /> 
-        <Route exact={true} path="/account/address" render={this.renderAddress} /> 
-        <Route exact={true} path="/account/Payment" render={this.renderPayment} /> 
+        <form onSubmit={this.submitSecurity}>
+        <h2> login&security </h2>
+        username: <input type="text" value={this.state.username} onChange={this.onChangeUsername} /> 
+        old password: <input type="text" value={this.state.oldPassword} onChange={this.onChangeOldPassword} />
+        new password: <input type="text" value={this.state.newPassword} onChange={this.onChangeNewPassword} />  
+        </form>
+        <form onSubmit={this.submitHandler}>
+        <h2>my address</h2>
+        address: <input type="text" value={this.state.address} onChange={this.onChangeAddress} /> 
+        <h2>payment method</h2>
+        payment: <input type="text" value={this.state.payment} onChange={this.onChangePayment} /> 
+        <div><input type="submit" value="update" /></div>
+        </form>  
       </div>
    ) 
   } 

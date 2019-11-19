@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import formatMoney from "./formatMoney.js";
 
 class unconnectedCreateItem extends Component {
   state = {
@@ -20,12 +21,13 @@ class unconnectedCreateItem extends Component {
   sendData = async event => {
     event.preventDefault();
     let data = new FormData();
+    let price = this.state.price * 100;
     data.append("title", this.state.title);
     data.append("user", this.props.currentUser);
     data.append("description", this.state.description);
     data.append("image", this.state.image);
     data.append("largeImage", this.state.largeImage);
-    data.append("price", this.state.price);
+    data.append("price", price);
     data.append("location", this.state.city);
     let response = await fetch("/additem", {
       method: "POST",
