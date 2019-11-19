@@ -64,21 +64,12 @@ const Main = styled.div`
 class UnconnectedItemDetails extends Component {
   constructor(props) {
     super(props);
-    this.item = {
-      name: "Alfred the Cat",
-      description: `a cute kitty. yada yada yada. likes back scratches and tuna fish. 
-        15 meows per minute. cleans himself and your floors. 
-        great cat. would recomment 10/10`,
-      img: "http://www.placekitten.com/150/200",
-      price: 35,
-      sellerID: "1337"
-    };
     this.state = { display: "details" }; //can display item description, reviews, i dunno
   }
   displayContent = () => {
     switch (this.state.display) {
       case "details": {
-        return <div>{this.item.description}</div>;
+        return <div>{this.props.item.description}</div>;
       }
       case "reviews": {
         return <div>{"no reviews. Be the first!"}</div>;
@@ -130,7 +121,7 @@ class UnconnectedItemDetails extends Component {
     return (
       <Main>
         <div margin="15px" className="detailedImage">
-          <img src={this.props.item.largeImage} />
+          <img height="200px" src={this.props.item.largeImage} />
         </div>
         <ItemCard>
           <Title>{this.props.item.title}</Title>

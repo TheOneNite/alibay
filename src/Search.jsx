@@ -1,25 +1,41 @@
 import { connect } from "react-redux";
 import React, { Component } from "react";
+
 class UnconnectedSearch extends Component {
-  handleQuery = async evt => {
-    // let search =  evt.target.value
-    // let response = await fetch('/search?search=' + encodeURIComponent(search))
-    // let body = await response.text()
-    // let searchResult = JSON.parse(body)
-    // this.props.dispatch({type: "displayItems", items:searchResult})
+  constructor(props) {
+    super(props);
+    this.state = { query: "" };
+  }
+  handleQuery = evt => {
+    this.setState({ query: evt.target.value });
+  };
+  submitHandler = evt => {
+    evt.preventDefault();
+    console.log("submitting search");
+    let displayItems = this.props.allItems.filter(item => {
+      return item.title.includes(this.state.query);
+    });
+    this.props.dispatch({ type: "displayItems", items: displayItems });
+    // this.props.dispatch({ type: "searchQuery", search: this.state.query });
   };
   render = () => {
     return (
-      <div>
+      <form onSubmit={this.submitHandler}>
         Search
         <input
           type="text"
           onChange={this.handleQuery}
-          value={this.props.query}
+          value={this.state.query}
         />
-      </div>
+      </form>
     );
   };
 }
-let Search = connect()(UnconnectedSearch);
+
+let mapStateToProps = st => {
+  return {
+    allItems: st.allItems
+  };
+};
+let Search = connect(mapStateToProps)(UnconnectedSearch);
 export default Search;

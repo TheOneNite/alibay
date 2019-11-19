@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import formatMoney from "./formatMoney.js";
 
 const Card = styled.div`
   padding: 10px;
@@ -25,20 +26,13 @@ const Description = styled.div`
 class ItemSearch extends Component {
   constructor(props) {
     super(props);
-    this.item = {
-      title: "Alfred the Cat",
-      description: `a cute kitty. yada yada yada. likes back scratches and tuna fish. 
-          15 meows per minute. cleans himself and your floors. 
-          great cat. would recomment 10/10`,
-      img: "http://www.placekitten.com/150/200",
-      price: 35,
-      sellerID: "1337"
-    };
   }
   addToCart = async () => {
+    console.log("attempting to add to cart");
     let data = new FormData();
     data.append("adding", true);
     data.append("itemId", this.props.item.itemId);
+    console.log("itemId: ", this.props.item.itemId);
     let res = await fetch("/cart", {
       method: "POST",
       body: data,
@@ -65,7 +59,7 @@ class ItemSearch extends Component {
           </Description>
         </FlexDiv>
         <PriceDiv>
-          <div>${this.props.item.price}</div>
+          <div>{formatMoney(this.props.item.price)}</div>
           <button onClick={this.addToCart}>Add to cart</button>
         </PriceDiv>
       </Card>
