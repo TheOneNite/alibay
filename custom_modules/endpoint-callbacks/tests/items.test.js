@@ -19,10 +19,19 @@ beforeAll(done => {
   });
 });
 
-test("should return an array of all the objects in the db", async () => {
+test("should return an array of all the objects in the db", done => {
   const req = jest.fn();
   const res = jest.fn();
-  let numItems = await items(req, res, aliDb);
-  numItems = numItems.length;
+  let numItems = aliDb
+    .collection("items")
+    .find({})
+    .toArray((err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      numItems = result.length;
+      done();
+      return result;
+    });
   expect(numItems).toBe(50);
 });

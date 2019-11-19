@@ -37,6 +37,59 @@ app.use("/", express.static("public")); // Needed for local assets
 let sessions = {};
 
 //modules and stuff
+const itemSearch = searchObj => {
+  let searchResults = new Promise((resolve, reject) => {
+    if (aliDb === undefined) {
+      setTimeout();
+    }
+    let queries = Object.keys(searchObj);
+    let found = Promise.all(
+      queries.map(query => {
+        if (query == "title" || query == "description" || query == "location") {
+          aliDb
+            .collection("items")
+            .find({
+              $text: { $search: searchObj[query], $caseSensitive: false }
+            })
+            .toArray((err, result) => {
+              if (err) {
+                console.log(err);
+              }
+              return result;
+            });
+        }
+        if (query === searchObj[minPrice]) {
+          aliDb
+            .collection("items")
+            .find({ price: { $gt: searchObj.minPrice } })
+            .toArray((err, result) => {
+              if (err) {
+                console.log(err);
+              }
+              return result;
+            });
+        }
+        if (query === searchObj[maxPrice]) {
+          aliDb
+            .collection("items")
+            .find({ price: { $lt: searchObj.maxPrice } })
+            .toArray((err, result) => {
+              if (err) {
+                console.log(err);
+              }
+              return result;
+            });
+        }
+      })
+    ).then(result => {
+      result.forEach(item => {
+        console.log(item);
+      });
+      resolve({ success: true, data: result });
+    });
+  });
+  return searchResults;
+};
 
 //updating user data
 const updateUser = (userData, req) => {
@@ -47,19 +100,25 @@ const updateUser = (userData, req) => {
 
 // Your endpoints go after this line
 
-app.get("/items", upload.none(), (req, res) => {
-  aliDb
-    .collection("items")
-    .find({})
-    .toArray((err, data) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log("data retreived (array) eg:");
-      console.log(console.log(data[0]));
-      let pkg = data;
-      res.send(pkg);
-    });
+app.get("/items", (req, res) => {
+  //sends an array of itemData objects if body.search is undefined
+  //WIP - expects body.search to be a JSON formatted object
+  //possible (but not required properties) are:
+  //title, description, minPrice, maxPrice, location
+  console.log("GET: /items");
+  if (req.body.search === undefined) {
+    aliDb
+      .collection("items")
+      .find(query)
+      .toArray((err, data) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log("data retreived " + data.length + " items");
+        let pkg = data;
+        res.send(pkg);
+      });
+  }
 });
 
 //user authentication endpoints------------------------------------------------------------------------------------------
@@ -166,7 +225,7 @@ app.post("/signup", upload.none(), async (req, res) => {
           cart: []
         };
         aliDb.collection("users").insertOne(
-          { userdata },
+          userdata,
           (err,
           dbResult => {
             if (err) {
@@ -186,7 +245,8 @@ app.get("/logout", (req, res) => {
 
 //commerce endpoints------------------------------------------------------------------------------------------
 app.post("/additem", upload.none(), (req, res) => {
-  //add new sale item from form data
+  //expects formdata with the following fields:
+  //title, price, description, location, image, largeImage
   let sellerId = sessions[req.cookies.sid];
   let sellerData = {};
   retreive("users", { userId: sellerId }, aliDb).then(dbResult => {
@@ -224,7 +284,46 @@ app.post("/additem", upload.none(), (req, res) => {
   });
 });
 
-app.post("/cart", upload.none(), (req, res) => {});
+app.get("/cart", (req, res) => {
+  // sends a json formatted array of itemData objects
+  console.log("GET: /cart");
+  const uid = sessions[req.cookies.sid];
+  retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    console.log("db return:");
+    console.log(dbResult);
+    let userData = dbResult.data;
+    let cart = userData.cart;
+    Promise.all(
+      cart.map(itemId => {
+        return retreive("items", { id: itemId }, aliDb).then(dbResult => {
+          return dbResult.data;
+        });
+      })
+    ).then(result => {
+      res.send(JSON.stringify(result));
+    });
+  });
+});
+
+app.post("/cart", upload.none(), (req, res) => {
+  //expects a json formatted array of itemId strings
+  console.log(req.body.cart);
+  let newCart = JSON.parse(req.body.cart);
+  const uid = sessions[req.cookies.sid];
+  retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    let userData = dbResult.data.userdata;
+    let oldCart = userData.cart;
+    userData = { ...userData, cart: newCart };
+    aliDb
+      .collection("users")
+      .updateOne({ userId: userData.userId }, userData, (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log("new cart written to db");
+      });
+  });
+});
 
 app.post("/checkout", upload.none(), (req, res) => {
   const uid = sessions[req.cookies.sid];
@@ -286,3 +385,5 @@ app.all("/*", (req, res, next) => {
 app.listen(4000, "0.0.0.0", () => {
   console.log("Server running on port 4000");
 });
+
+module.exports = { itemSearch };
