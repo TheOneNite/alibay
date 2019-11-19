@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import React, { Component } from "react";
 import ItemSearch from "./ItemSearch.jsx";
 import styled from "styled-components";
+import StripeCheckout from "react-stripe-checkout";
 
 const SearchDisplay = styled.div`
   display: flex;
@@ -15,13 +16,12 @@ class UnconnecteCart extends Component {
   }
   componentDidMount() {
     let fetchAll = async () => {
-      let data = new FormData();
-      let response = await fetch("/items", {
-        method: "POST",
-        body: data
+      let response = await fetch("/cart", {
+        method: "GET"
       });
       let body = await response.text();
       let allItems = JSON.parse(body);
+      console.log("parsed body", allItems);
       this.setState({ ...this.state, allItems });
       console.log("allItems, ", this.state.allItems);
       this.renderItems();
@@ -36,16 +36,21 @@ class UnconnecteCart extends Component {
   };
   render = () => {
     return (
-      <SearchDisplay>
-        {this.state.displayItems.map(item => {
-          //display items
-          return (
-            <div>
-              <ItemSearch key={item.itemId} item={item} />
-            </div>
-          );
-        })}
-      </SearchDisplay>
+      <>
+        <SearchDisplay>
+          {this.state.displayItems.map(item => {
+            //display items
+            return (
+              <div>
+                <ItemSearch key={item.itemId} item={item} />
+              </div>
+            );
+          })}
+        </SearchDisplay>
+        {/* <StripeCheckout>
+          <button>Checkout</button>
+        </StripeCheckout> */}
+      </>
     );
   };
 }

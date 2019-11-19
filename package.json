@@ -37,6 +37,7 @@
     "password-hash": "^1.2.2",
     "react-redux": "6.0.1",
     "react-router-dom": "^5.1.2",
+    "react-stripe-checkout": "^2.6.3",
     "redux": "^4.0.4",
     "shelljs": "^0.8.3",
     "styled-components": "^4.4.1",

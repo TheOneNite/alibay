@@ -270,9 +270,14 @@ app.get("/cart", (req, res) => {
     console.log(dbResult);
     let userData = dbResult.data;
     let cart = userData.cart;
+    if (cart === undefined || cart.length < 1) {
+      res.send(JSON.stringify([]));
+      return;
+    }
     Promise.all(
       cart.map(itemId => {
-        return retreive("items", { id: itemId }, aliDb).then(dbResult => {
+        return retreive("items", { itemId: itemId }, aliDb).then(dbResult => {
+          console.log(dbResult);
           return dbResult.data;
         });
       })
