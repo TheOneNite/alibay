@@ -100,11 +100,11 @@ const updateUser = (userData, req) => {
 
 // Your endpoints go after this line
 
-app.get("/items", (req, res) => {
+app.post("/items", upload.none(), (req, res) => {
   //sends an array of itemData objects if body.search is undefined
   //WIP - expects body.search to be a JSON formatted object
   //possible (but not required properties) are:
-  //title, description, minPrice, maxPrice, location
+  //keyword, minPrice, maxPrice, location
   console.log("GET: /items");
   if (req.body.search === undefined) {
     aliDb
@@ -330,12 +330,18 @@ app.post("/cart", upload.none(), (req, res) => {
           console.log(err);
         }
         console.log("new cart written to db");
+        res.send(JSON.stringify({ success: true }));
       });
   });
 });
 
 app.post("/checkout", upload.none(), (req, res) => {
   const uid = sessions[req.cookies.sid];
+  aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+  });
 });
 
 //account management endpoints---------------------------------------------------------------------------------------
@@ -375,7 +381,7 @@ app.post("/account", upload.none(), (req, res) => {
 app.get("/account", (req, res) => {
   //sends current user data to populate form
   let uid = sessions[req.cookies.sid];
-  aliDb.users.findOne({ userId: uid }, (err, dbResult) => {
+  aliDb.collection("users").findOne({ userId: uid }, (err, dbResult) => {
     if (err) {
       console.log(err);
     }

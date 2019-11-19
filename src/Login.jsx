@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 class UnconnectedLogin extends Component {
   constructor(props) {
@@ -42,6 +43,7 @@ class UnconnectedLogin extends Component {
       type: "login-success",
       currentUser: this.state.username
     });
+    this.props.history.push("/");
   };
   render = () => {
     return (
@@ -61,4 +63,5 @@ class UnconnectedLogin extends Component {
 }
 
 let Login = connect()(UnconnectedLogin);
-export default Login;
+
+export default withRouter(Login);
