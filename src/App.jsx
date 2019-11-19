@@ -9,6 +9,8 @@ import CreateItem from "./CreateItem.jsx";
 import DisplayedItems from "./DisplayedItems.jsx";
 import Search from "./Search.jsx";
 import MyAccount from "./MyAccount.jsx";
+import Cart from "./Cart.jsx";
+
 //import history from "./History.jsx";
 
 let login = () => {
@@ -32,6 +34,14 @@ let createItem = () => {
 let myAccount = () => {
   console.log("my account", myAccount);
   return <MyAccount />;
+};
+
+let cart = () => {
+  return (
+    <div>
+      <Cart />
+    </div>
+  );
 };
 
 let content = () => {
@@ -61,6 +71,7 @@ class App extends Component {
           <Route exact={true} path="/samplesearch" render={sample} />
           <Route exact={true} path="/sell" render={createItem} />
           <Route exact={true} path="/account" render={myAccount} />
+          <Route exact={true} path="/cart" render={cart} />
         </div>
       </BrowserRouter>
     );

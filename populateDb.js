@@ -16,7 +16,7 @@ const populatemock = () => {
     data = JSON.parse(data);
     data.forEach(item => {
       let itemData = {
-        id: tools.generateId(10),
+        itemId: tools.generateId(10),
         price: item.price,
         title: item.title,
         description: item.description,

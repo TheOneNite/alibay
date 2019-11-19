@@ -248,6 +248,7 @@ app.get("/logout", (req, res) => {
 app.post("/additem", upload.none(), (req, res) => {
   //expects formdata with the following fields:
   //title, price, description, location, image, largeImage
+  console.log("POST:/additem");
   let sellerId = sessions[req.cookies.sid];
   let sellerData = {};
   retreive("users", { userId: sellerId }, aliDb).then(dbResult => {
@@ -262,26 +263,26 @@ app.post("/additem", upload.none(), (req, res) => {
       return;
     }
     sellerData = dbResult.data;
-  });
-  let newItem = {
-    itemId: tools.generateId(10),
-    price: parseInt(req.body.price),
-    title: req.body.title,
-    description: req.body.description,
-    sellerId: sellerData.userId,
-    shipsFrom: req.body.location,
-    smallImage: req.body.image,
-    largeImage: req.body.largeImage
-  };
-  aliDb.collection("items").insertOne(newItem, (err, result) => {
-    if (err) {
-      console.log(err);
-      res.send(JSON.stringify({ success: false }));
+    let newItem = {
+      itemId: tools.generateId(10),
+      price: parseFloat(req.body.price),
+      title: req.body.title,
+      description: req.body.description,
+      sellerId: sellerData.userId,
+      shipsFrom: req.body.location,
+      smallImage: req.body.image,
+      largeImage: req.body.largeImage
+    };
+    aliDb.collection("items").insertOne(newItem, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(JSON.stringify({ success: false }));
+        return;
+      }
+      console.log("new item pushed to db");
+      res.send(JSON.stringify({ success: true, item: newItem }));
       return;
-    }
-    console.log("new item pushed to db");
-    res.send(JSON.stringify({ success: true }));
-    return;
+    });
   });
 });
 
@@ -310,6 +311,9 @@ app.post("/cart", upload.none(), (req, res) => {
   //expects body with adding:true if adding and adding:false if removing, and itemId:string id of item
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    if (dbResult.success === false) {
+      console.log(dbResult.err);
+    }
     let userData = dbResult.userdata;
     let oldCart = userData.cart;
     let newCart = [];
@@ -337,18 +341,42 @@ app.post("/cart", upload.none(), (req, res) => {
 });
 
 app.get("/checkout", (req, res) => {
+  // sends an array of payment method objects and and array of
   const uid = sessions[req.cookies.sid];
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
     if (err) {
       console.log(err);
     }
-    res.send(JSON.stringify(result.paymentMethods));
+    res.send(
+      JSON.stringify({ cart: result.cart, payments: result.paymentMethods })
+    );
   });
 });
 
 app.post("/checkout", upload.none(), (req, res) => {
-  //expects an array of itemIds
+  const taxrate = 0.15;
+  //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
+  let items = req.body.cart;
+  Promise.all((resolve, reject) => {
+    items.map(id => {
+      retreive("items", { itemId: id }, aliDb).then(dbResult => {
+        if (!dbResult.success) {
+          console.log(err);
+          reject("database error");
+        }
+        console.log(dbResult);
+        resolve(dbResult.data);
+      });
+    });
+  }).then(cartItems => {
+    let subtotal = 0;
+    cartItems.forEach(item => {
+      subtotal = subtotal + item.price;
+    });
+    let total = subtotal * taxrate;
+    total = total + subtotal;
+  });
 
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
     if (err) {
