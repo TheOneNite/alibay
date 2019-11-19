@@ -17,6 +17,7 @@ class UnconnecteDisplayedItems extends Component {
       });
       let body = await response.text();
       let allItems = JSON.parse(body);
+      console.log("/items response, ", allItems);
       this.setState({ ...this.state, allItems });
       console.log("allItems, ", this.state.allItems);
     };
