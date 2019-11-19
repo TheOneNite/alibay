@@ -12,7 +12,7 @@ const SearchDisplay = styled.div`
 class UnconnecteCart extends Component {
   constructor(props) {
     super(props);
-    this.state = { allItems: [], displayItems: [] };
+    this.state = { cartItems: [] };
   }
   componentDidMount() {
     let fetchAll = async () => {
@@ -20,25 +20,19 @@ class UnconnecteCart extends Component {
         method: "GET"
       });
       let body = await response.text();
-      let allItems = JSON.parse(body);
-      console.log("parsed body", allItems);
-      this.setState({ ...this.state, allItems });
-      console.log("allItems, ", this.state.allItems);
-      this.renderItems();
+      let returnedCart = JSON.parse(body);
+      console.log("returnedCart", returnedCart);
+      this.setState({ ...this.state, cartItems: returnedCart });
+      return;
     };
     fetchAll();
   }
 
-  renderItems = () => {
-    let displayItems = this.state.allItems.slice(0, 6);
-    this.setState({ ...this.state, displayItems });
-    return this.state.displayItems;
-  };
   render = () => {
     return (
       <>
         <SearchDisplay>
-          {this.state.displayItems.map(item => {
+          {this.state.cartItems.map(item => {
             //display items
             return (
               <div>
@@ -54,10 +48,6 @@ class UnconnecteCart extends Component {
     );
   };
 }
-let mapStateToProps = st => {
-  return {
-    items: st.displayedItems
-  };
-};
-let Cart = connect(mapStateToProps)(UnconnecteCart);
+
+let Cart = connect()(UnconnecteCart);
 export default Cart;
