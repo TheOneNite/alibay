@@ -341,11 +341,13 @@ app.get("/checkout", (req, res) => {
 });
 
 app.post("/checkout", upload.none(), (req, res) => {
+  console.log("POST: /checkout");
   //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
   let clientTotal = req.body.total;
   let token = req.body.token;
-  let items = JSON.parse(req.body.cart);
+  let items = req.body.cart;
+  console.log("checking out");
   console.log(items);
   Promise.all(
     items.map(id => {
