@@ -26,10 +26,16 @@ class UnconnecteDisplayedItems extends Component {
     };
     fetchAll();
   }
-
+  search = (query, string) => {
+    let reg = new RegExp(query);
+    return reg.test(string);
+  };
   renderItems = () => {
     let displayItems = this.props.allItems.filter(item => {
-      return item.title.includes(this.props.searchQuery);
+      let query = this.props.searchQuery.toLowerCase();
+      let title = item.title.toLowerCase();
+      let desc = item.description.toLowerCase();
+      return this.search(query, title) || this.search(query, desc);
     });
     return displayItems.map(item => {
       //display items
