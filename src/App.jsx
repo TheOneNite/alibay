@@ -6,6 +6,7 @@ import Nav from "./Nav.jsx";
 import ItemDetails from "./ItemDetails.jsx";
 import ItemSearch from "./ItemSearch.jsx";
 import CreateItem from "./CreateItem.jsx";
+import MyAccount from "./MyAccount.jsx";
 //import history from "./History.jsx";
 
 let login = () => {
@@ -26,6 +27,10 @@ let sampleItem = () => {
 let createItem = () => {
   return <CreateItem />;
 };
+let myAccount =()=>{
+  console.log("my account", myAccount)
+  return <MyAccount/>
+}
 
 class App extends Component {
   render = () => {
@@ -39,6 +44,7 @@ class App extends Component {
           <Route exact={true} path="/sampleitem" render={sampleItem} />
           <Route exact={true} path="/samplesearch" render={sample} />
           <Route exact={true} path="/sell" render={createItem} />
+          <Route exact={true} path="/account" render={myAccount} />
         </div>
       </BrowserRouter>
     );
