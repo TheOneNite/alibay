@@ -393,7 +393,7 @@ app.post("/checkout", upload.none(), (req, res) => {
         .collection("users")
         .updateOne(
           { userId: userData.userId },
-          { $set: { ...userData, orders: newHistory } },
+          { $set: { ...userData, orders: newHistory, cart: [] } },
           (err, result) => {
             if (err) {
               console.log(err);
