@@ -240,7 +240,7 @@ app.post("/additem", upload.none(), (req, res) => {
     sellerData = dbResult.data;
     let newItem = {
       itemId: tools.generateId(10),
-      price: parseFloat(req.body.price),
+      price: parseInt(req.body.price),
       title: req.body.title,
       description: req.body.description,
       sellerId: sellerData.userId,
@@ -341,28 +341,68 @@ app.get("/checkout", (req, res) => {
 });
 
 app.post("/checkout", upload.none(), (req, res) => {
-  const taxrate = 0.15;
   //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
-  let items = req.body.cart;
-  Promise.all((resolve, reject) => {
+  let items = JSON.parse(req.body.cart);
+  console.log(items);
+  Promise.all(
     items.map(id => {
-      retreive("items", { itemId: id }, aliDb).then(dbResult => {
+      return retreive("items", { itemId: id }, aliDb).then(dbResult => {
         if (!dbResult.success) {
           console.log(err);
-          reject("database error");
+          return { success: false };
         }
         console.log(dbResult);
-        resolve(dbResult.data);
+        return dbResult.data;
       });
-    });
-  }).then(cartItems => {
+    })
+  ).then(cartItems => {
     let subtotal = 0;
     cartItems.forEach(item => {
       subtotal = subtotal + item.price;
     });
-    let total = subtotal * taxrate;
-    total = total + subtotal;
+    let total = subtotal;
+    let newOrder = {
+      orderId: tools.generateId(8),
+      items: cartItems,
+      total: total
+    };
+    aliDb.collection("orders").insertOne(newOrder, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send({ success: false });
+        return;
+      }
+      console.log("order pushed to db:");
+      console.log(result);
+    });
+    retreive("users", { userId: uid }, aliDb).then(dbResult => {
+      if (dbResult.success === false) {
+        console.log(dbResult.err);
+        res.send({ success: false });
+        return;
+      }
+      console.log("user info retreived from db for order history");
+      let userData = dbResult.data;
+      let newHistory = userData.orders.concat(newOrder.orderId);
+      aliDb
+        .collection("users")
+        .updateOne(
+          { userId: userData.userId },
+          { $set: { ...userData, orders: newHistory } },
+          (err, result) => {
+            if (err) {
+              console.log(err);
+              res.send({ success: false });
+              return;
+            }
+            console.log(
+              "order history updated for user " + userData.displayName
+            );
+            res.send({ success: true });
+          }
+        );
+    });
   });
 
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
@@ -374,12 +414,13 @@ app.post("/checkout", upload.none(), (req, res) => {
 
 //account management endpoints---------------------------------------------------------------------------------------
 app.post("/account", upload.none(), (req, res) => {
+  console.log("POST: /account");
   //updates user info from form submission
   let userData = {};
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
     const mongoUid = dbResult.data._id;
-    if (dbResult) {
+    if (dbResult.success) {
       console.log("user data retreived");
       userData = dbResult.data;
       userData = updateUser(userData, req);
@@ -395,7 +436,7 @@ app.post("/account", upload.none(), (req, res) => {
         });
       return;
     } else {
-      console.log(err);
+      console.log(dbResult.err);
       res.send(
         JSON.stringify({
           success: false,
@@ -414,6 +455,7 @@ app.get("/account", (req, res) => {
       console.log(err);
     }
     console.log("user data retreived");
+    console.log(dbResult);
     res.send(JSON.stringify(dbResult));
   });
 });
