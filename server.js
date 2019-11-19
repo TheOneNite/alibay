@@ -346,7 +346,7 @@ app.post("/checkout", upload.none(), (req, res) => {
   const uid = sessions[req.cookies.sid];
   let clientTotal = req.body.total;
   let token = req.body.token;
-  let items = req.body.cart;
+  let items = JSON.parse(req.body.cart);
   console.log("checking out");
   console.log(items);
   Promise.all(
