@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import ItemSearch from "./ItemSearch.jsx";
 import styled from "styled-components";
 import StripeCheckout from "react-stripe-checkout";
+import formatMoney from "./formatMoney.js";
 
 const SearchDisplay = styled.div`
   display: flex;
@@ -29,6 +30,11 @@ class UnconnecteCart extends Component {
   }
 
   render = () => {
+    let total = 0;
+    this.state.cartItems.forEach(item => {
+      total = total + item.price;
+    });
+
     return (
       <>
         <SearchDisplay>
@@ -41,6 +47,7 @@ class UnconnecteCart extends Component {
             );
           })}
         </SearchDisplay>
+        <div>Cart Total: {formatMoney(total)}</div>
         {/* <StripeCheckout>
           <button>Checkout</button>
         </StripeCheckout> */}
