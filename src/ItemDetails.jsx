@@ -130,16 +130,16 @@ class UnconnectedItemDetails extends Component {
     return (
       <Main>
         <div margin="15px" className="detailedImage">
-          <img src={this.item.largeImage} />
+          <img src={this.props.item.largeImage} />
         </div>
         <ItemCard>
-          <Title>{this.item.title}</Title>
+          <Title>{this.props.item.title}</Title>
           <ContentCard>
             <Nav>{this.renderNavButtons()}</Nav>
             <div>{this.displayContent()}</div>
             <PurchaseDiv>
               <div className="price" text-align="right">
-                ${this.item.price}
+                ${this.props.item.price}
               </div>
               <AddButton onClick={this.addToCart}>Add to cart</AddButton>
             </PurchaseDiv>

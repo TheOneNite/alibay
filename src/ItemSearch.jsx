@@ -55,15 +55,17 @@ class ItemSearch extends Component {
   render() {
     return (
       <Card>
-        <Link to="/sampleitem">{this.item.title}</Link>
+        <Link to={"/item/" + this.props.item.itemId}>
+          {this.props.item.title}
+        </Link>
         <FlexDiv>
-          <img height="100px" src={this.item.smallImage} />
+          <img height="100px" src={this.props.item.smallImage} />
           <Description>
-            {this.item.description.slice(0, 50) + "..."}
+            {this.props.item.description.slice(0, 50) + "..."}
           </Description>
         </FlexDiv>
         <PriceDiv>
-          <div>${this.item.price}</div>
+          <div>${this.props.item.price}</div>
           <button onClick={this.addToCart}>Add to cart</button>
         </PriceDiv>
       </Card>

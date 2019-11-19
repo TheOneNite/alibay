@@ -1,6 +1,12 @@
 import { connect } from "react-redux";
 import React, { Component } from "react";
 import ItemSearch from "./ItemSearch.jsx";
+import styled from "styled-components";
+
+const SearchDisplay = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
 
 class UnconnecteDisplayedItems extends Component {
   constructor(props) {
@@ -10,16 +16,15 @@ class UnconnecteDisplayedItems extends Component {
   componentDidMount() {
     let fetchAll = async () => {
       let data = new FormData();
-      data.append("search", undefined);
       let response = await fetch("/items", {
         method: "POST",
         body: data
       });
       let body = await response.text();
       let allItems = JSON.parse(body);
-      console.log("/items response, ", allItems);
       this.setState({ ...this.state, allItems });
       console.log("allItems, ", this.state.allItems);
+      this.renderItems();
     };
     fetchAll();
   }
@@ -31,16 +36,16 @@ class UnconnecteDisplayedItems extends Component {
   };
   render = () => {
     return (
-      <div>
+      <SearchDisplay>
         {this.state.displayItems.map(item => {
           //display items
           return (
             <div>
-              <ItemSearch item={item} />
+              <ItemSearch key={item.itemId} item={item} />
             </div>
           );
         })}
-      </div>
+      </SearchDisplay>
     );
   };
 }
