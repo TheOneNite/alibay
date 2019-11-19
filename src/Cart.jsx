@@ -4,6 +4,7 @@ import ItemSearch from "./ItemSearch.jsx";
 import styled from "styled-components";
 import StripeCheckout from "react-stripe-checkout";
 import formatMoney from "./formatMoney.js";
+import { withRouter } from "react-router-dom";
 
 const SearchDisplay = styled.div`
   display: flex;
@@ -65,7 +66,7 @@ class UnconnecteCart extends Component {
     // this.props.dispatch({
     //   type: "item-success"
     // });
-    this.props.history.push("/");
+    this.props.history.push("/orders");
   };
 
   onToken = res => {
@@ -109,4 +110,4 @@ class UnconnecteCart extends Component {
 }
 
 let Cart = connect()(UnconnecteCart);
-export default Cart;
+export default withRouter(Cart);
