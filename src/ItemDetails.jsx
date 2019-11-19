@@ -64,15 +64,6 @@ const Main = styled.div`
 class UnconnectedItemDetails extends Component {
   constructor(props) {
     super(props);
-    this.item = {
-      name: "Alfred the Cat",
-      description: `a cute kitty. yada yada yada. likes back scratches and tuna fish. 
-        15 meows per minute. cleans himself and your floors. 
-        great cat. would recomment 10/10`,
-      img: "http://www.placekitten.com/150/200",
-      price: 35,
-      sellerID: "1337"
-    };
     this.state = { display: "details" }; //can display item description, reviews, i dunno
   }
   displayContent = () => {
