@@ -5,6 +5,12 @@ import RemoveFromCart from "./RemoveFromCartButton.jsx";
 
 const CartItem = styled.div`
   display: grid;
+  grid-template-columns: auto auto auto auto;
+  height: 50px;
+  border: 1px solid;
+  div {
+    border: 1px solid;
+  }
 `;
 
 class ItemCart extends Component {
@@ -13,7 +19,7 @@ class ItemCart extends Component {
     return (
       <CartItem>
         <div>{item.title}</div>
-        <img src={item.smallImage} />
+        <img height="50px" src={item.smallImage} />
         <div>{formatMoney(item.price)}</div>
         <RemoveFromCart />
       </CartItem>
