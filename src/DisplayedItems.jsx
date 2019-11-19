@@ -47,7 +47,6 @@ class UnconnecteDisplayedItems extends Component {
     });
   };
   render = () => {
-    console.log("rendering with state: ", this.state);
     return <SearchDisplay>{this.renderItems()}</SearchDisplay>;
   };
 }

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
+import AddToCart from "./AddToCartButton.jsx";
 
 const Card = styled.div`
   padding: 10px;
@@ -27,25 +28,6 @@ class ItemSearch extends Component {
   constructor(props) {
     super(props);
   }
-  addToCart = async () => {
-    console.log("attempting to add to cart");
-    let data = new FormData();
-    data.append("adding", true);
-    data.append("itemId", this.props.item.itemId);
-    console.log("itemId: ", this.props.item.itemId);
-    let res = await fetch("/cart", {
-      method: "POST",
-      body: data,
-      credentials: "include"
-    });
-    let body = await res.text();
-    let response = JSON.parse(body);
-    if (!response.success) {
-      console.log("add to cart failed");
-      return;
-    }
-    alert("item added to cart");
-  };
   render() {
     return (
       <Card>
@@ -60,7 +42,7 @@ class ItemSearch extends Component {
         </FlexDiv>
         <PriceDiv>
           <div>{formatMoney(this.props.item.price)}</div>
-          <button onClick={this.addToCart}>Add to cart</button>
+          <AddToCart itemId={this.props.item.itemId} />
         </PriceDiv>
       </Card>
     );

@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import formatMoney from "./formatMoney.js";
+import AddToCart from "./AddToCartButton.jsx";
 
 // STYLED COMPONENTS
 const ItemCard = styled.div``;
@@ -45,7 +47,6 @@ const PurchaseDiv = styled.div`
   grid-template-columns: 1fr auto;
   border-top: 1px solid;
 `;
-const AddButton = styled.button``;
 const Main = styled.div`
   display: flex;
   padding: 15px;
@@ -100,23 +101,7 @@ class UnconnectedItemDetails extends Component {
       );
     });
   };
-  addToCart = async () => {
-    let data = new FormData();
-    data.append("adding", true);
-    data.append("itemId", this.props.item.itemId);
-    let res = await fetch("/cart", {
-      method: "POST",
-      body: data,
-      credentials: "include"
-    });
-    let body = await res.text();
-    let response = JSON.parse(body);
-    if (!response.success) {
-      console.log("add to cart failed");
-      return;
-    }
-    alert("item added to cart");
-  };
+
   render() {
     return (
       <Main>
@@ -130,9 +115,9 @@ class UnconnectedItemDetails extends Component {
             <div>{this.displayContent()}</div>
             <PurchaseDiv>
               <div className="price" text-align="right">
-                ${this.props.item.price}
+                {formatMoney(this.props.item.price)}
               </div>
-              <AddButton onClick={this.addToCart}>Add to cart</AddButton>
+              <AddToCart itemId={this.props.item.itemId} />
             </PurchaseDiv>
           </ContentCard>
         </ItemCard>
