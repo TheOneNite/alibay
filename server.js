@@ -265,7 +265,7 @@ app.post("/additem", upload.none(), (req, res) => {
     sellerData = dbResult.data;
     let newItem = {
       itemId: tools.generateId(10),
-      price: parseInt(req.body.price),
+      price: parseFloat(req.body.price),
       title: req.body.title,
       description: req.body.description,
       sellerId: sellerData.userId,
@@ -311,6 +311,9 @@ app.post("/cart", upload.none(), (req, res) => {
   //expects body with adding:true if adding and adding:false if removing, and itemId:string id of item
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    if (dbResult.success === false) {
+      console.log(dbResult.err);
+    }
     let userData = dbResult.userdata;
     let oldCart = userData.cart;
     let newCart = [];
@@ -338,6 +341,7 @@ app.post("/cart", upload.none(), (req, res) => {
 });
 
 app.get("/checkout", (req, res) => {
+  // sends an array of payment method objects and and array of
   const uid = sessions[req.cookies.sid];
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
     if (err) {
@@ -350,6 +354,7 @@ app.get("/checkout", (req, res) => {
 });
 
 app.post("/checkout", upload.none(), (req, res) => {
+  const taxrate = 0.15;
   //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
   let items = req.body.cart;
@@ -365,10 +370,12 @@ app.post("/checkout", upload.none(), (req, res) => {
       });
     });
   }).then(cartItems => {
-    let total = 0;
+    let subtotal = 0;
     cartItems.forEach(item => {
-      total = total + item.price;
+      subtotal = subtotal + item.price;
     });
+    let total = subtotal * taxrate;
+    total = total + subtotal;
   });
 
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {

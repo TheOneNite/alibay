@@ -8,7 +8,7 @@ const dbCredientials = require("./mongo/dbURI.js");
 const fs = require("fs");
 
 const cleardatabase = () => {
-  const collectionsToClear = ["auth", "users"];
+  const collectionsToClear = ["items"];
   const aliDb = mongoDb.db("alibay");
 
   collectionsToClear.forEach(coll => {
