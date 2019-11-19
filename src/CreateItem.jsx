@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 class unconnectedCreateItem extends Component {
   state = {
@@ -42,6 +43,7 @@ class unconnectedCreateItem extends Component {
     this.props.dispatch({
       type: "item-success"
     });
+    this.props.history.push("/");
   };
 
   uploadFile = async e => {
@@ -139,4 +141,4 @@ let mapStateToProps = st => {
 };
 
 let CreateItem = connect(mapStateToProps)(unconnectedCreateItem);
-export default CreateItem;
+export default withRouter(CreateItem);

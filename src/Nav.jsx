@@ -7,11 +7,13 @@ const NavStyles = styled.ul`
   margin: 0;
   padding: 0;
   display: flex;
+  justify-content: flex-end;
   justify-self: end;
-  font-size: 2rem;
+  font-size: 1.5rem;
   a,
   link,
-  button {
+  button,
+  ul {
     text-decoration: none;
     color: black;
     padding: 1rem 3rem;
@@ -82,13 +84,14 @@ class unconnectedNav extends Component {
 
     return (
       <NavStyles>
-        <span>{me}</span>
+        {me}
         <Link to="/">Shop</Link>
         {me && (
           <>
             <Link to="/sell">Sell an Item</Link>
             <Link to="/orders">Past Orders</Link>
             <Link to="/account">My Account</Link>
+            <Link to="/cart">Cart</Link>
             <button onClick={this.signout}>Sign Out</button>
           </>
         )}
