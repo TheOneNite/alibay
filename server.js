@@ -124,19 +124,6 @@ app.post("/items", upload.none(), (req, res) => {
 
 //user authentication endpoints------------------------------------------------------------------------------------------
 app.post("/login", upload.none(), (req, res) => {
-  // testing endpoint
-
-  if (req.body.username === "user") {
-    pkg = { success: true };
-    res.send(JSON.stringify(pkg));
-    return;
-  }
-  if (req.body.username === "guest") {
-    pkg = { success: false };
-    res.send(JSON.stringify(pkg));
-    return;
-  }
-  // start real endpoint
   const sid = req.cookies.sid;
   if (sessions[sid] != undefined) {
     console.log("active session found");
@@ -171,18 +158,6 @@ app.post("/login", upload.none(), (req, res) => {
 });
 
 app.post("/signup", upload.none(), async (req, res) => {
-  //mocked endpont
-  if (req.body.username === "user") {
-    pkg = { success: true };
-    res.send(JSON.stringify(pkg));
-    return;
-  }
-  if (req.body.username === "guest") {
-    pkg = { success: false };
-    res.send(JSON.stringify(pkg));
-    return;
-  }
-  //begins real endpoint
   let userGiven = req.body.username;
   aliDb
     .collection("auth")
