@@ -26,7 +26,7 @@ class ItemSearch extends Component {
   constructor(props) {
     super(props);
     this.item = {
-      name: "Alfred the Cat",
+      title: "Alfred the Cat",
       description: `a cute kitty. yada yada yada. likes back scratches and tuna fish. 
           15 meows per minute. cleans himself and your floors. 
           great cat. would recomment 10/10`,
@@ -35,19 +35,37 @@ class ItemSearch extends Component {
       sellerID: "1337"
     };
   }
-
+  addToCart = async () => {
+    let data = new FormData();
+    data.append("adding", true);
+    data.append("itemId", this.props.item.itemId);
+    let res = await fetch("/cart", {
+      method: "POST",
+      body: data,
+      credentials: "include"
+    });
+    let body = await res.text();
+    let response = JSON.parse(body);
+    if (!response.success) {
+      console.log("add to cart failed");
+      return;
+    }
+    alert("item added to cart");
+  };
   render() {
     return (
       <Card>
-        <Link to="/sampleitem">{this.item.name}</Link>
+        <Link to={"/item/" + this.props.item.itemId}>
+          {this.props.item.title}
+        </Link>
         <FlexDiv>
-          <img height="100px" src={this.item.img} />
+          <img height="100px" src={this.props.item.smallImage} />
           <Description>
-            {this.item.description.slice(0, 50) + "..."}
+            {this.props.item.description.slice(0, 50) + "..."}
           </Description>
         </FlexDiv>
         <PriceDiv>
-          <div>${this.item.price}</div>
+          <div>${this.props.item.price}</div>
           <button onClick={this.addToCart}>Add to cart</button>
         </PriceDiv>
       </Card>

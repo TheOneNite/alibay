@@ -75,19 +75,6 @@ class UnconnectedItemDetails extends Component {
     };
     this.state = { display: "details" }; //can display item description, reviews, i dunno
   }
-  // componentDidMount() {
-  //   let getDetails = async () => {
-  //     let req = await fetch("SOME ENDPOINT");
-  //     let resp = await req.text();
-  //     let details = JSON.parse(resp);
-  //     if (details.success === false) {
-  //       console.log("failed to receive item details");
-  //       return;
-  //     }
-  //     /**DO SOMETHING WITH THIS RESPONSE */
-  //   };
-  //   getDetails();
-  // }
   displayContent = () => {
     switch (this.state.display) {
       case "details": {
@@ -122,20 +109,37 @@ class UnconnectedItemDetails extends Component {
       );
     });
   };
+  addToCart = async () => {
+    let data = new FormData();
+    data.append("adding", true);
+    data.append("itemId", this.props.item.itemId);
+    let res = await fetch("/cart", {
+      method: "POST",
+      body: data,
+      credentials: "include"
+    });
+    let body = await res.text();
+    let response = JSON.parse(body);
+    if (!response.success) {
+      console.log("add to cart failed");
+      return;
+    }
+    alert("item added to cart");
+  };
   render() {
     return (
       <Main>
         <div margin="15px" className="detailedImage">
-          <img src={this.item.img} />
+          <img src={this.props.item.largeImage} />
         </div>
         <ItemCard>
-          <Title>{this.item.name}</Title>
+          <Title>{this.props.item.title}</Title>
           <ContentCard>
             <Nav>{this.renderNavButtons()}</Nav>
             <div>{this.displayContent()}</div>
             <PurchaseDiv>
               <div className="price" text-align="right">
-                ${this.item.price}
+                ${this.props.item.price}
               </div>
               <AddButton onClick={this.addToCart}>Add to cart</AddButton>
             </PurchaseDiv>

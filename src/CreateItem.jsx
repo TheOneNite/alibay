@@ -26,8 +26,8 @@ class unconnectedCreateItem extends Component {
     data.append("image", this.state.image);
     data.append("largeImage", this.state.largeImage);
     data.append("price", this.state.price);
-    data.append("city", this.state.city);
-    let response = await fetch("/login", {
+    data.append("location", this.state.city);
+    let response = await fetch("/additem", {
       method: "POST",
       body: data,
       credentials: "include"

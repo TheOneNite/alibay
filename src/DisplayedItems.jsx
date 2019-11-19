@@ -1,30 +1,58 @@
-import { connect } from 'react-redux' 
-import React, { Component } from 'react' 
-class UnconnecteDisplayedItems extends Component { 
-fetchAll=async()=>{
-    let response = await fetch('/items')
-    let body = await response.text() 
-    let items = JSON.parse(body)
-    this.props.dispatch({type: "displayItems", items:items}) 
-}
+import { connect } from "react-redux";
+import React, { Component } from "react";
+import ItemSearch from "./ItemSearch.jsx";
+import styled from "styled-components";
 
-    render = () => { 
-        
-        if (items==undefined){
-            this.fetchAll()
-        }
-        return (<div> 
-            {this.props.items.map(item=> { 
-                //display items
-            return (<div>{item}</div>) 
-            })} 
-        </div>) 
-    } 
-} 
-let mapStateToProps = st => { 
-    return { 
-        items: st.displayedItems
-    } 
-} 
-let DisplayedItems = connect(mapStateToProps)(UnconnecteDisplayedItems) 
-export default DisplayedItems
+const SearchDisplay = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+class UnconnecteDisplayedItems extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { allItems: [], displayItems: [] };
+  }
+  componentDidMount() {
+    let fetchAll = async () => {
+      let data = new FormData();
+      let response = await fetch("/items", {
+        method: "POST",
+        body: data
+      });
+      let body = await response.text();
+      let allItems = JSON.parse(body);
+      this.setState({ ...this.state, allItems });
+      console.log("allItems, ", this.state.allItems);
+      this.renderItems();
+    };
+    fetchAll();
+  }
+
+  renderItems = () => {
+    let displayItems = this.state.allItems.slice(0, 6);
+    this.setState({ ...this.state, displayItems });
+    return this.state.displayItems;
+  };
+  render = () => {
+    return (
+      <SearchDisplay>
+        {this.state.displayItems.map(item => {
+          //display items
+          return (
+            <div>
+              <ItemSearch key={item.itemId} item={item} />
+            </div>
+          );
+        })}
+      </SearchDisplay>
+    );
+  };
+}
+let mapStateToProps = st => {
+  return {
+    items: st.displayedItems
+  };
+};
+let DisplayedItems = connect(mapStateToProps)(UnconnecteDisplayedItems);
+export default DisplayedItems;
