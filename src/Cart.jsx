@@ -41,11 +41,13 @@ class UnconnecteCart extends Component {
     });
     console.log(cart);
 
+    let stringedCart = JSON.stringify(cart);
+
     event.preventDefault();
     let data = new FormData();
     data.append("token", res);
     data.append("total", total);
-    data.append("cart", cart);
+    data.append("cart", stringedCart);
 
     let response = await fetch("/checkout", {
       method: "POST",
