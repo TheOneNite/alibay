@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
-import AddToCart from "./AddToCartButton.jsx";
+import addToCart from "./addToCart.js";
+import { withRouter } from "react-router-dom";
 
 const Card = styled.div`
   background-color: #ebebeb;
@@ -33,6 +35,7 @@ const Card = styled.div`
       0 4px 4px 1px rgba(0, 0, 0, 0.19);
     .add {
       left: 150px;
+      cursor: pointer;
     }
   }
   .add {
@@ -65,12 +68,23 @@ const Description = styled.div`
   padding: 10px;
 `;
 
-class ItemSearch extends Component {
+class UnconnectedItemSearch extends Component {
   constructor(props) {
     super(props);
   }
   renderButton = () => {
-    return <div className="add">add to cart</div>;
+    if (!this.props.isLoggedIn) {
+      return (
+        <div className="add" onClick={this.clickHandler}>
+          log in to buy
+        </div>
+      );
+    }
+    return (
+      <div className="add" onClick={this.clickHandler}>
+        add to cart
+      </div>
+    );
   };
   renderDesc = desc => {
     if (desc.length > 50) {
@@ -78,7 +92,15 @@ class ItemSearch extends Component {
     }
     return desc;
   };
-
+  clickHandler = () => {
+    if (!this.props.isLoggedIn) {
+      console.log("to login page");
+      this.props.history.push("/login");
+      return;
+    }
+    // console.log("adding to cart: ", this.props.item.itemId);
+    addToCart(this.props.item.itemId, this.props.dispatch);
+  };
   render() {
     let item = this.props.item;
     return (
@@ -100,5 +122,12 @@ class ItemSearch extends Component {
     );
   }
 }
+let mapStateToProps = st => {
+  return {
+    isLoggedIn: st.loggedIn
+  };
+};
 
-export default ItemSearch;
+let ItemSearch = connect(mapStateToProps)(UnconnectedItemSearch);
+
+export default withRouter(ItemSearch);
