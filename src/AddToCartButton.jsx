@@ -2,6 +2,17 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 class UnconnectedAddToCart extends Component {
+  updateCart = async () => {
+    console.log("updating cart...");
+    let response = await fetch("/fetch-cart", {
+      method: "GET"
+    });
+    let body = await response.text();
+    let returnedCart = JSON.parse(body);
+    console.log("returnedCart", returnedCart);
+    this.props.dispatch({ type: "updateCart", cart: returnedCart });
+  };
+
   addToCart = async () => {
     console.log("attempting to add to cart");
     let data = new FormData();
@@ -20,6 +31,7 @@ class UnconnectedAddToCart extends Component {
       return;
     }
     alert("item added to cart");
+    this.updateCart();
   };
 
   renderButton = () => {

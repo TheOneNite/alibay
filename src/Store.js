@@ -16,6 +16,9 @@ let reducer = (state, action) => {
   if (action.type === "orders") {
     return { ...state, orders: action.orders };
   }
+  if (action.type === "updateCart") {
+    return { ...state, cart: action.cart };
+  }
   return state;
 };
 
@@ -26,7 +29,8 @@ const store = createStore(
     loggedIn: false,
     allItems: [],
     searchQuery: "",
-    orders: []
+    orders: [],
+    cart: []
   },
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );

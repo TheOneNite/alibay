@@ -45,7 +45,7 @@ class UnconnectedCart extends Component {
       let body = await response.text();
       let returnedCart = JSON.parse(body);
       console.log("returnedCart", returnedCart);
-      this.setState({ ...this.state, cartItems: returnedCart });
+      this.props.dispatch({ type: "updateCart", cart: returnedCart });
       return;
     };
     fetchAll();
@@ -53,11 +53,11 @@ class UnconnectedCart extends Component {
 
   sendData = async (res, event) => {
     let total = 0;
-    this.state.cartItems.forEach(item => {
+    this.props.cartItems.forEach(item => {
       total = total + item.price;
     });
 
-    let cart = this.state.cartItems.map(item => {
+    let cart = this.props.cartItems.map(item => {
       return item.itemId;
     });
     console.log(cart);
@@ -97,7 +97,7 @@ class UnconnectedCart extends Component {
 
   render = () => {
     let total = 0;
-    this.state.cartItems.forEach(item => {
+    this.props.cartItems.forEach(item => {
       total = total + item.price;
     });
 
@@ -105,7 +105,7 @@ class UnconnectedCart extends Component {
       <Canvas>
         <div>
           <CartDisplay>
-            {this.state.cartItems.map(item => {
+            {this.props.cartItems.map(item => {
               //display items
               return (
                 <div key={item.itemId}>
@@ -135,5 +135,11 @@ class UnconnectedCart extends Component {
   };
 }
 
-let Cart = connect()(UnconnectedCart);
+let mapStateToProps = st => {
+  return {
+    cartItems: st.cart
+  };
+};
+
+let Cart = connect(mapStateToProps)(UnconnectedCart);
 export default withRouter(Cart);

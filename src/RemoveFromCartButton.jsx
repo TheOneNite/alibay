@@ -1,6 +1,17 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
-class RemoveFromCart extends Component {
+class UnconnectedRemoveFromCart extends Component {
+  updateCart = async () => {
+    console.log("updating cart...");
+    let response = await fetch("/fetch-cart", {
+      method: "GET"
+    });
+    let body = await response.text();
+    let returnedCart = JSON.parse(body);
+    console.log("returnedCart", returnedCart);
+    this.props.dispatch({ type: "updateCart", cart: returnedCart });
+  };
   remove = async () => {
     console.log("attempting remove from cart");
     let data = new FormData();
@@ -19,11 +30,14 @@ class RemoveFromCart extends Component {
       return;
     }
     console.log("item removed from cart");
+    this.updateCart();
   };
 
   render() {
     return <button onClick={this.remove}>remove</button>;
   }
 }
+
+let RemoveFromCart = connect()(UnconnectedRemoveFromCart);
 
 export default RemoveFromCart;
