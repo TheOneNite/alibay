@@ -6,15 +6,15 @@ import { connect } from "react-redux";
 const OrderStyles = styled.div`
   max-width: 1000px;
   margin: 0 auto;
-  border: 1px solid ${props => props.theme.offWhite};
-  box-shadow: ${props => props.theme.bs};
+  border: 1px solid #ebebeb;
+  box-shadow: ;
   padding: 2rem;
-  border-top: 10px solid red;
+  border-top: 10px solid #696969;
   & > p {
     display: grid;
     grid-template-columns: 1fr 5fr;
     margin: 0;
-    border-bottom: 1px solid ${props => props.theme.offWhite};
+    border-bottom: 1px solid whitesmoke;
     span {
       padding: 1rem;
       &:first-child {
@@ -24,9 +24,9 @@ const OrderStyles = styled.div`
     }
   }
   .order-item {
-    border-bottom: 1px solid ${props => props.theme.offWhite};
+    border-bottom: 1px solid whitesmoke;
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 300px auto;
     align-items: center;
     grid-gap: 2rem;
     margin: 2rem 0;
@@ -56,8 +56,8 @@ class unconectedOrder extends Component {
       <>
         <OrderStyles>
           <p>
-            <span>Order ID:{o.orderId}</span>
-            <span></span>
+            <span>Order ID:</span>
+            <span>{o.orderId}</span>
           </p>
 
           {/* <p>
@@ -65,26 +65,27 @@ class unconectedOrder extends Component {
           <span>{format(order.createdAt, "MMMM d, YYYY h:mm a")}</span>
         </p> */}
           <p>
-            <span>Order Total</span>
+            <span>Order Total: </span>
             <span>{formatMoney(o.total)}</span>
           </p>
           <p>
-            <span>Item Count</span>
+            <span>Item Count:</span>
             <span>{o.items.length}</span>
-            <div className="items">
-              {o.items.map(item => (
-                <div className="order-item" key={item.itemId}>
-                  <img src={item.smallImage} alt={item.title} />
-                  <div className="item-details">
-                    <h2>{item.title}</h2>
-                    <p>Price: {formatMoney(item.price)}</p>
-
-                    <p>{item.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </p>
+
+          <div className="items">
+            {o.items.map(item => (
+              <div className="order-item" key={item.itemId}>
+                <img src={item.smallImage} alt={item.title} />
+                <div className="item-details">
+                  <h2>{item.title}</h2>
+                  <p>Price: {formatMoney(item.price)}</p>
+
+                  <p>{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </OrderStyles>
       </>
     );
