@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 //import { formatDistance } from "date-fns";
 import styled from "styled-components";
 import formatMoney from "./formatMoney";
@@ -51,7 +51,7 @@ const OrderUl = styled.ul`
   grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
 `;
 
-class PastOrders extends React.Component {
+class PastOrders extends Component {
   constructor(props) {
     super(props);
     this.state = { orders: [] };
@@ -82,7 +82,7 @@ class PastOrders extends React.Component {
         <OrderUl>
           {orders.map(order => (
             <OrderItemStyles key={order.orderId}>
-              <Link to={"/order/:" + order.orderId}>
+              <Link to={"/orders/:" + order.orderId}>
                 <div className="order-meta">
                   <p>{order.items.length} Items</p>
                   {/* <p>{formatDistance(order.createdAt, new Date())}</p> */}

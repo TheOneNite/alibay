@@ -12,6 +12,7 @@ import Search from "./Search.jsx";
 import MyAccount from "./MyAccount.jsx";
 import Cart from "./Cart.jsx";
 import PastOrders from "./PastOrders.jsx";
+import Order from "./Order.jsx";
 
 //import history from "./History.jsx";
 
@@ -58,6 +59,16 @@ let pastOrders = () => {
   );
 };
 
+let order = routerData => {
+  console.log("order");
+  let orderId = routerData.match.params.orderId;
+  return (
+    <div>
+      <Order orderId={orderId} />
+    </div>
+  );
+};
+
 class UnconnectedApp extends Component {
   findItemByID = ID => {
     let candidate = this.props.items.filter(item => {
@@ -83,6 +94,7 @@ class UnconnectedApp extends Component {
           <Route exact={true} path="/account" render={myAccount} />
           <Route exact={true} path="/cart" render={cart} />
           <Route exact={true} path="/orders" render={pastOrders} />
+          <Route exact={true} path="/orders/:orderId" render={order} />
         </div>
       </BrowserRouter>
     );
