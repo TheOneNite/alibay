@@ -13,6 +13,7 @@ const Card = styled.div`
   padding: 0px;
   height: 310px;
   width: 250px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.19);
   .link {
     text-decoration: none;
   }
@@ -20,11 +21,31 @@ const Card = styled.div`
     margin: 0px;
   }
   h3 {
+    color: #36454f;
     margin: 0px;
     margin-left: 5px;
   }
   .image {
     height: 200px;
+  }
+  &:hover {
+    box-shadow: 0 4px 4px 1px rgba(0, 0, 0, 0.2),
+      0 4px 4px 1px rgba(0, 0, 0, 0.19);
+    .add {
+      left: 150px;
+    }
+  }
+  .add {
+    position: absolute;
+    padding: 5px;
+    border-radius: 4px;
+    top: 0;
+    left: 280px;
+    width: 150px;
+    height: 50px;
+    color: white;
+    background-color: #696969;
+    transition: left 2s;
   }
 `;
 const Image = styled.img`
@@ -34,9 +55,10 @@ const Image = styled.img`
   object-fit: cover;
 `;
 const PriceDiv = styled.div`
-  padding: 5px;
-  display: grid;
-  grid-template-columns: 1fr auto;
+  position: relative;
+  div {
+    padding: 5px;
+  }
 `;
 
 const Description = styled.div`
@@ -47,12 +69,16 @@ class ItemSearch extends Component {
   constructor(props) {
     super(props);
   }
+  renderButton = () => {
+    return <div className="add">add to cart</div>;
+  };
   renderDesc = desc => {
     if (desc.length > 50) {
       return desc.slice(0, 50) + "...";
     }
     return desc;
   };
+
   render() {
     let item = this.props.item;
     return (
@@ -68,7 +94,7 @@ class ItemSearch extends Component {
         </div>
         <PriceDiv>
           <div>{formatMoney(item.price)}</div>
-          <AddToCart itemId={item.itemId} />
+          {this.renderButton()}
         </PriceDiv>
       </Card>
     );
