@@ -7,7 +7,7 @@ import formatMoney from "./formatMoney.js";
 import { withRouter } from "react-router-dom";
 
 const CartDisplay = styled.div`
-  width: 60vwmax;
+  width: 80vwmax;
   border: 2px solid;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `;
@@ -34,7 +34,6 @@ const Price = styled.div`
 class UnconnectedCart extends Component {
   constructor(props) {
     super(props);
-    this.state = { cartItems: [] };
   }
 
   componentDidMount() {
