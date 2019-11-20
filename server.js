@@ -140,8 +140,21 @@ app.post("/login", upload.none(), (req, res) => {
       .findOne({ username: userGiven }, (err, dbResult) => {
         if (err) {
           console.log(err);
+          res.send(
+            JSON.stringify({
+              success: false,
+              msg: "auth info could not be retreived"
+            })
+          );
+          return;
         }
         console.log("user auth retrevied");
+        if (dbResult === null) {
+          res.send(
+            JSON.stringify({ success: false, msg: "invalid username password" })
+          );
+          return;
+        }
         let chal = dbResult.password;
         if (auth.verify(req.body.password, chal)) {
           console.log("logged in " + dbResult.username);
