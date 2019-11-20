@@ -48,15 +48,18 @@ const SaleForm = styled.div`
     width: 100%;
   }
   .button-base {
-    background-color: inherit;
-    border: 3px solid black;
-    border-radius: 8px;
+    background-color: #696969;
+    border: none;
+    border-radius: 7px;
+    color: whitesmoke;
+    font-weight: bolder;
     padding: 5px;
     margin: 10px;
     text-align: center;
   }
   .button-base:hover {
     background-color: whitesmoke;
+    color: #696969;
   }
 `;
 class unconnectedCreateItem extends Component {
@@ -199,7 +202,7 @@ class unconnectedCreateItem extends Component {
                 />
               </div>
               <button type="submit" className="button-base">
-                Submit
+                SUBMIT
               </button>
             </div>
           </form>
