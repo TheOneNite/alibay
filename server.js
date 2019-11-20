@@ -9,6 +9,9 @@ const upload = multer();
 
 const auth = require("password-hash");
 
+const stripeKey = require("./custom_modules/stripeKeys.js");
+const stripe = require("stripe")(stripeKey.private);
+
 //setup and initialzie mongo db
 const mongoClient = require("mongodb").MongoClient;
 const dbCredientials = require("./mongo/dbURI.js");
@@ -300,9 +303,13 @@ app.post("/cart", upload.none(), (req, res) => {
     console.log(userData);
     let oldCart = userData.cart;
     let newCart = [];
+    console.log("adding:" + req.body.adding);
     if (req.body.adding) {
+      console.log("adding to cart");
       newCart = oldCart.concat(req.body.itemId);
-    } else {
+    }
+    if (req.body.adding === false) {
+      console.log("removing from cart");
       newCart = oldCart.filter(id => {
         if (id === req.body.itemId) {
           return false;
@@ -310,6 +317,7 @@ app.post("/cart", upload.none(), (req, res) => {
         return true;
       });
     }
+    console.log("d");
     userData = { ...userData, cart: newCart };
     aliDb
       .collection("users")
@@ -341,6 +349,17 @@ app.get("/checkout", (req, res) => {
 });
 
 app.post("/checkout", upload.none(), (req, res) => {
+  console.log("submitting payment details to stripe");
+  const processPayment = async total => {
+    let charge = await stripe.charges.create({
+      amount: 2500,
+      currency: "cad",
+      source: "tok_visa",
+      receipt_email: "jim@test.com"
+    });
+    console.log(charge);
+    return charge;
+  };
   console.log("POST: /checkout");
   //expects cart:array of itemIds, paymentInfo:
   const uid = sessions[req.cookies.sid];
@@ -371,41 +390,52 @@ app.post("/checkout", upload.none(), (req, res) => {
       items: cartItems,
       total: total
     };
-    aliDb.collection("orders").insertOne(newOrder, (err, result) => {
-      if (err) {
-        console.log(err);
-        res.send({ success: false });
-        return;
-      }
-      console.log("order pushed to db:");
-      console.log(result);
-    });
-    retreive("users", { userId: uid }, aliDb).then(dbResult => {
-      if (dbResult.success === false) {
-        console.log(dbResult.err);
-        res.send({ success: false });
-        return;
-      }
-      console.log("user info retreived from db for order history");
-      let userData = dbResult.data;
-      let newHistory = userData.orders.concat(newOrder.orderId);
-      aliDb
-        .collection("users")
-        .updateOne(
-          { userId: userData.userId },
-          { $set: { ...userData, orders: newHistory, cart: [] } },
-          (err, result) => {
-            if (err) {
-              console.log(err);
-              res.send({ success: false });
-              return;
-            }
-            console.log(
-              "order history updated for user " + userData.displayName
-            );
-            res.send({ success: true });
-          }
+    processPayment(total).then(result => {
+      if (result === false) {
+        console.log("payment failed");
+        res.send(
+          JSON.stringify({
+            success: false,
+            msg: "payment could not be processed"
+          })
         );
+      }
+      aliDb.collection("orders").insertOne(newOrder, (err, result) => {
+        if (err) {
+          console.log(err);
+          res.send({ success: false });
+          return;
+        }
+        console.log("order pushed to db:");
+        console.log(result);
+      });
+      retreive("users", { userId: uid }, aliDb).then(dbResult => {
+        if (dbResult.success === false) {
+          console.log(dbResult.err);
+          res.send({ success: false });
+          return;
+        }
+        console.log("user info retreived from db for order history");
+        let userData = dbResult.data;
+        let newHistory = userData.orders.concat(newOrder.orderId);
+        aliDb
+          .collection("users")
+          .updateOne(
+            { userId: userData.userId },
+            { $set: { ...userData, orders: newHistory, cart: [] } },
+            (err, result) => {
+              if (err) {
+                console.log(err);
+                res.send({ success: false });
+                return;
+              }
+              console.log(
+                "order history updated for user " + userData.displayName
+              );
+              res.send({ success: true });
+            }
+          );
+      });
     });
   });
 
@@ -459,13 +489,18 @@ app.post("/account", upload.none(), (req, res) => {
       console.log("user data updated");
       aliDb
         .collection("users")
-        .save({ _id: mongoUid }, userData, (err, result) => {
-          if (err) {
-            console.log(err);
+        .updateOne(
+          { userId: uid },
+          { $set: { ...userData } },
+          (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log("account information updated");
+            res.send(JSON.stringify({ success: true, data: result }));
+            return;
           }
-          res.send(JSON.stringify({ success: true, data: result }));
-          return;
-        });
+        );
       return;
     } else {
       console.log(dbResult.err);
