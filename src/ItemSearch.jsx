@@ -45,7 +45,7 @@ const Card = styled.div`
     height: 50px;
     color: white;
     background-color: #696969;
-    transition: left 2s;
+    transition: left 0.3s;
   }
 `;
 const Image = styled.img`
