@@ -9,11 +9,16 @@ const SearchWrapper = styled.div`
   justify-self: space-around;
   justify-content: space-around;
   .search-input {
+    background-color: inherit;
     width: 100%;
     font-size: 24px;
+    font-variant: small-caps;
     padding: 10px;
     border: 2px solid grey;
     border-radius: 7px;
+  }
+  .search-input:focus {
+    background-color: whitesmoke;
   }
   .search-form {
     width: 90%;

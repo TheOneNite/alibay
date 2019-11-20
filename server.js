@@ -397,10 +397,12 @@ app.post("/checkout", upload.none(), (req, res) => {
       subtotal = subtotal + item.price;
     });
     let total = subtotal;
+    let date = new Date();
     let newOrder = {
       orderId: tools.generateId(8),
       items: cartItems,
-      total: total
+      total: total,
+      createdAt: date
     };
     processPayment(clientTotal, token).then(charge => {
       console.log("payment result");
