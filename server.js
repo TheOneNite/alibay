@@ -199,6 +199,7 @@ app.post("/signup", upload.none(), async (req, res) => {
           displayName: userGiven,
           location: "",
           paymentMethods: [],
+          email: req.body.email,
           orders: [],
           sales: [],
           cart: []
@@ -269,8 +270,7 @@ app.get("/fetch-cart", (req, res) => {
   console.log("GET: /cart");
   const uid = sessions[req.cookies.sid];
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
-    console.log("db return:");
-    console.log(dbResult);
+    console.log("db user info retreived");
     let userData = dbResult.data;
     let cart = userData.cart;
     if (cart === undefined || cart.length < 1) {
@@ -303,8 +303,9 @@ app.post("/cart", upload.none(), (req, res) => {
     console.log(userData);
     let oldCart = userData.cart;
     let newCart = [];
-    console.log("adding:" + req.body.adding);
-    if (req.body.adding) {
+    let isAdd = JSON.parse(req.body.adding);
+    console.log("adding:" + isAdd);
+    if (isAdd) {
       console.log("adding to cart");
       newCart = oldCart.concat(req.body.itemId);
     }
@@ -350,14 +351,12 @@ app.get("/checkout", (req, res) => {
 
 app.post("/checkout", upload.none(), (req, res) => {
   console.log("submitting payment details to stripe");
-  const processPayment = async total => {
+  const processPayment = async (total, token) => {
     let charge = await stripe.charges.create({
-      amount: 2500,
-      currency: "cad",
-      source: "tok_visa",
-      receipt_email: "jim@test.com"
+      amount: total,
+      currency: "usd",
+      source: token
     });
-    console.log(charge);
     return charge;
   };
   console.log("POST: /checkout");
@@ -367,7 +366,6 @@ app.post("/checkout", upload.none(), (req, res) => {
   let token = req.body.token;
   let items = JSON.parse(req.body.cart);
   console.log("checking out");
-  console.log(items);
   Promise.all(
     items.map(id => {
       return retreive("items", { itemId: id }, aliDb).then(dbResult => {
@@ -375,7 +373,7 @@ app.post("/checkout", upload.none(), (req, res) => {
           console.log(err);
           return { success: false };
         }
-        console.log(dbResult);
+        console.log("item data retreived for " + dbResult.data.itemId);
         return dbResult.data;
       });
     })
@@ -388,10 +386,13 @@ app.post("/checkout", upload.none(), (req, res) => {
     let newOrder = {
       orderId: tools.generateId(8),
       items: cartItems,
-      total: total
+      total: total,
+      purchase: true
     };
-    processPayment(total).then(result => {
-      if (result === false) {
+    processPayment(clientTotal, token).then(charge => {
+      console.log("payment result");
+      console.log(charge);
+      if (!charge.paid) {
         console.log("payment failed");
         res.send(
           JSON.stringify({
@@ -399,7 +400,68 @@ app.post("/checkout", upload.none(), (req, res) => {
             msg: "payment could not be processed"
           })
         );
+        return;
       }
+      let orderMerchants = [];
+      cartItems.forEach(itemData => {
+        if (orderMerchants.includes(itemData.sellerId)) {
+          return;
+        }
+        orderMerchants.push(itemData.sellerId);
+      });
+      let saleOrders = {};
+      orderMerchants.forEach(sellerId => {
+        let orderItems = cartItems.filter(itemData => {
+          if (itemData.sellerId === sellerId) {
+            return true;
+          }
+          return false;
+        });
+        let orderTotal = 0;
+        orderItems.forEach(itemData => {
+          orderTotal = orderTotal + itemData.price;
+        });
+        saleOrders[sellerId] = {
+          orderId: tools.generateId(8),
+          items: orderItems,
+          total: orderTotal,
+          purchase: false
+        };
+      });
+      dbOrders = [];
+      orderMerchants.forEach(merchantId => {
+        dbOrders.push(saleOrders[merchantId]);
+        aliDb
+          .collection("users")
+          .findOne({ userId: merchantId }, (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log("merchant user info retreived");
+            let userData = result;
+            let newOrders = userData.orders.concat(
+              saleOrders[merchantId].orderId
+            );
+            aliDb
+              .collection("users")
+              .updateOne(
+                { userId: merchantId },
+                { $set: { ...userData, orders: newOrders } },
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                  console.log("merchant order history updated");
+                }
+              );
+          });
+      });
+      aliDb.collection("orders").insertMany(dbOrders, (err, result) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log("pushed " + dbOrders.length + " merchant orders to db");
+      });
       aliDb.collection("orders").insertOne(newOrder, (err, result) => {
         if (err) {
           console.log(err);
@@ -407,7 +469,6 @@ app.post("/checkout", upload.none(), (req, res) => {
           return;
         }
         console.log("order pushed to db:");
-        console.log(result);
       });
       retreive("users", { userId: uid }, aliDb).then(dbResult => {
         if (dbResult.success === false) {

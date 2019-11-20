@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import formatMoney from "./formatMoney";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 const OrderStyles = styled.div`
   max-width: 1000px;
@@ -38,48 +39,64 @@ const OrderStyles = styled.div`
   }
 `;
 
-class Order extends Component {
+class unconectedOrder extends Component {
   //orderId = routerData.match.params.orderId
   render() {
+    console.log("props", this.props.orders);
+
+    let order = this.props.orders.filter(order => {
+      return order.orderId === this.props.orderId;
+    });
+
+    console.log("order", order);
+
+    let o = order[0];
+
     return (
-      <div>Order:{this.props.orderId}</div>
-      // <OrderStyles>
-      //   <p>
-      //     <span>Order ID:</span>
-      //     <span>{this.props.id}</span>
-      //   </p>
-      //   <p>
-      //     <span>Charge</span>
-      //     <span>{order.charge}</span>
-      //   </p>
-      //   <p>
-      //     <span>Oate</span>
-      //     <span>{format(order.createdAt, "MMMM d, YYYY h:mm a")}</span>
-      //   </p>
-      //   <p>
-      //     <span>Order Total</span>
-      //     <span>{formatMoney(order.total)}</span>
-      //   </p>
-      //   <p>
-      //     <span>Item Count</span>
-      //     <span>{order.items.length}</span>
-      //     <div className="items">
-      //       {order.items.map(item => (
-      //         <div className="order-item" key={item.id}>
-      //           <img src={item.image} alt={item.title} />
-      //           <div className="item-details">
-      //             <h2>{item.title}</h2>
-      //             <p>Qty: {item.quantity}</p>
-      //             <p>Each: {formatMoney(item.price)}</p>
-      //             <p>SubTotal: {formatMoney(item.price * item.quantity)}</p>
-      //             <p>{item.description}</p>
-      //           </div>
-      //         </div>
-      //       ))}
-      //     </div>
-      //   </p>
-      // </OrderStyles>
+      <>
+        <OrderStyles>
+          <p>
+            <span>Order ID:{o.orderId}</span>
+            <span></span>
+          </p>
+
+          {/* <p>
+          <span>Date</span>
+          <span>{format(order.createdAt, "MMMM d, YYYY h:mm a")}</span>
+        </p> */}
+          <p>
+            <span>Order Total</span>
+            <span>{formatMoney(o.total)}</span>
+          </p>
+          <p>
+            <span>Item Count</span>
+            <span>{o.items.length}</span>
+            <div className="items">
+              {o.items.map(item => (
+                <div className="order-item" key={item.itemId}>
+                  <img src={item.smallImage} alt={item.title} />
+                  <div className="item-details">
+                    <h2>{item.title}</h2>
+                    <p>Price: {formatMoney(item.price)}</p>
+
+                    <p>{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </p>
+        </OrderStyles>
+      </>
     );
   }
 }
+
+let mapStateToProps = st => {
+  return {
+    orders: st.orders
+  };
+};
+
+let Order = connect(mapStateToProps)(unconectedOrder);
+
 export default Order;

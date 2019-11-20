@@ -8,7 +8,8 @@ class unconnectedSignup extends Component {
     super(props);
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      email: ""
     };
   }
   handleUsernameChange = event => {
@@ -19,12 +20,17 @@ class unconnectedSignup extends Component {
     console.log("new password", event.target.value);
     this.setState({ password: event.target.value });
   };
+  handlePasswordChange = event => {
+    console.log("email", event.target.value);
+    this.setState({ email: event.target.value });
+  };
   handleSubmit = async evt => {
     evt.preventDefault();
     console.log("signup form submitted");
     let data = new FormData();
     data.append("username", this.state.username);
     data.append("password", this.state.password);
+    data.append("email", this.state.email);
     let response = await fetch("/signup", {
       method: "POST",
       body: data,
@@ -49,6 +55,8 @@ class unconnectedSignup extends Component {
       <>
         <h3>Sign up for an account</h3>
         <form onSubmit={this.handleSubmit}>
+          Your Email
+          <input type="text" onChange={this.handlePasswordChange} />
           Choose your Username
           <input type="text" onChange={this.handleUsernameChange} />
           Choose your Password

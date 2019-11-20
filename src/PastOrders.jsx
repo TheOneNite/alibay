@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import formatMoney from "./formatMoney";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 const OrderItemStyles = styled.li`
   box-shadow: ${props => props.theme.bs};
@@ -51,7 +52,7 @@ const OrderUl = styled.ul`
   grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
 `;
 
-class PastOrders extends Component {
+class unconnectedPastOrders extends Component {
   constructor(props) {
     super(props);
     this.state = { orders: [] };
@@ -73,6 +74,10 @@ class PastOrders extends Component {
 
   render() {
     let orders = this.state.orders;
+    this.props.dispatch({
+      type: "orders",
+      orders: this.state.orders
+    });
 
     // console.log("orders in render", orders);
 
@@ -102,4 +107,11 @@ class PastOrders extends Component {
   }
 }
 
+let mapStateToProps = st => {
+  return {
+    orders: st.orders
+  };
+};
+
+let PastOrders = connect(mapStateToProps)(unconnectedPastOrders);
 export default PastOrders;
