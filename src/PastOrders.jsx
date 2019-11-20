@@ -6,15 +6,22 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 const OrderItemStyles = styled.li`
-  box-shadow: ${props => props.theme.bs};
+  box-shadow: white;
   list-style: none;
   padding: 2rem;
-  border: 1px solid ${props => props.theme.offWhite};
+  border: 1px solid #696969;
+  border-radius: 15px;
+
   h2 {
     border-bottom: 2px solid red;
     margin-top: 0;
     margin-bottom: 2rem;
     padding-bottom: 2rem;
+  }
+  a,
+  p {
+    color: #696969;
+    text-decoration: none;
   }
 
   .images {
