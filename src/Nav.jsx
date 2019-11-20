@@ -16,7 +16,7 @@ const NavStyles = styled.ul`
   button,
   ul {
     text-decoration: none;
-    color: black;
+    color: #696969;
     padding: 1rem 3rem;
     display: flex;
     align-items: center;
@@ -43,7 +43,7 @@ const NavStyles = styled.ul`
     }
     &:after {
       height: 2px;
-      background: blue;
+      background: white;
       content: "";
       width: 0;
       position: absolute;
@@ -56,6 +56,8 @@ const NavStyles = styled.ul`
     &:hover,
     &:focus {
       outline: none;
+      background: #444;
+      color: #fff;
       &:after {
         width: calc(100% - 60px);
       }
