@@ -6,9 +6,32 @@ import StripeCheckout from "react-stripe-checkout";
 import formatMoney from "./formatMoney.js";
 import { withRouter } from "react-router-dom";
 
-const CartDisplay = styled.div``;
+const CartDisplay = styled.div`
+  width: 60vwmax;
+  border: 2px solid;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+`;
+const Canvas = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+`;
+const Price = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  div {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border: 2px solid;
+    border-top: 1px;
+    padding: 2px;
+    div {
+      border: 0px;
+      box-shadow: none;
+    }
+  }
+`;
 
-class UnconnecteCart extends Component {
+class UnconnectedCart extends Component {
   constructor(props) {
     super(props);
     this.state = { cartItems: [] };
@@ -16,7 +39,7 @@ class UnconnecteCart extends Component {
 
   componentDidMount() {
     let fetchAll = async () => {
-      let response = await fetch("/cart", {
+      let response = await fetch("/fetch-cart", {
         method: "GET"
       });
       let body = await response.text();
@@ -79,32 +102,38 @@ class UnconnecteCart extends Component {
     });
 
     return (
-      <div>
-        <CartDisplay>
-          {this.state.cartItems.map(item => {
-            //display items
-            return (
-              <div key={item.itemId}>
-                <ItemCart item={item} />
-              </div>
-            );
-          })}
-        </CartDisplay>
-        <div>Cart Total: {formatMoney(total)}</div>
-        <StripeCheckout
-          amount={total}
-          name="Stuff Zone"
-          stripeKey="pk_test_Hix3x69AC2ga6zwVuJn5Ya1i00PmSOBgCh"
-          currency="USD"
-          email="no@dice.com"
-          token={res => this.onToken(res)}
-        >
-          <button>Checkout</button>
-        </StripeCheckout>
-      </div>
+      <Canvas>
+        <div>
+          <CartDisplay>
+            {this.state.cartItems.map(item => {
+              //display items
+              return (
+                <div key={item.itemId}>
+                  <ItemCart item={item} />
+                </div>
+              );
+            })}
+          </CartDisplay>
+          <Price>
+            <div>
+              <div>Cart Total: {formatMoney(total)}</div>
+              <StripeCheckout
+                amount={total}
+                name="Stuff Zone"
+                stripeKey="pk_test_Hix3x69AC2ga6zwVuJn5Ya1i00PmSOBgCh"
+                currency="USD"
+                email="no@dice.com"
+                token={res => this.onToken(res)}
+              >
+                <button>Checkout</button>
+              </StripeCheckout>
+            </div>
+          </Price>
+        </div>
+      </Canvas>
     );
   };
 }
 
-let Cart = connect()(UnconnecteCart);
+let Cart = connect()(UnconnectedCart);
 export default withRouter(Cart);

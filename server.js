@@ -265,7 +265,7 @@ app.post("/additem", upload.none(), (req, res) => {
   });
 });
 
-app.get("/cart", (req, res) => {
+app.get("/fetch-cart", (req, res) => {
   // sends a json formatted array of itemData objects
   console.log("GET: /cart");
   const uid = sessions[req.cookies.sid];
@@ -303,8 +303,9 @@ app.post("/cart", upload.none(), (req, res) => {
     console.log(userData);
     let oldCart = userData.cart;
     let newCart = [];
-    console.log("adding:" + req.body.adding);
-    if (req.body.adding) {
+    let isAdd = JSON.parse(req.body.adding);
+    console.log("adding:" + isAdd);
+    if (isAdd) {
       console.log("adding to cart");
       newCart = oldCart.concat(req.body.itemId);
     }
@@ -385,8 +386,7 @@ app.post("/checkout", upload.none(), (req, res) => {
     let newOrder = {
       orderId: tools.generateId(8),
       items: cartItems,
-      total: total,
-      purchase: true
+      total: total
     };
     processPayment(clientTotal, token).then(charge => {
       console.log("payment result");
@@ -423,8 +423,7 @@ app.post("/checkout", upload.none(), (req, res) => {
         saleOrders[sellerId] = {
           orderId: tools.generateId(8),
           items: orderItems,
-          total: orderTotal,
-          purchase: false
+          total: orderTotal
         };
       });
       dbOrders = [];
@@ -438,14 +437,14 @@ app.post("/checkout", upload.none(), (req, res) => {
             }
             console.log("merchant user info retreived");
             let userData = result;
-            let newOrders = userData.orders.concat(
+            let newOrders = userData.sales.concat(
               saleOrders[merchantId].orderId
             );
             aliDb
               .collection("users")
               .updateOne(
                 { userId: merchantId },
-                { $set: { ...userData, orders: newOrders } },
+                { $set: { ...userData, sales: newOrders } },
                 (err, result) => {
                   if (err) {
                     console.log(err);
