@@ -92,7 +92,7 @@ class UnconnectedItemSearch extends Component {
     }
     return desc;
   };
-  clickHandler = () => {
+  clickHandler = async () => {
     if (!this.props.isLoggedIn) {
       console.log("to login page");
       this.props.history.push("/login");
