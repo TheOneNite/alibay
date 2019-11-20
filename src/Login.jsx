@@ -127,7 +127,7 @@ class UnconnectedLogin extends Component {
       <>
         <LogPop className="modal">
           <div className="modal-content">
-            <h3>Login</h3>
+            <h3>Sign-in</h3>
             <div className="form-holder">
               <form onSubmit={this.handleSubmit}>
                 <input
