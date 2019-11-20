@@ -296,7 +296,7 @@ app.post("/cart", upload.none(), (req, res) => {
   retreive("users", { userId: uid }, aliDb).then(dbResult => {
     if (dbResult.success === false) {
       console.log(dbResult.err);
-      res.send({ success: false });
+      res.send({ success: false, msg: "user data not found" });
       return;
     }
     let userData = dbResult.data;
@@ -309,7 +309,7 @@ app.post("/cart", upload.none(), (req, res) => {
       console.log("adding to cart");
       newCart = oldCart.concat(req.body.itemId);
     }
-    if (req.body.adding === false) {
+    if (isAdd === false) {
       console.log("removing from cart");
       newCart = oldCart.filter(id => {
         if (id === req.body.itemId) {
@@ -318,7 +318,6 @@ app.post("/cart", upload.none(), (req, res) => {
         return true;
       });
     }
-    console.log("d");
     userData = { ...userData, cart: newCart };
     aliDb
       .collection("users")
@@ -328,9 +327,11 @@ app.post("/cart", upload.none(), (req, res) => {
         (err, result) => {
           if (err) {
             console.log(err);
+            res.send({ success: false, msg: "writing cart to db failed" });
+            return;
           }
           console.log("new cart written to db");
-          res.send(JSON.stringify({ success: true }));
+          res.send(JSON.stringify({ success: true, cart: newCart }));
         }
       );
   });
