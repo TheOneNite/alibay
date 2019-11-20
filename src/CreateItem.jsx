@@ -19,19 +19,44 @@ const SaleForm = styled.div`
     min-height: 40vh;
   }
   .form-data {
-    min-height: 50%;
-    justify-content: center;
+    justify-content: space-around;
+    display: flex;
+    flex-direction: column;
+  }
+  .wrap-horozontial {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
   }
   .input-base {
+    padding: 5px;
+    box-sizing: border-box;
     background-color: inherit;
     border: 2px solid black;
-    border-radius: 2px;
+    border-radius: 5px;
+    margin: 5px;
+    width: 100%;
   }
   .input-multi {
-    min-width: 90%;
+    padding: 5px;
+    box-sizing: border-box;
+    margin: 5px;
     background-color: inherit;
     border: 2px solid black;
-    border-radius: 2px;
+    border-radius: 5px;
+    min-height: 50px;
+    width: 100%;
+  }
+  .button-base {
+    background-color: inherit;
+    border: 3px solid black;
+    border-radius: 8px;
+    padding: 5px;
+    margin: 10px;
+    text-align: center;
+  }
+  .button-base:hover {
+    background-color: whitesmoke;
   }
 `;
 class unconnectedCreateItem extends Component {
@@ -40,6 +65,7 @@ class unconnectedCreateItem extends Component {
     description: "",
     image: "",
     largeImage: "",
+    imgMsg: "Upload an Image of your Product",
     price: "",
     city: ""
   };
@@ -93,9 +119,12 @@ class unconnectedCreateItem extends Component {
         body: data
       }
     );
-
     let file = await res.json();
     console.log(file);
+    if (file.error) {
+      this.setState({ imgMsg: file.error.message.split(".").shift() });
+      return;
+    }
     this.setState({
       image: file.secure_url,
       largeImage: file.eager[0].secure_url
@@ -109,7 +138,7 @@ class unconnectedCreateItem extends Component {
         {me && (
           <form onSubmit={this.sendData}>
             <div className="image-upload">
-              Upload an Image of your Product
+              {this.state.imgMsg}
               <div>
                 <input
                   type="file"
@@ -126,7 +155,6 @@ class unconnectedCreateItem extends Component {
             </div>
             <div className="form-data">
               <div>
-                Title
                 <input
                   type="text"
                   id="title"
@@ -137,7 +165,28 @@ class unconnectedCreateItem extends Component {
                   value={this.state.title}
                   onChange={this.handleChange}
                 />
-                Price
+              </div>
+
+              <textarea
+                id="description"
+                name="description"
+                placeholder="Please enter a description"
+                className="input-multi"
+                required
+                value={this.state.description}
+                onChange={this.handleChange}
+              />
+              <div className="wrap-horozontial">
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  placeholder="Ships From"
+                  className="input-base"
+                  required
+                  value={this.state.city}
+                  onChange={this.handleChange}
+                />
                 <input
                   type="number"
                   id="price"
@@ -149,29 +198,10 @@ class unconnectedCreateItem extends Component {
                   onChange={this.handleChange}
                 />
               </div>
-              Description
-              <textarea
-                id="description"
-                name="description"
-                placeholder="Please enter a description"
-                className="input-multi"
-                required
-                value={this.state.description}
-                onChange={this.handleChange}
-              />
-              Ships From
-              <input
-                type="text"
-                id="city"
-                name="city"
-                placeholder="Ships From"
-                className="input-base"
-                required
-                value={this.state.city}
-                onChange={this.handleChange}
-              />
+              <button type="submit" className="button-base">
+                Submit
+              </button>
             </div>
-            <button type="submit">Submit</button>
           </form>
         )}
       </SaleForm>
