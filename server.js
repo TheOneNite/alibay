@@ -264,7 +264,7 @@ app.post("/additem", upload.none(), (req, res) => {
   });
 });
 
-app.get("/cart", (req, res) => {
+app.get("/fetch-cart", (req, res) => {
   // sends a json formatted array of itemData objects
   console.log("GET: /cart");
   const uid = sessions[req.cookies.sid];

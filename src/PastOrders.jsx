@@ -82,7 +82,7 @@ class PastOrders extends Component {
         <OrderUl>
           {orders.map(order => (
             <OrderItemStyles key={order.orderId}>
-              <Link to={"/orders/:" + order.orderId}>
+              <Link to={"/orders/" + order.orderId}>
                 <div className="order-meta">
                   <p>{order.items.length} Items</p>
                   {/* <p>{formatDistance(order.createdAt, new Date())}</p> */}
