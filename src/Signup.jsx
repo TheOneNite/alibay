@@ -56,11 +56,19 @@ class unconnectedSignup extends Component {
         <h3>Sign up for an account</h3>
         <form onSubmit={this.handleSubmit}>
           Your Email
-          <input type="email" onChange={this.handleEmailChange} />
+          <input
+            type="email"
+            placeholder="your@email.com"
+            onChange={this.handleEmailChange}
+          />
           Choose your Username
-          <input type="text" onChange={this.handleUsernameChange} />
+          <input
+            type="text"
+            placeholder="username"
+            onChange={this.handleUsernameChange}
+          />
           Choose your Password
-          <input type="text" onChange={this.handlePasswordChange} />
+          <input type="password" onChange={this.handlePasswordChange} />
           <input type="submit" />
         </form>
         <Link to={"/login/"}>Already have an account? Click Here!</Link>
