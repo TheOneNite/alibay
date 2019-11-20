@@ -23,38 +23,62 @@ let LogPop = styled.div`
   .modal-content {
     background-color: #fefefe;
     border-radius: 10px;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 5% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 250px; /* Could be more or less, depending on screen size */
+    width: 300px; /* Could be more or less, depending on screen size */
     text-align: center;
+    input {
+      
+      
+      border-radius: 8px;
+    }
   }
   .button {
-    border-radius: 10px;
-  }
+			background-color: rgba(0,0,0,0.4);
+			color: rgba(256,256,256,1);
+			border:0;
+			border-radius: 15px;
+			margin: 15px; 
+			padding: 15px ;
+			width: 50%;
+			font-size: 13px;
+			font-weight: bold;
+			cursor: pointer;
+			opacity: 1;
+			visibility: visible;
+			-webkit-transition: all .3s ease;
+			
+			&:hover {
+				transition: all .3s ease;
+				background-color: #696969;
+			}
+		}
+	}
 
   .form-holder {
     display: flex;
     justify-content: center;
-    text-align: left;
+    text-align: center;
     margin: 5px;
     padding: 5px;
+    div {
+      padding: 5px;
+      margin: 5px
+    }
+    input {
+      border: 1px solid gray;
+      text-align: center;
+      margin: 10px;
+      padding: 3px;
+      &:focus {
+        outline-color: transparent;
+        
+      }
+    }
+ 
   }
 
-  /* The Close Button */
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-  }
 `;
 class UnconnectedLogin extends Component {
   constructor(props) {
@@ -106,14 +130,17 @@ class UnconnectedLogin extends Component {
             <h3>Login</h3>
             <div className="form-holder">
               <form onSubmit={this.handleSubmit}>
-                Username
                 <input
                   type="text"
-                  placeholder="username"
+                  placeholder="Username"
                   onChange={this.handleUsernameChange}
                 />
-                Password
-                <input type="password" onChange={this.handlePasswordChange} />
+
+                <input
+                  type="password"
+                  placeholder="Password"
+                  onChange={this.handlePasswordChange}
+                />
                 <input type="submit" className="button" />
               </form>
             </div>
