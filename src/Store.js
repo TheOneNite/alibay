@@ -22,8 +22,8 @@ let reducer = (state, action) => {
 const store = createStore(
   reducer,
   {
-    currentUser: "t",
-    loggedIn: true,
+    currentUser: "",
+    loggedIn: false,
     allItems: [],
     searchQuery: "",
     orders: []
