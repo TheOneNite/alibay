@@ -303,8 +303,9 @@ app.post("/cart", upload.none(), (req, res) => {
     console.log(userData);
     let oldCart = userData.cart;
     let newCart = [];
-    console.log("adding:" + req.body.adding);
-    if (req.body.adding) {
+    let isAdd = JSON.parse(req.body.adding);
+    console.log("adding:" + isAdd);
+    if (isAdd) {
       console.log("adding to cart");
       newCart = oldCart.concat(req.body.itemId);
     }
