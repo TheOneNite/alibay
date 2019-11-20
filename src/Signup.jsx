@@ -20,7 +20,7 @@ class unconnectedSignup extends Component {
     console.log("new password", event.target.value);
     this.setState({ password: event.target.value });
   };
-  handlePasswordChange = event => {
+  handleEmailChange = event => {
     console.log("email", event.target.value);
     this.setState({ email: event.target.value });
   };
@@ -56,7 +56,7 @@ class unconnectedSignup extends Component {
         <h3>Sign up for an account</h3>
         <form onSubmit={this.handleSubmit}>
           Your Email
-          <input type="text" onChange={this.handlePasswordChange} />
+          <input type="email" onChange={this.handleEmailChange} />
           Choose your Username
           <input type="text" onChange={this.handleUsernameChange} />
           Choose your Password
