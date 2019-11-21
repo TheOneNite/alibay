@@ -92,14 +92,15 @@ class UnconnectedItemSearch extends Component {
     }
     return desc;
   };
-  clickHandler = async () => {
+  clickHandler = () => {
     if (!this.props.isLoggedIn) {
       console.log("to login page");
       this.props.history.push("/login");
       return;
     }
-    // console.log("adding to cart: ", this.props.item.itemId);
-    addToCart(this.props.item.itemId, this.props.dispatch);
+    console.log("...click handler, adding to cart: ", this.props.item.itemId);
+    let newCart = addToCart(this.props.item.itemId);
+    this.props.dispatch({ type: "updateCart", cart: newCart });
   };
   render() {
     let item = this.props.item;
