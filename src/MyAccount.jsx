@@ -117,10 +117,13 @@ class MyAccount extends Component {
   submitHandler = evt => {
     evt.preventDefault();
     let data = new FormData();
-    data.append("username", this.state.username);
-    data.append("password", this.state.password);
-    data.append("address", this.state.address);
-    fetch("/account", { method: "POST", body: data });
+    let update = {
+      displayName: this.state.username,
+      password: this.state.password,
+      email: this.state.email
+    };
+    data.append("update", update);
+    fetch("/account", { method: "POST", body: data, credentials: "include" });
   };
   submitUsername = async evt => {
     console.log("update username");
