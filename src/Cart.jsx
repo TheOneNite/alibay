@@ -7,7 +7,8 @@ import formatMoney from "./formatMoney.js";
 import { withRouter } from "react-router-dom";
 
 const CartDisplay = styled.div`
-  width: 80vwmax;
+  overflow: hidden;
+  width: 60vw;
   border: 2px solid;
   background-color: rgba(255, 255, 255, 0.5);
 
@@ -20,17 +21,38 @@ const Canvas = styled.div`
   padding: 10px;
 `;
 const Price = styled.div`
+  position: relative;
   display: flex;
   justify-content: flex-end;
 
   div {
+    margin-right: 72px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border: 2px solid;
     border-top: 1px;
     padding: 2px;
     div {
+      margin-right: 0;
       border: 0px;
       box-shadow: none;
+    }
+    button {
+      background-color: rgba(0, 0, 0, 0.4);
+      color: rgba(256, 256, 256, 1);
+      border: 0;
+      padding: 5px;
+      width: 100%;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      opacity: 1;
+      visibility: visible;
+      -webkit-transition: all 0.3s ease;
+
+      &:hover {
+        transition: all 0.3s ease;
+        background-color: #696969;
+      }
     }
   }
 `;
@@ -120,16 +142,18 @@ class UnconnectedCart extends Component {
           <Price>
             <div>
               <div>Cart Total: {formatMoney(total)}</div>
-              <StripeCheckout
-                amount={total}
-                name="Stuff Zone"
-                stripeKey="pk_test_Hix3x69AC2ga6zwVuJn5Ya1i00PmSOBgCh"
-                currency="USD"
-                email="no@dice.com"
-                token={res => this.onToken(res)}
-              >
-                <button>Checkout</button>
-              </StripeCheckout>
+              <div className="checkout">
+                <StripeCheckout
+                  amount={total}
+                  name="Stuff Zone"
+                  stripeKey="pk_test_Hix3x69AC2ga6zwVuJn5Ya1i00PmSOBgCh"
+                  currency="USD"
+                  email="no@dice.com"
+                  token={res => this.onToken(res)}
+                >
+                  <button>Checkout</button>
+                </StripeCheckout>
+              </div>
             </div>
           </Price>
         </div>
