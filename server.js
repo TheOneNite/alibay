@@ -96,7 +96,7 @@ const itemSearch = searchObj => {
 
 //updating user data
 const updateUser = (userData, req) => {
-  const newData = JSON.parse(req.body.update);
+  const newData = JSON.parse(req.body);
   const updatedUser = { ...userData, ...newData };
   return updatedUser;
 };
