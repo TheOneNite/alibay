@@ -14,15 +14,17 @@ const OrderStyles = styled.div`
   max-width: 1000px;
   margin: 0 auto;
   border: 1px solid #ebebeb;
-  box-shadow: ;
+  box-shadow: 3px;
   padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.5);
+
   border-top: 10px solid #696969;
   border-bottom: 10px solid #696969;
   & > p {
     display: grid;
     grid-template-columns: 1fr 5fr;
     margin: 0;
-    border-bottom: 1px solid whitesmoke;
+    border-bottom: 3px solid whitesmoke;
     span {
       padding: 1rem;
       &:first-child {
@@ -32,7 +34,7 @@ const OrderStyles = styled.div`
     }
   }
   .order-item {
-    border-bottom: 1px solid whitesmoke;
+    border-bottom: 3px solid whitesmoke;
     display: grid;
     grid-template-columns: 300px auto;
     align-items: center;

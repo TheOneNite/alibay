@@ -17,15 +17,18 @@ const OrderItemStyles = styled.li`
   padding: 2rem;
   border: 1px solid #696969;
   border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.55);
 
   h2 {
     border-bottom: 2px solid red;
     margin-top: 0;
     margin-bottom: 2rem;
     padding-bottom: 2rem;
+    border-radius: 15px
   }
   a,
   p {
+    border-radius: 15px
     color: #696969;
     text-decoration: none;
   }
@@ -35,7 +38,9 @@ const OrderItemStyles = styled.li`
     grid-gap: 10px;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     margin-top: 1rem;
+    
     img {
+      border-radius: 3px
       height: 200px;
       object-fit: cover;
       width: 100%;

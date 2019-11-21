@@ -15,13 +15,12 @@ let LogPop = styled.div`
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    
   }
 
   /* Modal Content/Box */
   .modal-content {
-    background-color: #fefefe;
+    background-color: rgba(255, 255, 255, 0.55);
     border-radius: 10px;
     margin: 5% auto; /* 15% from the top and centered */
     padding: 20px;
