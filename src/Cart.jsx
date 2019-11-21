@@ -45,6 +45,7 @@ const Price = styled.div`
     border: 2px solid;
     border-top: 1px;
     padding: 3px;
+    background-color: rgba(255, 255, 255, 0.5);
     div {
       margin-right: 0;
       border: 0px;
