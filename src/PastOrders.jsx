@@ -10,17 +10,18 @@ import styled from "styled-components";
 import formatMoney from "./formatMoney";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+// testin testing
 
 const Canvas = styled.div`
   width: 100%;
   justify-content: center;
   h2 {
+    margin: 1rem;
     margin-bottom: 0;
-    margin-left: 1rem;
   }
 `;
 
-const OrderItemStyles = styled.li`
+const OrderItemStyles = styled.div`
   width: 40vw;
 
   margin: 1rem;
@@ -68,9 +69,11 @@ const OrderItemStyles = styled.li`
   }
 `;
 
-const OrderUl = styled.ul`
+const OrderUl = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  margin: 15px;
   width: fit-content;
 `;
 
