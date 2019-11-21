@@ -10,10 +10,11 @@ const SaleForm = styled.div`
   margin-right: 20vw;
   margin-left: 20vw;
   justify-content: space-around;
-  border: 5px solid black;
+  border: 5px solid #696969;
   border-radius: 15px;
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.55);
+
   .image-upload {
     text-align: center;
     justify-content: center;
@@ -33,20 +34,26 @@ const SaleForm = styled.div`
     padding: 5px;
     box-sizing: border-box;
     background-color: inherit;
-    border: 2px solid black;
+    border: 2px solid #696969;
     border-radius: 5px;
     margin: 5px;
     width: 100%;
+    &:focus {
+      outline-color: transparent;
+    }
   }
   .input-multi {
     padding: 5px;
     box-sizing: border-box;
     margin: 5px;
     background-color: inherit;
-    border: 2px solid black;
+    border: 2px solid #696969;
     border-radius: 5px;
     min-height: 50px;
     width: 100%;
+    &:focus {
+      outline-color: transparent;
+    }
   }
   .button-base {
     background-color: #696969;
@@ -59,8 +66,8 @@ const SaleForm = styled.div`
     text-align: center;
   }
   .button-base:hover {
-    background-color: whitesmoke;
-    color: #696969;
+    background-color: #3b3837;
+    color: whitesmoke;
   }
 `;
 class unconnectedCreateItem extends Component {
