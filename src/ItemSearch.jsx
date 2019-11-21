@@ -40,6 +40,7 @@ const Card = styled.div`
   }
   .add {
     position: absolute;
+    display: flex;
     padding: 5px;
     border-radius: 4px;
     top: 0;
@@ -71,6 +72,7 @@ const Description = styled.div`
 class UnconnectedItemSearch extends Component {
   constructor(props) {
     super(props);
+    this.state = { status: "none" }; //default, loading, success, fail
   }
   renderButton = () => {
     if (!this.props.isLoggedIn) {
@@ -83,6 +85,28 @@ class UnconnectedItemSearch extends Component {
     return (
       <div className="add" onClick={this.clickHandler}>
         add to cart
+        <div className="loading">
+          <svg width="12" height="12">
+            <circle
+              cx="6"
+              cy="6"
+              r="6"
+              stroke="whitesmoke"
+              strokeWidth="4"
+              strokeDasharray="180"
+              fill="transparent"
+            />
+            <animateTransform
+              attributeType="xml"
+              attributeName="transform"
+              type="rotate"
+              from="0"
+              to="360"
+              dur="1s"
+              repeatCount="indefinite"
+            />
+          </svg>
+        </div>
       </div>
     );
   };

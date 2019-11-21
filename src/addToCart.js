@@ -27,7 +27,6 @@ let addToCart = async itemId => {
     alert("add to cart failed");
     return;
   }
-  alert("item added to cart");
   updateCart();
   return returnedCart;
 };
