@@ -506,17 +506,19 @@ app.post("/checkout", upload.none(), (req, res) => {
           .findOne({ userId: merchantId }, (err, result) => {
             if (err) {
               console.log(err);
+              return;
             }
             console.log("merchant user info retreived");
             let userData = result;
             let newOrders = userData.sales.concat(
               saleOrders[merchantId].orderId
             );
+            let newPayout = userData.payout + saleOrders[merchantId].total;
             aliDb
               .collection("users")
               .updateOne(
                 { userId: merchantId },
-                { $set: { ...userData, sales: newOrders } },
+                { $set: { ...userData, sales: newOrders, payout: newPayout } },
                 (err, result) => {
                   if (err) {
                     console.log(err);

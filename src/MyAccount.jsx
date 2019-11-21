@@ -4,6 +4,7 @@ import { join } from "path";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import formatMoney from "./formatMoney.js";
 
 let UpdatePop = styled.div`
   /* The Modal (background) */
@@ -101,7 +102,8 @@ class unconnectedMyAccount extends Component {
       username: userInfo.displayName,
       address: userInfo.location,
       payment: userInfo.paymentMethods,
-      orders: userInfo.orders
+      orders: userInfo.orders,
+      payout: userInfo.payout
     });
   };
   onChangeUsername = event => {
@@ -182,6 +184,14 @@ class unconnectedMyAccount extends Component {
     return (
       <UpdatePop className="modal">
         <div className="modal-content">
+          <h4>Your Pending Payout:</h4>
+          <div>{formatMoney(this.state.payout)}</div>
+          <button onClick={this.cashout} className="button">
+            Claim
+          </button>
+        </div>
+
+        <div className="modal-content">
           <h4> Display Name Update</h4>
           <div className="form-holder">
             <form onSubmit={this.submitUsername}>
@@ -241,7 +251,7 @@ class unconnectedMyAccount extends Component {
 }
 
 let mapStateToProps = st => {
-  currentUser: st.currentUser;
+  return { currentUser: st.currentUser };
 };
 
 let MyAccount = connect(mapStateToProps)(unconnectedMyAccount);
