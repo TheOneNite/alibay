@@ -31,8 +31,9 @@ class UnconnectedSearch extends Component {
     this.state = { query: "" };
   }
   handleQuery = evt => {
-    this.setState({ query: evt.target.value });
-    this.props.dispatch({ type: "searchQuery", search: this.state.query });
+    this.setState({ query: evt.target.value }, () => {
+      this.props.dispatch({ type: "searchQuery", search: this.state.query });
+    });
   };
   submitHandler = evt => {
     evt.preventDefault();

@@ -13,6 +13,15 @@ class UnconnecteDisplayedItems extends Component {
     super(props);
   }
   componentDidMount() {
+    if (this.props.isLoggedIn) {
+      let fetchCart = async () => {
+        let response = await fetch("/fetch-cart");
+        let body = await response.text();
+        let cart = JSON.parse(body);
+        this.props.dispatch({ type: "updateCart", cart });
+      };
+      fetchCart();
+    }
     let fetchAll = async () => {
       let data = new FormData();
       // data.append("search", this.props.searchQuery)
@@ -53,7 +62,8 @@ class UnconnecteDisplayedItems extends Component {
 let mapStateToProps = st => {
   return {
     allItems: st.allItems,
-    searchQuery: st.searchQuery
+    searchQuery: st.searchQuery,
+    isLoggedIn: st.loggedIn
   };
 };
 let DisplayedItems = connect(mapStateToProps)(UnconnecteDisplayedItems);
