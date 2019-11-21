@@ -9,16 +9,20 @@ import { withRouter } from "react-router-dom";
 const CartDisplay = styled.div`
   width: 80vwmax;
   border: 2px solid;
+  background-color: rgba(255, 255, 255, 0.5);
+
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 10px;
 `;
 const Canvas = styled.div`
   display: flex;
   justify-content: center;
-  padding: 30px;
+  padding: 10px;
 `;
 const Price = styled.div`
   display: flex;
   justify-content: flex-end;
+
   div {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border: 2px solid;

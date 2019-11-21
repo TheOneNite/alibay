@@ -5,12 +5,17 @@ import RemoveFromCart from "./RemoveFromCartButton.jsx";
 
 const CartItem = styled.div`
   display: grid;
+
   grid-template-columns: 50px 250px 60px 75px;
-  padding: 2px;
+  padding: 40px;
   height: 25px;
-  border: 1px solid;
-  div {
-    vertical-align: middle;
+  border-bottom: 1px solid;
+  align-content: center;
+  div,
+  img {
+    display: grid;
+    align-items: center;
+    padding: 5px;
   }
   .price {
     text-align: right;
@@ -22,10 +27,11 @@ class ItemCart extends Component {
     let item = this.props.item;
     return (
       <CartItem>
-        <img height="25px" src={item.smallImage} />
-        <div>{item.title}</div>
-        <RemoveFromCart itemId={item.itemId} />
+        <img height="100%" width="100%" src={item.smallImage} />
+
+        <div> {item.title}</div>
         <div className="price">{formatMoney(item.price)}</div>
+        <RemoveFromCart itemId={item.itemId} />
       </CartItem>
     );
   }
