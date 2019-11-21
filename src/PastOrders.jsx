@@ -10,18 +10,21 @@ import styled from "styled-components";
 import formatMoney from "./formatMoney";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+// testin testing
 
 const Canvas = styled.div`
   width: 100%;
   justify-content: center;
   h2 {
+    margin: 1rem;
     margin-bottom: 0;
-    margin-left: 1rem;
   }
 `;
 
-const OrderItemStyles = styled.li`
-  width: 80vw;
+const OrderItemStyles = styled.div`
+  width: 40vw;
+
+  margin: 1rem;
   box-shadow: white;
   list-style: none;
   padding: 2rem;
@@ -51,8 +54,7 @@ const OrderItemStyles = styled.li`
   }
   .order-meta {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
-    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
     grid-gap: 1rem;
     text-align: center;
     & > * {
@@ -67,11 +69,12 @@ const OrderItemStyles = styled.li`
   }
 `;
 
-const OrderUl = styled.ul`
-  display: grid;
+const OrderUl = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 15px;
   width: fit-content;
-  grid-gap: 1rem;
-  grid-template-columns: auto;
 `;
 
 class unconnectedPastOrders extends Component {
