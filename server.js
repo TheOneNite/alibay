@@ -126,51 +126,60 @@ app.post("/items", upload.none(), (req, res) => {
 });
 
 //user authentication endpoints------------------------------------------------------------------------------------------
-app.post("/login", upload.none(), (req, res) => {
+app.get("/autologin", (req, res) => {
   const sid = req.cookies.sid;
   if (sessions[sid] != undefined) {
     console.log("active session found");
-    let pkg = { success: true };
-    res.send(JSON.stringify(pkg));
-    return;
-  } else {
-    const userGiven = req.body.username;
-    aliDb
-      .collection("auth")
-      .findOne({ username: userGiven }, (err, dbResult) => {
-        if (err) {
-          console.log(err);
-          res.send(
-            JSON.stringify({
-              success: false,
-              msg: "auth info could not be retreived"
-            })
-          );
-          return;
-        }
-        console.log("user auth retrevied");
-        if (dbResult === null) {
-          res.send(
-            JSON.stringify({ success: false, msg: "invalid username password" })
-          );
-          return;
-        }
-        let chal = dbResult.password;
-        if (auth.verify(req.body.password, chal)) {
-          console.log("logged in " + dbResult.username);
-          let pkg = { success: true };
-          let newSid = tools.generateId(6);
-          sessions[newSid] = dbResult.id;
-          res.cookie("sid", newSid);
-          res.send(JSON.stringify(pkg));
-          return;
-        } else {
-          let pkg = { success: false, msg: "invalid username or password" };
-          res.send(JSON.stringify(pkg));
-          return;
-        }
-      });
+    retreive("users", { userId: sessions[sid] }, aliDb).then(dbResult => {
+      if (dbResult.success) {
+        console.log("session user data retreived");
+        console.log(dbResult.data);
+        let pkg = { success: true, user: dbResult.data };
+        res.send(JSON.stringify(pkg));
+        return;
+      }
+      console.log("unknown user");
+      res.send(JSON.stringify({ success: false, msg: "no session found" }));
+    });
   }
+});
+
+app.post("/login", upload.none(), (req, res) => {
+  const sid = req.cookies.sid;
+  const userGiven = req.body.username;
+  aliDb.collection("auth").findOne({ username: userGiven }, (err, dbResult) => {
+    if (err) {
+      console.log(err);
+      res.send(
+        JSON.stringify({
+          success: false,
+          msg: "auth info could not be retreived"
+        })
+      );
+      return;
+    }
+    console.log("user auth retrevied");
+    if (dbResult === null) {
+      res.send(
+        JSON.stringify({ success: false, msg: "invalid username password" })
+      );
+      return;
+    }
+    let chal = dbResult.password;
+    if (auth.verify(req.body.password, chal)) {
+      console.log("logged in " + dbResult.username);
+      let pkg = { success: true };
+      let newSid = tools.generateId(6);
+      sessions[newSid] = dbResult.id;
+      res.cookie("sid", newSid);
+      res.send(JSON.stringify(pkg));
+      return;
+    } else {
+      let pkg = { success: false, msg: "invalid username or password" };
+      res.send(JSON.stringify(pkg));
+      return;
+    }
+  });
 });
 
 app.post("/signup", upload.none(), async (req, res) => {
