@@ -71,6 +71,7 @@ const PriceDiv = styled.div`
 `;
 
 const Description = styled.div`
+  height: 37px;
   padding: 10px;
 `;
 
@@ -173,6 +174,7 @@ class UnconnectedItemSearch extends Component {
   clickHandler = () => {
     if (!this.props.isLoggedIn) {
       console.log("to login page");
+      this.props.history.push("/item/" + this.props.item.itemId);
       this.props.history.push("/login");
       return;
     }

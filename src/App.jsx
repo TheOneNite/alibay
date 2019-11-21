@@ -5,7 +5,6 @@ import Login from "./Login.jsx";
 import Signup from "./Signup.jsx";
 import Nav from "./Nav.jsx";
 import ItemDetails from "./ItemDetails.jsx";
-import ItemSearch from "./ItemSearch.jsx";
 import CreateItem from "./CreateItem.jsx";
 import DisplayedItems from "./DisplayedItems.jsx";
 import Search from "./Search.jsx";
@@ -43,8 +42,10 @@ let cart = () => {
 
 let content = () => {
   return (
-    <div>
-      <Search />
+    <div className="content">
+      <div>
+        <Search />
+      </div>
       <DisplayedItems />
     </div>
   );

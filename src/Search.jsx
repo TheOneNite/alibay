@@ -6,7 +6,7 @@ const SearchWrapper = styled.div`
   width: 90vw;
   padding: 5px;
   display: flex;
-  justify-self: space-around;
+  justify-self: stretch;
   justify-content: space-around;
   .search-input {
     background-color: inherit;
@@ -19,6 +19,7 @@ const SearchWrapper = styled.div`
   }
   .search-input:focus {
     background-color: whitesmoke;
+    outline-color: transparent;
   }
   .search-form {
     width: 90%;

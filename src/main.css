@@ -22,3 +22,9 @@ body {
   right: 200px;
   background-color: white;
 }
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
