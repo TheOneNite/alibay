@@ -11,7 +11,19 @@ import formatMoney from "./formatMoney";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
+const Canvas = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  h2 {
+    margin-bottom: 0;
+    margin-left: 1rem;
+  }
+`;
+
 const OrderItemStyles = styled.li`
+  width: 80vw;
   box-shadow: white;
   list-style: none;
   padding: 2rem;
@@ -19,16 +31,9 @@ const OrderItemStyles = styled.li`
   border-radius: 15px;
   background-color: rgba(255, 255, 255, 0.55);
 
-  h2 {
-    border-bottom: 2px solid red;
-    margin-top: 0;
-    margin-bottom: 2rem;
-    padding-bottom: 2rem;
-    border-radius: 15px
-  }
   a,
   p {
-    border-radius: 15px
+    border-radius: 15px;
     color: #696969;
     text-decoration: none;
   }
@@ -38,9 +43,9 @@ const OrderItemStyles = styled.li`
     grid-gap: 10px;
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     margin-top: 1rem;
-    
+
     img {
-      border-radius: 3px
+      border-radius: 3px;
       height: 200px;
       object-fit: cover;
       width: 100%;
@@ -66,6 +71,7 @@ const OrderItemStyles = styled.li`
 
 const OrderUl = styled.ul`
   display: grid;
+  width: fit-content;
   grid-gap: 4rem;
   grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
 `;
@@ -100,30 +106,36 @@ class unconnectedPastOrders extends Component {
     console.log("orders in render", orders);
 
     return (
-      <div>
-        <h2>You have {orders.length} completed orders</h2>
-        <OrderUl>
-          {orders.map(order => (
-            <OrderItemStyles key={order.orderId}>
-              <Link to={"/orders/" + order.orderId}>
-                <div className="order-meta">
-                  <p>{order.items.length} Items</p>
-                  <p>
-                    Ordered{" "}
-                    {formatRelative(parseISO(order.createdAt), new Date())}
-                  </p>
-                  <p>Order Total: {formatMoney(order.total)}</p>
-                </div>
-                <div className="images">
-                  {order.items.map(item => (
-                    <img key={item.id} src={item.smallImage} alt={item.title} />
-                  ))}
-                </div>
-              </Link>
-            </OrderItemStyles>
-          ))}
-        </OrderUl>
-      </div>
+      <Canvas>
+        <div>
+          <h2>You have {orders.length} completed orders</h2>
+          <OrderUl>
+            {orders.map(order => (
+              <OrderItemStyles key={order.orderId}>
+                <Link to={"/orders/" + order.orderId}>
+                  <div className="order-meta">
+                    <p>{order.items.length} Items</p>
+                    <p>
+                      Ordered{" "}
+                      {formatRelative(parseISO(order.createdAt), new Date())}
+                    </p>
+                    <p>Order Total: {formatMoney(order.total)}</p>
+                  </div>
+                  <div className="images">
+                    {order.items.map(item => (
+                      <img
+                        key={item.id}
+                        src={item.smallImage}
+                        alt={item.title}
+                      />
+                    ))}
+                  </div>
+                </Link>
+              </OrderItemStyles>
+            ))}
+          </OrderUl>
+        </div>
+      </Canvas>
     );
   }
 }
