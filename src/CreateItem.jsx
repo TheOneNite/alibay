@@ -13,6 +13,7 @@ const SaleForm = styled.div`
   border: 5px solid black;
   border-radius: 15px;
   padding: 20px;
+  background-color: rgba(255, 255, 255, 0.55);
   .image-upload {
     text-align: center;
     justify-content: center;
