@@ -82,7 +82,23 @@ class UnconnectedApp extends Component {
     let item = this.findItemByID(routerData.match.params.itemId);
     return <ItemDetails item={item} />;
   };
+  checkCookie = async () => {
+    const res = await fetch("/autologin", {
+      method: "GET",
+      credentials: "include"
+    });
+    let bod = await res.text();
+    bod = JSON.parse(bod);
+    if (bod.success) {
+      console.log("found active login session");
+      this.props.dispatch({
+        type: "login-success",
+        currentUser: bod.user.displayName
+      });
+    }
+  };
   render = () => {
+    this.checkCookie();
     return (
       <BrowserRouter>
         <div>

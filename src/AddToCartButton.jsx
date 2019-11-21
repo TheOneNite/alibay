@@ -19,6 +19,9 @@ const AddButton = styled.button`
     stroke-dashoffset: 180;
     transition: stroke-dashoffset 0.5s;
   }
+  .icon {
+    margin: 5px;
+  }
 `;
 
 class UnconnectedAddToCart extends Component {
@@ -39,23 +42,32 @@ class UnconnectedAddToCart extends Component {
 
   addToCart = async () => {
     console.log("attempting to add to cart");
-    this.setState({ status: "loading" });
-    let data = new FormData();
-    data.append("adding", true);
-    data.append("itemId", this.props.itemId);
-    console.log("itemId: ", this.props.itemId);
-    let res = await fetch("/cart", {
-      method: "POST",
-      body: data,
-      credentials: "include"
+    this.setState({ status: "loading" }, async () => {
+      const cartCheck = this.props.cart.filter(item => {
+        return item.itemId === this.props.itemId;
+      });
+      if (cartCheck.length > 0) {
+        console.log("item already in cart");
+        this.setState({ status: "fail" });
+        return;
+      }
+      let data = new FormData();
+      data.append("adding", true);
+      data.append("itemId", this.props.itemId);
+      console.log("itemId: ", this.props.itemId);
+      let res = await fetch("/cart", {
+        method: "POST",
+        body: data,
+        credentials: "include"
+      });
+      let body = await res.text();
+      let response = JSON.parse(body);
+      if (!response.success) {
+        this.setState({ status: "fail" });
+        return;
+      }
+      this.setState({ status: "success" });
     });
-    let body = await res.text();
-    let response = JSON.parse(body);
-    if (!response.success) {
-      this.setState({ status: "fail" });
-      return;
-    }
-    this.setState({ status: "success" });
     this.updateCart();
   };
   renderIcon = () => {
@@ -76,6 +88,7 @@ class UnconnectedAddToCart extends Component {
               strokeWidth="4"
               strokeDasharray="180"
               fill="transparent"
+              className="icon"
             />
             <animateTransform
               attributeType="xml"
@@ -98,6 +111,7 @@ class UnconnectedAddToCart extends Component {
             height="12px"
             viewBox="0 0 99 73"
             fill="none"
+            className="icon"
           >
             <path d="M1 27L39 71L98 1" stroke="whitesmoke" strokeWidth="10">
               <animate
@@ -113,7 +127,13 @@ class UnconnectedAddToCart extends Component {
       case "fail":
         {
           return (
-            <svg width="12px" height="12px" viewBox="0 0 61 79" fill="none">
+            <svg
+              width="12px"
+              height="12px"
+              viewBox="0 0 61 79"
+              fill="none"
+              className="icon"
+            >
               <path
                 id="cross"
                 d="M1 77.5L60 1M1 1L60 77.5"
@@ -152,7 +172,8 @@ class UnconnectedAddToCart extends Component {
 }
 let mapStateToProps = st => {
   return {
-    isLoggedIn: st.loggedIn
+    isLoggedIn: st.loggedIn,
+    cart: st.cart
   };
 };
 
