@@ -21,7 +21,9 @@ const Canvas = styled.div`
 `;
 
 const OrderItemStyles = styled.li`
-  width: 80vw;
+  width: 40vw;
+
+  margin: 1rem;
   box-shadow: white;
   list-style: none;
   padding: 2rem;
@@ -51,8 +53,7 @@ const OrderItemStyles = styled.li`
   }
   .order-meta {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
-    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
     grid-gap: 1rem;
     text-align: center;
     & > * {
@@ -68,10 +69,9 @@ const OrderItemStyles = styled.li`
 `;
 
 const OrderUl = styled.ul`
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   width: fit-content;
-  grid-gap: 1rem;
-  grid-template-columns: auto;
 `;
 
 class unconnectedPastOrders extends Component {
