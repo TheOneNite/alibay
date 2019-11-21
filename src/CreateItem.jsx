@@ -13,6 +13,12 @@ const SaleForm = styled.div`
   border: 5px solid black;
   border-radius: 15px;
   padding: 20px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.19);
+  input {
+    &:focus {
+      outline: transparent;
+    }
+  }
   .image-upload {
     text-align: center;
     justify-content: center;

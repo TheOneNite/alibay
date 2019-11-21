@@ -71,6 +71,7 @@ const PriceDiv = styled.div`
 `;
 
 const Description = styled.div`
+  height: 37px;
   padding: 10px;
 `;
 
