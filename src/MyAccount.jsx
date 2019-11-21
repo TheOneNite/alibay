@@ -114,7 +114,7 @@ class unconnectedMyAccount extends Component {
     this.setState({ oldPassword: event.target.value });
   };
   onChangeAddress = event => {
-    this.setState({ address: event.target.value });
+    this.setState({ email: event.target.value });
   };
   submitHandler = evt => {
     evt.preventDefault();
@@ -149,10 +149,12 @@ class unconnectedMyAccount extends Component {
     console.log("update password");
     evt.preventDefault();
     let data = new FormData();
-    data.append("passwordUpdate", true);
     data.append("oldPassword", this.state.oldPassword);
     data.append("newPassword", this.state.newPassword);
-    let response = await fetch("/account", { method: "POST", body: data });
+    let response = await fetch("/change-password", {
+      method: "POST",
+      body: data
+    });
     let body = await response.text();
     let parse = JSON.parse(body);
     if (parse.success) {
@@ -165,8 +167,7 @@ class unconnectedMyAccount extends Component {
     console.log("update address");
     evt.preventDefault();
     let data = new FormData();
-    data.append("usernameAddress", true);
-    data.append("newAddress", this.state.address);
+    data.append("email", this.state.email);
     let response = await fetch("/account", { method: "POST", body: data });
     let body = await response.text();
     let parse = JSON.parse(body);
@@ -226,7 +227,7 @@ class unconnectedMyAccount extends Component {
                 <input
                   type="email"
                   placeholder="your@newemail.com"
-                  value={this.state.address}
+                  value={this.state.email}
                   onChange={this.onChangeAddress}
                 />
               </div>
