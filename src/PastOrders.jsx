@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-//import { formatDistance } from "date-fns";
+import {
+  format,
+  formatDistance,
+  formatRelative,
+  subDays,
+  parseISO
+} from "date-fns";
 import styled from "styled-components";
 import formatMoney from "./formatMoney";
 import { Link } from "react-router-dom";
@@ -86,7 +92,7 @@ class unconnectedPastOrders extends Component {
       orders: this.state.orders
     });
 
-    // console.log("orders in render", orders);
+    console.log("orders in render", orders);
 
     return (
       <div>
@@ -97,7 +103,10 @@ class unconnectedPastOrders extends Component {
               <Link to={"/orders/" + order.orderId}>
                 <div className="order-meta">
                   <p>{order.items.length} Items</p>
-                  {/* <p>{formatDistance(order.createdAt, new Date())}</p> */}
+                  <p>
+                    Ordered{" "}
+                    {formatRelative(parseISO(order.createdAt), new Date())}
+                  </p>
                   <p>Order Total: {formatMoney(order.total)}</p>
                 </div>
                 <div className="images">

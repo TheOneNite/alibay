@@ -1,4 +1,11 @@
 import React, { Component } from "react";
+import {
+  format,
+  formatDistance,
+  formatRelative,
+  subDays,
+  parseISO
+} from "date-fns";
 import formatMoney from "./formatMoney";
 import styled from "styled-components";
 import { connect } from "react-redux";
@@ -10,6 +17,7 @@ const OrderStyles = styled.div`
   box-shadow: ;
   padding: 2rem;
   border-top: 10px solid #696969;
+  border-bottom: 10px solid #696969;
   & > p {
     display: grid;
     grid-template-columns: 1fr 5fr;
@@ -56,20 +64,20 @@ class unconectedOrder extends Component {
       <>
         <OrderStyles>
           <p>
-            <span>Order ID:</span>
+            <span>Order ID: </span>
             <span>{o.orderId}</span>
           </p>
 
-          {/* <p>
-          <span>Date</span>
-          <span>{format(order.createdAt, "MMMM d, YYYY h:mm a")}</span>
-        </p> */}
+          <p>
+            <span>Order Date: </span>
+            <span>{format(parseISO(o.createdAt), "MMMM d, yyyy h:mm a")}</span>
+          </p>
           <p>
             <span>Order Total: </span>
             <span>{formatMoney(o.total)}</span>
           </p>
           <p>
-            <span>Item Count:</span>
+            <span>Item Count: </span>
             <span>{o.items.length}</span>
           </p>
 

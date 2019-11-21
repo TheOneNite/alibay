@@ -11,7 +11,6 @@ let addToCart = async itemId => {
     console.log("returnedCart", returnedCart);
   };
 
-  console.log("add called");
   let data = new FormData();
   data.append("adding", true);
   data.append("itemId", itemId);
@@ -27,8 +26,7 @@ let addToCart = async itemId => {
     alert("add to cart failed");
     return;
   }
-  alert("item added to cart");
-  updateCart();
+  await updateCart();
   return returnedCart;
 };
 
