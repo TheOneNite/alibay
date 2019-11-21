@@ -51,6 +51,11 @@ const Card = styled.div`
     background-color: #696969;
     transition: left 0.3s;
   }
+  #check {
+    stroke-dasharray: 180;
+    stroke-dashoffset: 180;
+    transition: stroke-dashoffset 0.5s;
+  }
 `;
 const Image = styled.img`
   background-color: rgb(170, 170, 170);
@@ -74,18 +79,13 @@ class UnconnectedItemSearch extends Component {
     super(props);
     this.state = { status: "none" }; //default, loading, success, fail
   }
-  renderButton = () => {
-    if (!this.props.isLoggedIn) {
-      return (
-        <div className="add" onClick={this.clickHandler}>
-          log in to buy
-        </div>
-      );
-    }
-    return (
-      <div className="add" onClick={this.clickHandler}>
-        add to cart
-        <div className="loading">
+  renderIcon = () => {
+    switch (this.state.status) {
+      case "none": {
+        return <></>;
+      }
+      case "loading": {
+        return (
           <svg width="12" height="12">
             <circle
               cx="6"
@@ -106,7 +106,47 @@ class UnconnectedItemSearch extends Component {
               repeatCount="indefinite"
             />
           </svg>
+        );
+      }
+      case "success": {
+        return (
+          <svg
+            id="check"
+            width="12px"
+            height="12px"
+            viewBox="0 0 99 73"
+            fill="none"
+          >
+            <path d="M1 27L39 71L98 1" stroke="whitesmoke" stroke-width="4">
+              <animate
+                attributeName="stroke-dashoffset"
+                values="180;0"
+                dur="0.4s"
+                repeatCount="once"
+              />
+            </path>
+          </svg>
+        ); //this will be the checkmark
+      }
+      case "fail":
+        {
+          return; //this will be the X
+        }
+        return;
+    }
+  };
+  renderButton = () => {
+    if (!this.props.isLoggedIn) {
+      return (
+        <div className="add" onClick={this.clickHandler}>
+          log in to buy
         </div>
+      );
+    }
+    return (
+      <div className="add" onClick={this.clickHandler}>
+        add to cart
+        <div className="loading">{this.renderIcon()}</div>
       </div>
     );
   };
@@ -116,15 +156,17 @@ class UnconnectedItemSearch extends Component {
     }
     return desc;
   };
-  clickHandler = () => {
+  clickHandler = async () => {
     if (!this.props.isLoggedIn) {
       console.log("to login page");
       this.props.history.push("/login");
       return;
     }
     console.log("...click handler, adding to cart: ", this.props.item.itemId);
-    let newCart = addToCart(this.props.item.itemId);
+    this.setState({ status: "loading" });
+    let newCart = await addToCart(this.props.item.itemId);
     this.props.dispatch({ type: "updateCart", cart: newCart });
+    this.setState({ status: "success" });
   };
   render() {
     let item = this.props.item;
