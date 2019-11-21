@@ -238,6 +238,55 @@ app.post("/signup", upload.none(), async (req, res) => {
     });
 });
 
+app.post("/change-password", upload.none(), (req, res) => {
+  const uid = sessions[req.cookies.sid];
+  retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    if (dbResult.success === false) {
+      console.log(dbResult.err);
+      res.send({ success: false, msg: "could not retreive auth from db" });
+      return;
+    }
+    console.log("user data retreived to reset pw");
+    console.log(dbResult);
+    const userData = dbResult.data;
+    const username = userData.username;
+
+    retreive("auth", { username: username }, aliDb).then(dbResult => {
+      if (dbResult.success) {
+        console.log("retreived user auth data");
+        if (auth.verify(req.body.oldPassword, dbResult.data.password)) {
+          console.log("oldpass verification passed");
+          const newPass = auth.generate(req.body.newPassword);
+          aliDb
+            .collection("auth")
+            .updateOne(
+              { username: username },
+              { $set: { password: newPass } },
+              (err, result) => {
+                if (err) {
+                  console.log(err);
+                  res.send({
+                    success: false,
+                    msg: "failed writing new password to db"
+                  });
+                  return;
+                }
+                console.log("new password written to db");
+                res.send({ success: true });
+              }
+            );
+        } else {
+          console.log("auth verification failed");
+          res.send({ success: false, msg: "invalid username or password" });
+          return;
+        }
+      } else {
+        console.log(dbResult.err);
+      }
+    });
+  });
+});
+
 app.get("/logout", (req, res) => {
   sessions[req.cookies.sid] = undefined;
   res.send(JSON.stringify({ success: true }));

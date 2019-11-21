@@ -10,26 +10,26 @@ const fs = require("fs");
 const updateDb = () => {
   const aliDb = mongoDb.db("alibay");
   aliDb
-    .collection("orders")
+    .collection("items")
     .find({})
     .toArray((err, result) => {
       if (err) {
         console.log(err);
         return;
       }
-      console.log("orders retreived from db");
+      console.log("items retreived from db");
       result.forEach(dbDoc => {
         aliDb
-          .collection("orders")
+          .collection("items")
           .updateOne(
-            { orderId: dbDoc.orderId },
-            { $set: { createdAt: new Date() } },
+            { itemId: dbDoc.itemId },
+            { $set: { sellerId: "msdaxt" } },
             (err, result) => {
               if (err) {
                 console.log(err);
                 return;
               }
-              console.log("add time to order " + result.orderId);
+              console.log("add time to order " + result.itemId);
             }
           );
       });
