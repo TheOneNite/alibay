@@ -26,11 +26,12 @@ const Price = styled.div`
   justify-content: flex-end;
 
   div {
+    border-radius: 0 0 8px 8px;
     margin-right: 72px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border: 2px solid;
     border-top: 1px;
-    padding: 2px;
+    padding: 3px;
     div {
       margin-right: 0;
       border: 0px;
@@ -40,6 +41,7 @@ const Price = styled.div`
       background-color: rgba(0, 0, 0, 0.4);
       color: rgba(256, 256, 256, 1);
       border: 0;
+      border-radius: 5px;
       padding: 5px;
       width: 100%;
       font-size: 13px;
