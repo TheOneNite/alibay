@@ -25,6 +25,13 @@ const Canvas = styled.div`
     padding: 20px;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.19);
   }
+  h3 {
+    border: 5px solid #696969;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.19);
+    background-color: rgba(255, 255, 255, 0.5);
+  }
 `;
 const Price = styled.div`
   position: relative;
@@ -132,7 +139,7 @@ class UnconnectedCart extends Component {
     if (this.props.cartItems.length === 0) {
       return (
         <Canvas>
-          <h2>Your cart is empty!</h2>
+          <h3>Your cart is empty!</h3>
         </Canvas>
       );
     }

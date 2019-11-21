@@ -151,7 +151,10 @@ class unconnectedMyAccount extends Component {
     let data = new FormData();
     data.append("oldPassword", this.state.oldPassword);
     data.append("newPassword", this.state.newPassword);
-    let response = await fetch("/account", { method: "POST", body: data });
+    let response = await fetch("/change-password", {
+      method: "POST",
+      body: data
+    });
     let body = await response.text();
     let parse = JSON.parse(body);
     if (parse.success) {
