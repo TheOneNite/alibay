@@ -13,8 +13,6 @@ import { connect } from "react-redux";
 
 const Canvas = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   h2 {
     margin-bottom: 0;
@@ -72,8 +70,8 @@ const OrderItemStyles = styled.li`
 const OrderUl = styled.ul`
   display: grid;
   width: fit-content;
-  grid-gap: 4rem;
-  grid-template-columns: repeat(auto-fit, minmax(40%, 1fr));
+  grid-gap: 1rem;
+  grid-template-columns: auto;
 `;
 
 class unconnectedPastOrders extends Component {
