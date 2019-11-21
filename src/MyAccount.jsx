@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 import { join } from "path";
 import styled from "styled-components";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
 let UpdatePop = styled.div`
   /* The Modal (background) */
@@ -79,14 +81,14 @@ let UpdatePop = styled.div`
 
 `;
 
-class MyAccount extends Component {
+class unconnectedMyAccount extends Component {
   constructor() {
     super();
     this.state = {
       username: "",
       oldPassword: "",
       newPassword: "",
-      address: ""
+      email: ""
     };
   }
   componentDidMount = async () => {
@@ -96,7 +98,7 @@ class MyAccount extends Component {
     let userInfo = JSON.parse(body);
     console.log("userInfo", userInfo);
     this.setState({
-      username: userInfo.username,
+      username: userInfo.displayName,
       address: userInfo.location,
       payment: userInfo.paymentMethods,
       orders: userInfo.orders
@@ -135,7 +137,10 @@ class MyAccount extends Component {
     let body = await response.text();
     let parse = JSON.parse(body);
     if (parse.success) {
-      window.alert("your username has been updated");
+      window.alert(
+        "Your Display name has been updated. Your login username remains unchanged"
+      );
+      this.props.history.push("/");
     } else {
       window.alert("something went wrong");
     }
@@ -151,7 +156,7 @@ class MyAccount extends Component {
     let body = await response.text();
     let parse = JSON.parse(body);
     if (parse.success) {
-      window.alert("your username has been updated");
+      window.alert("Your password has been changed");
     } else {
       window.alert("something went wrong");
     }
@@ -166,7 +171,7 @@ class MyAccount extends Component {
     let body = await response.text();
     let parse = JSON.parse(body);
     if (parse.success) {
-      window.alert("your username has been updated");
+      window.alert("your email has been updated");
     } else {
       window.alert("something went wrong");
     }
@@ -179,47 +184,64 @@ class MyAccount extends Component {
           <h4> Display Name Update</h4>
           <div className="form-holder">
             <form onSubmit={this.submitUsername}>
-              <input
-                type="text"
-                value={this.state.username}
-                onChange={this.onChangeUsername}
-              />
-              <input type="submit" value="update" />
+              <div>
+                <input
+                  type="text"
+                  value={this.state.username}
+                  onChange={this.onChangeUsername}
+                />
+              </div>
+              <input type="submit" value="update" className="button" />
             </form>
           </div>
         </div>
         <div className="modal-content">
-          <h4> Display Name Update</h4>
+          <h4> Password Update</h4>
           <div className="form-holder">
-            <form onSubmit={this.submitUsername}>
-              old password:{" "}
-              <input
-                type="text"
-                value={this.state.oldPassword}
-                onChange={this.onChangeOldPassword}
-              />
-              new password:{" "}
-              <input
-                type="text"
-                value={this.state.newPassword}
-                onChange={this.onChangeNewPassword}
-              />
-              <input type="submit" value="update" />
+            <form onSubmit={this.submitSecurity}>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Your Old Password"
+                  value={this.state.oldPassword}
+                  onChange={this.onChangeOldPassword}
+                />
+
+                <input
+                  type="text"
+                  placeholder="Your New Password"
+                  value={this.state.newPassword}
+                  onChange={this.onChangeNewPassword}
+                />
+              </div>
+              <input type="submit" value="update" className="button" />
             </form>
           </div>
         </div>
-        <form onSubmit={this.submitAddress}>
-          <h2>my address</h2>
-          address:{" "}
-          <input
-            type="text"
-            value={this.state.address}
-            onChange={this.onChangeAddress}
-          />
-          <input type="submit" value="update" />
-        </form>
+        <div className="modal-content">
+          <h4> Email Update</h4>
+          <div className="form-holder">
+            <form onSubmit={this.submitAddress}>
+              <div>
+                <input
+                  type="email"
+                  placeholder="your@newemail.com"
+                  value={this.state.address}
+                  onChange={this.onChangeAddress}
+                />
+              </div>
+              <input type="submit" value="update" className="button" />
+            </form>
+          </div>
+        </div>
       </UpdatePop>
     );
   }
 }
-export default MyAccount;
+
+let mapStateToProps = st => {
+  currentUser: st.currentUser;
+};
+
+let MyAccount = connect(mapStateToProps)(unconnectedMyAccount);
+export default withRouter(MyAccount);

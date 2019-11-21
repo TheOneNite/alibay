@@ -95,11 +95,6 @@ const itemSearch = searchObj => {
 };
 
 //updating user data
-const updateUser = (userData, req) => {
-  const newData = JSON.parse(req.body);
-  const updatedUser = { ...userData, ...newData };
-  return updatedUser;
-};
 
 // Your endpoints go after this line
 
@@ -168,16 +163,19 @@ app.post("/login", upload.none(), (req, res) => {
     let chal = dbResult.password;
     if (auth.verify(req.body.password, chal)) {
       console.log("logged in " + dbResult.username);
-      let pkg = { success: true };
-      let newSid = tools.generateId(6);
-      sessions[newSid] = dbResult.id;
-      res.cookie("sid", newSid);
-      res.send(JSON.stringify(pkg));
-      return;
-    } else {
-      let pkg = { success: false, msg: "invalid username or password" };
-      res.send(JSON.stringify(pkg));
-      return;
+      retreive("users", { username: dbResult.username }, aliDb).then(dbUser => {
+        if (dbUser.success) {
+          let pkg = { success: true, user: dbUser.data };
+          let newSid = tools.generateId(6);
+          sessions[newSid] = dbResult.id;
+          res.cookie("sid", newSid);
+          res.send(JSON.stringify(pkg));
+          return;
+        }
+        let pkg = { success: false, msg: "invalid username or password" };
+        res.send(JSON.stringify(pkg));
+        return;
+      });
     }
   });
 });
@@ -560,6 +558,11 @@ app.get("/orders", (req, res) => {
 
 //account management endpoints---------------------------------------------------------------------------------------
 app.post("/account", upload.none(), (req, res) => {
+  const updateUser = (userData, newData) => {
+    //newData = JSON.parse(newData);
+    const updatedUser = { ...userData, ...newData };
+    return updatedUser;
+  };
   console.log("POST: /account");
   //updates user info from form submission
   let userData = {};
@@ -569,7 +572,8 @@ app.post("/account", upload.none(), (req, res) => {
     if (dbResult.success) {
       console.log("user data retreived");
       userData = dbResult.data;
-      userData = updateUser(userData, req);
+      console.log(req.body);
+      userData = updateUser(userData, req.body);
       console.log("user data updated");
       aliDb
         .collection("users")
