@@ -117,11 +117,11 @@ class UnconnectedItemSearch extends Component {
             viewBox="0 0 99 73"
             fill="none"
           >
-            <path d="M1 27L39 71L98 1" stroke="whitesmoke" stroke-width="4">
+            <path d="M1 27L39 71L98 1" stroke="whitesmoke" strokeWidth="10">
               <animate
                 attributeName="stroke-dashoffset"
                 values="180;0"
-                dur="0.4s"
+                dur="0.9s"
                 repeatCount="once"
               />
             </path>
