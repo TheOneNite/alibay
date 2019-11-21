@@ -119,7 +119,9 @@ class UnconnectedLogin extends Component {
       type: "login-success",
       currentUser: this.state.username
     });
-    this.props.history.push("/");
+    console.log(this.props.history);
+    this.props.history.goBack();
+    //this.props.history.push("/");
   };
   render = () => {
     return (
