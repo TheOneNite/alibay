@@ -202,14 +202,14 @@ class unconnectedMyAccount extends Component {
             <form onSubmit={this.submitSecurity}>
               <div>
                 <input
-                  type="text"
+                  type="password"
                   placeholder="Your Old Password"
                   value={this.state.oldPassword}
                   onChange={this.onChangeOldPassword}
                 />
 
                 <input
-                  type="text"
+                  type="password"
                   placeholder="Your New Password"
                   value={this.state.newPassword}
                   onChange={this.onChangeNewPassword}
