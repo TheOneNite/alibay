@@ -19,6 +19,7 @@ const SaleForm = styled.div`
       outline: transparent;
     }
   }
+  background-color: rgba(255, 255, 255, 0.55);
   .image-upload {
     text-align: center;
     justify-content: center;

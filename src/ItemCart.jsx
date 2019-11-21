@@ -13,9 +13,9 @@ const CartItem = styled.div`
   align-content: center;
   div,
   img {
-    display: grid;
-    align-items: center;
-    padding: 5px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .price {
     text-align: right;
@@ -27,7 +27,7 @@ class ItemCart extends Component {
     let item = this.props.item;
     return (
       <CartItem>
-        <img height="100%" width="100%" src={item.smallImage} />
+        <img src={item.smallImage} />
 
         <div> {item.title}</div>
         <div className="price">{formatMoney(item.price)}</div>
