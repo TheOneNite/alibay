@@ -110,6 +110,7 @@ class unconectedOrder extends Component {
                     itemId={item.itemId}
                     sellerId={item.sellerId}
                     orderId={this.props.orderId}
+                    byItem={true}
                   />
                 </div>
               </div>

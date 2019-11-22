@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
 import AddToCart from "./AddToCartButton.jsx";
+import SellerReview from "./SellerReviews.jsx";
 
 // STYLED COMPONENTS
 
@@ -23,6 +24,7 @@ const ContentCard = styled.div`
   margin-left: 15px;
   border: 2px solid;
   overflow: hidden;
+  overflow-y: auto;
 `;
 const Nav = styled.div`
   display: grid;
@@ -59,7 +61,7 @@ const Canvas = styled.div`
   margin: 20px;
   padding: 15px;
   max-width: 100vw;
-  max-height: 80vh;
+  height: 80vh;
   .image-main {
     background-color: rgb(170, 170, 170);
     width: 66%;
@@ -67,8 +69,14 @@ const Canvas = styled.div`
     border-radius: 5px;
   }
   .text-detail {
+    max-height: 80%;
     text-align: center;
     margin: 10px;
+    overflow: hidden;
+    overflow-y: auto;
+    ::-webkit-scrollbar {
+      display: hidden;
+    }
   }
   .price {
     display: flex;
@@ -82,7 +90,7 @@ const Canvas = styled.div`
 class UnconnectedItemDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = { display: "details" };
+    this.state = { display: "details", reviews: undefined };
   }
 
   displayContent = () => {
@@ -90,17 +98,45 @@ class UnconnectedItemDetails extends Component {
       case "details": {
         return <div>{this.props.item.description}</div>;
       }
-      case "reviews": {
-        return <div>{"no reviews. Be the first!"}</div>;
-      }
-      case "seller": {
-        return <div>{"Seller info"}</div>;
-        //<Link to={"/" + this.item.seller}>{this.item.seller}</Link>;
+      case "seller info": {
+        return <div>{this.renderSellerInfo()}</div>;
       }
     }
   };
   clickHandler = ev => {
     this.setState({ display: ev.target.id });
+  };
+  renderSellerInfo = () => {
+    const fetchReviews = async sellerId => {
+      console.log("fetching seller reviews");
+      const res = await fetch("/seller-reviews?itemId=" + sellerId);
+      let bod = await res.text();
+      bod = JSON.parse(bod);
+      if (bod.success) {
+        console.log(bod);
+        this.setState({ reviews: bod.reviews });
+        return;
+      }
+      console.log("review fetch failed");
+      this.setState({ reviews: [] });
+      return;
+    };
+    if (this.state.reviews) {
+      if (this.state.reviews.length > 1) {
+        return this.state.reviews.map(review => {
+          return <SellerReview reviewData={review} />;
+        });
+      }
+      return (
+        <div>
+          <div>This seller has no reviewed products.</div> <div>Good Luck!</div>
+        </div>
+      );
+    }
+    fetchReviews(this.props.item.sellerId);
+    return <div>Loading Reviews...</div>;
+
+    return; //<Link to={"/" + this.item.seller}>{this.item.seller}</Link>;
   };
   renderNavButtons = () => {
     let buttons = ["details", "seller info"];

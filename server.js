@@ -406,7 +406,7 @@ app.post("/cart", upload.none(), (req, res) => {
   });
 });
 
-app.get("/reviews", (req, res) => {
+app.get("/item-reviews", (req, res) => {
   let reviewId = req.query.itemId;
   aliDb
     .collection("reviews")
@@ -434,7 +434,30 @@ app.get("/reviews", (req, res) => {
       return;
     });
 });
-
+app.get("/seller-reviews", (req, res) => {
+  console.log("GET: /seller reviews");
+  let reviewId = req.query.itemId;
+  aliDb
+    .collection("reviews")
+    .find({ sellerId: reviewId })
+    .toArray((err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(
+          JSON.stringify({ success: false, msg: "error retreiving from db" })
+        );
+        return;
+      }
+      if (result.length < 1) {
+        res.send(JSON.stringify({ success: false, msg: "no reviews found" }));
+        return;
+      }
+      let pkgReview = result;
+      console.log("sending" + result.length + "reviews");
+      res.send(JSON.stringify({ success: true, reviews: pkgReview }));
+      return;
+    });
+});
 app.post("/review", upload.none(), (req, res) => {
   if (req.body.title === undefined || req.body.reviewTxt === undefined) {
     console.log("review missing mandatory pieces");

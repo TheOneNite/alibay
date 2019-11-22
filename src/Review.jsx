@@ -13,8 +13,22 @@ class UnconnectedReview extends Component {
     this.state = { reviewData: undefined, loaded: false };
   }
   loadReview = async () => {
-    console.log("fetching data");
-    let path = "/reviews?itemId=" + this.props.itemId;
+    if (this.props.byItem) {
+      console.log("fetching reviews by item");
+      let path = "/item-reviews?itemId=" + this.props.itemId;
+      let res = await fetch(path, { method: "GET", credentials: "include" });
+      let bod = await res.text();
+      bod = JSON.parse(bod);
+      if (bod.success) {
+        console.log("found review");
+        this.setState({ reviewData: bod.review });
+        return;
+      }
+      this.setState({ loaded: true });
+      return;
+    }
+    console.log("fetching reviews by seller");
+    let path = "/item-reviews?itemId=" + this.props.itemId;
     let res = await fetch(path, { method: "GET", credentials: "include" });
     let bod = await res.text();
     bod = JSON.parse(bod);
@@ -24,6 +38,7 @@ class UnconnectedReview extends Component {
       return;
     }
     this.setState({ loaded: true });
+    return;
   };
   refresh = () => {
     setTimeout(this.loadReview, 500);
