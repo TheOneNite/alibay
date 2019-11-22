@@ -14,6 +14,7 @@ const Main = styled.div`
     width: 100%;
     &:focus {
       outline-color: transparent;
+      background-color: whitesmoke;
     }
   }
   .input-multi {
@@ -27,6 +28,7 @@ const Main = styled.div`
     width: 100%;
     &:focus {
       outline-color: transparent;
+      background-color: whitesmoke;
     }
   }
   .button-base {
@@ -36,6 +38,7 @@ const Main = styled.div`
     color: whitesmoke;
     padding: 10px;
     text-align: center;
+    margin: 5px;
   }
   .button-base:hover {
     background-color: #3b3837;

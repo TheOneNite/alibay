@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 
 const Main = styled.div`
-  border-top: 1px solid white;
+  border-bottom: 1px solid white;
   text-align: left;
   .header {
     font-variant: small-caps;
