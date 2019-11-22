@@ -122,7 +122,7 @@ class UnconnectedItemDetails extends Component {
       return;
     };
     if (this.state.reviews) {
-      if (this.state.reviews.length > 1) {
+      if (this.state.reviews.length > 0) {
         return this.state.reviews.map(review => {
           return <SellerReview reviewData={review} />;
         });
