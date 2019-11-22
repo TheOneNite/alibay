@@ -187,11 +187,13 @@ class unconnectedMyAccount extends Component {
     let res = await fetch("/payout", { method: "GET", credentials: "include" });
     let bod = await res.text();
     bod = JSON.parse(bod);
-  };
-  updatePayout = () => {
-    if (this.state.payout) {
-      console.log("payout details exist");
+    if (bod.success) {
+      userInfo = bod.userData;
+      this.setState({
+        payout: userInfo.payout
+      });
     }
+    alert("payout success!");
   };
 
   render = () => {
