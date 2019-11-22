@@ -43,9 +43,8 @@ let cart = () => {
 let content = () => {
   return (
     <div className="content">
-      <div>
-        <Search />
-      </div>
+      <Search />
+
       <DisplayedItems />
     </div>
   );

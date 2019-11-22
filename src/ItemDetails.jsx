@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
 import AddToCart from "./AddToCartButton.jsx";
