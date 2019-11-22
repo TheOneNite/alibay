@@ -181,15 +181,10 @@ class unconnectedMyAccount extends Component {
     }
   };
   cashout = async () => {
-    if (this.state.userRef.vendorAcct === undefined) {
-      "https://connect.stripe.com/express/oauth/authorize?redirecturi=&lcient_id=&state=" +
-        this.state.userRef.userId;
-    } else {
-      await fetch("/payout", { method: "GET", credentials: "include" });
-    }
+    await fetch("/payout", { method: "GET", credentials: "include" });
   };
 
-  render() {
+  render = () => {
     return (
       <UpdatePop className="modal">
         <div className="modal-content">
@@ -259,7 +254,7 @@ class unconnectedMyAccount extends Component {
         </div>
       </UpdatePop>
     );
-  }
+  };
 }
 
 let mapStateToProps = st => {

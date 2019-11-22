@@ -406,6 +406,96 @@ app.post("/cart", upload.none(), (req, res) => {
   });
 });
 
+app.get("/reviews", (req, res) => {
+  let reviewId = req.query.itemId;
+  aliDb
+    .collection("reviews")
+    .find({ itemId: reviewId })
+    .toArray((err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(JSON.stringify({ success: false }));
+        return;
+      }
+      console.log("review found");
+      console.log(result[0]);
+      let pkgReview = {
+        title: review.title,
+        review: review.review
+      };
+      console.log(result);
+      res.send(JSON.stringify(pkgReview));
+      return;
+    });
+});
+
+app.post("/review", upload.none(), (req, res) => {
+  if (req.body.title === undefined || req.body.reviewTxt === undefined) {
+    console.log("review missing mandatory pieces");
+    res.send(
+      JSON.stringify({
+        success: false,
+        msg: "review needs to have a title and body"
+      })
+    );
+  }
+  let newReview = {
+    title: req.body.title,
+    review: req.body.reviewTxt,
+    sellerId: req.body.seller,
+    itemId: req.body.item
+  };
+  aliDb.collection("reviews").insertOne(newReview, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.send(
+        JSON.stringify({ success: false, msg: "could not write review to db" })
+      );
+      return;
+    }
+    console.log("review written to db");
+    console.log(req.body.order);
+    retreive("orders", { orderId: req.body.order }, aliDb).then(dbResult => {
+      if (dbResult.success) {
+        let order = dbResult.data;
+        let orderItems = order.items;
+        let found = orderItems.filter(item => {
+          if (item.itemId === newReview.itemId) {
+            return true;
+          }
+          return false;
+        });
+        updateItem = found[0];
+        let iupdate = orderItems.indexOf(updateItem);
+        updateItem.reviewed = true;
+        let newItems = orderItems.slice(0, iupdate);
+        newItems = newItems.concat(updateItem);
+        newItems = newItems.concat(
+          orderItems.slice(iupdate + 1, orderItems.length)
+        );
+        console.log(newItems);
+        aliDb
+          .collection("orders")
+          .updateOne(
+            { orderId: req.body.order },
+            { $set: { items: newItems } },
+            (err, result) => {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              console.log("item review status updated");
+              res.send(JSON.stringify({ success: true }));
+              return;
+            }
+          );
+      } else {
+        console.log("failed to retreive order info from db for review");
+      }
+    });
+  });
+});
+
 app.get("/checkout", (req, res) => {
   // sends an array of payment method objects and and array of
   const uid = sessions[req.cookies.sid];
@@ -579,7 +669,7 @@ app.post("/checkout", upload.none(), (req, res) => {
   });
 });
 
-app.get("/update-payout", (req, res) => {
+app.get("/update-vendor", (req, res) => {
   console.log("GET: /setup-payout");
   const uid = sessions[req.cookies.sid];
   console.log(req.query);
@@ -605,6 +695,10 @@ app.get("/update-payout", (req, res) => {
           }
         );
     });
+});
+
+app.get("/payout", (req, res) => {
+  console.log("GET: /payout");
 });
 
 app.get("/orders", (req, res) => {
