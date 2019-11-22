@@ -13,6 +13,8 @@ import MyAccount from "./MyAccount.jsx";
 import Cart from "./Cart.jsx";
 import PastOrders from "./PastOrders.jsx";
 import Order from "./Order.jsx";
+import ChatRoom from "./ChatRoom.jsx";
+import MyChat from "./MyChat.jsx";
 
 //import history from "./History.jsx";
 
@@ -68,6 +70,18 @@ let order = routerData => {
     </div>
   );
 };
+let chat = routerData => {
+  //props of chatroom : chatInfo: {sellerId:"", buyerId:"", itemId:""}
+  let info = routerData.match.params.info;
+  let infoBody = info.split("$");
+  let chatInfo = {
+    sellerId: infoBody[0],
+    buyerId: infoBody[1],
+    itemId: infoBody[2]
+  };
+  console.log("about to go to chat room", "chatInfo: ", chatInfo);
+  return <ChatRoom chatInfo={chatInfo} />;
+};
 
 class UnconnectedApp extends Component {
   findItemByID = ID => {
@@ -85,6 +99,8 @@ class UnconnectedApp extends Component {
     return (
       <BrowserRouter>
         <div>
+          <Route exact={true} path="/mychat" component={MyChat} />
+          <Route exact={true} path="/chat/:info" render={chat} />
           <Nav />
           <Route exact={true} path="/" render={content} />
           <Route exact={true} path="/item/:itemId" render={this.itemDetail} />

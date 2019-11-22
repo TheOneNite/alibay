@@ -38,6 +38,8 @@ app.use("/", express.static("public")); // Needed for local assets
 
 //global vars grr
 let sessions = {};
+//array of objedct:  message = {"itemId":"", "sellerId":"", "buyer":"", "msgs":[]}
+let messages = [];
 
 //modules and stuff
 const itemSearch = searchObj => {
@@ -124,7 +126,6 @@ app.post("/items", upload.none(), (req, res) => {
       });
   }
 });
-
 //user authentication endpoints------------------------------------------------------------------------------------------
 app.post("/login", upload.none(), (req, res) => {
   const sid = req.cookies.sid;
@@ -336,7 +337,88 @@ app.post("/cart", upload.none(), (req, res) => {
       );
   });
 });
-
+// chat room---------------------------------------------------------------------------------------------------
+//fetch info
+app.post("/getId", upload.none(), (req, res) => {
+  let name = req.body.username;
+  console.log("get id", "username:", name);
+  aliDb.collection("auth").findOne({ username: name }, (err, dbResult) => {
+    if (err) {
+      console.log(err);
+      res.send("user auth retrevied err");
+      return;
+    }
+    console.log("user auth retrevied", dbResult);
+    let id = dbResult.id;
+    res.send(JSON.stringify({ id: id }));
+  });
+});
+//new chat message----------------------------------------------------------------------------
+app.post("/newMessage", upload.none(), (req, res) => {
+  //data:{"itemId":"", "sellerId":"", "buyerId":"", "msg":""}
+  console.log("body", req.body);
+  let chatInfo = req.body;
+  let senderId = sessions[req.cookies.sid];
+  console.log("senderId", senderId);
+  console.log("get sender name");
+  //get sender name
+  let senderName = "";
+  aliDb.collection("auth").findOne({ id: senderId }, (err, dbResult) => {
+    if (err) {
+      console.log(err);
+      res.send("sender auth retrevied err");
+      return;
+    }
+    console.log("sender auth retrevied", dbResult);
+    senderName = dbResult.username;
+    console.log("senderName", senderName);
+    //newMsg:{"itemId":"", "sellerId":"", "buyerId":"", chat:{sender: "", msg:""}}}
+    let newMsg = {
+      itemId: chatInfo.itemId,
+      sellerId: chatInfo.sellerId,
+      buyerId: chatInfo.buyerId,
+      chat: { sender: senderName, msg: chatInfo.msg }
+    };
+    console.log("new message", newMsg);
+    messages.push(newMsg);
+    console.log("updated messages", messages);
+    res.send(JSON.stringify({ success: true }));
+  });
+});
+//messages----------------------------------------------------------------------------------------------
+app.post("/messages", upload.none(), (req, res) => {
+  //send the messages with unique itemsId, seller, buyer
+  console.log("messages/POST", req.body);
+  let chatInfo = req.body;
+  console.log("chatInfo", chatInfo);
+  let itemId = chatInfo.itemId;
+  let sellerId = chatInfo.sellerId;
+  let buyerId = chatInfo.buyerId;
+  let result = messages.filter(message => {
+    if (
+      message.itemId === itemId &&
+      message.sellerId === sellerId &&
+      message.buyerId === buyerId
+    )
+      return true;
+    return false;
+  });
+  console.log("get result", result);
+  let msgs = result.map(r => r.chat);
+  console.log("send frontend messages", msgs);
+  res.send(JSON.stringify(msgs));
+});
+//mychat---------------------------------------------------------------------
+//messages is array of object:{"itemId":"", "sellerId":"", "buyerId":"", chat:{sender: "", msg:""}}}
+app.get("/getmychat", (req, res) => {
+  let uid = sessions[req.cookies.sid];
+  let chatsAsSeller = messages.filter(m => m.sellerId === uid);
+  let chatAsBuyer = messages.filter(m => m.buyerId === uid);
+  let mychats = { asSeller: chatsAsSeller, asBuyer: chatAsBuyer };
+  console.log("mychats for frontend", mychats);
+  res.send(JSON.stringify(mychats));
+});
+// check out------------------------------------------------------------------------------------------------
 app.get("/checkout", (req, res) => {
   // sends an array of payment method objects and and array of
   const uid = sessions[req.cookies.sid];

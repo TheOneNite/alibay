@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
 import AddToCart from "./AddToCartButton.jsx";
+import ChatButton from "./ChatButton.jsx"
 
 const Card = styled.div`
   padding: 10px;
@@ -44,6 +45,7 @@ class ItemSearch extends Component {
           <div>{formatMoney(this.props.item.price)}</div>
           <AddToCart itemId={this.props.item.itemId} />
         </PriceDiv>
+        <ChatButton item={this.props.item}/>
       </Card>
     );
   }

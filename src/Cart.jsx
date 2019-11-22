@@ -95,6 +95,7 @@ class UnconnectedCart extends Component {
   };
 
   render = () => {
+    console.log('render cart', this.props.cartItems)
     let total = 0;
     this.props.cartItems.forEach(item => {
       total = total + item.price;
@@ -107,7 +108,7 @@ class UnconnectedCart extends Component {
             {this.props.cartItems.map(item => {
               //display items
               return (
-                <div key={item.itemId}>
+                <div>
                   <ItemCart item={item} />
                 </div>
               );
