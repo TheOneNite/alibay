@@ -1,6 +1,8 @@
 body {
   background-color: #d6d6d6;
   background-image: url("/bg01.png");
+
+  font-family: garamond, "Times New Roman", Times, serif;
   margin: 0;
 }
 

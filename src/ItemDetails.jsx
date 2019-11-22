@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
 import AddToCart from "./AddToCartButton.jsx";
@@ -17,9 +16,9 @@ const Title = styled.div`
 `;
 const ContentCard = styled.div`
   width: 33%;
+  background-color: #ebebeb;
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  background-color: inherit;
+  grid-template-rows: auto auto 1fr;
   border-radius: 5px;
   margin-left: 15px;
   border: 2px solid;
@@ -28,24 +27,26 @@ const ContentCard = styled.div`
 const Nav = styled.div`
   display: grid;
   grid-template-columns: 50% 50%;
-`;
-const SelectedNavButton = styled.button`
-  padding: 5px;
-  background-color: #696969;
-  font-variant: small-caps;
-  color: white;
-  border: none;
-`;
-const NavButton = styled.button`
-  padding: 5px;
-  border-width: 0px;
-  font-variant: small-caps;
-  border-left: 1px solid;
-  border-right: 1px solid;
-  background-color: inherit;
-  border-bottom: 2px solid;
-  &:hover {
-    background-color: whitesmoke;
+  button {
+    padding: 5px;
+    font-variant: small-caps;
+    border-style: none;
+    border-top: 2px solid;
+    &:focus {
+      outline: transparent;
+    }
+  }
+  .selected {
+    background-color: inherit;
+  }
+  .unselected {
+    background-color: #696969;
+    border-color: black;
+    color: whitesmoke;
+    &:hover {
+      background-color: #606060;
+      cursor: pointer;
+    }
   }
 `;
 const PurchaseDiv = styled.div`
@@ -53,7 +54,7 @@ const PurchaseDiv = styled.div`
   grid-template-columns: 1fr auto;
   border-top: 1px solid;
 `;
-const Main = styled.div`
+const Canvas = styled.div`
   display: flex;
   margin: 20px;
   padding: 15px;
@@ -69,94 +70,21 @@ const Main = styled.div`
     text-align: center;
     margin: 10px;
   }
-  .add {
-    display: flex;
-    padding: 5px;
-    border-radius: 4px;
-    top: 0;
-    left: 280px;
-    width: 150px;
-    height: 50px;
-    color: white;
-    background-color: #696969;
-    transition: left 0.3s;
-  }
   .price {
+    display: flex;
     margin: 15px;
+    font-size: 25px;
+    justify-content: flex-end;
+    align-items: center;
   }
 `;
-
-/**THINGS TO DISPLAY
- * image
- * name
- * description
- * price
- * reviews
- * add to cart button
- * seller details + link
- */
 
 class UnconnectedItemDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = { display: "details" }; //can display item description, reviews, i dunno
+    this.state = { display: "details" };
   }
-  renderAddIcon = () => {
-    switch (this.state.status) {
-      case "none": {
-        return <></>;
-      }
-      case "loading": {
-        return (
-          <svg width="12" height="12">
-            <circle
-              cx="6"
-              cy="6"
-              r="6"
-              stroke="whitesmoke"
-              strokeWidth="4"
-              strokeDasharray="180"
-              fill="transparent"
-            />
-            <animateTransform
-              attributeType="xml"
-              attributeName="transform"
-              type="rotate"
-              from="0"
-              to="360"
-              dur="1s"
-              repeatCount="indefinite"
-            />
-          </svg>
-        );
-      }
-      case "success": {
-        return (
-          <svg
-            id="check"
-            width="12px"
-            height="12px"
-            viewBox="0 0 99 73"
-            fill="none"
-          >
-            <path d="M1 27L39 71L98 1" stroke="whitesmoke" strokeWidth="10">
-              <animate
-                attributeName="stroke-dashoffset"
-                values="180;0"
-                dur="0.9s"
-                repeatCount="once"
-              />
-            </path>
-          </svg>
-        ); //this will be the checkmark
-      }
-      case "fail":
-        {
-          return; //this will be the X
-        }
-        return;
-    }
-  };
+
   displayContent = () => {
     switch (this.state.display) {
       case "details": {
@@ -179,40 +107,49 @@ class UnconnectedItemDetails extends Component {
     return buttons.map(button => {
       if (button === this.state.display) {
         return (
-          <SelectedNavButton id={button} onClick={this.clickHandler}>
+          <button className="selected" id={button} onClick={this.clickHandler}>
             {button}
-          </SelectedNavButton>
+          </button>
         );
       }
       return (
-        <NavButton id={button} onClick={this.clickHandler}>
+        <button className="unselected" id={button} onClick={this.clickHandler}>
           {button}
-        </NavButton>
+        </button>
       );
     });
   };
-
+  fetchItems = async () => {
+    let data = new FormData();
+    // data.append("search", this.props.searchQuery)
+    let response = await fetch("/items", {
+      method: "POST",
+      body: data
+    });
+    let body = await response.text();
+    let allItems = JSON.parse(body);
+    this.props.dispatch({ type: "allItems", items: allItems });
+  };
   render() {
     if (this.props.item === undefined) {
+      this.fetchItems();
       return <div>Loading Item Details....</div>;
     }
     return (
-      <Main>
+      <Canvas>
         <img src={this.props.item.largeImage} className="image-main" />
         <ContentCard>
+          <Title>{this.props.item.title}</Title>
           <Nav>{this.renderNavButtons()}</Nav>
           <div>
-            <Title>{this.props.item.title}</Title>
             <div className="text-detail">{this.displayContent()}</div>
           </div>
           <PurchaseDiv>
-            <div className="price" text-align="right">
-              {formatMoney(this.props.item.price)}
-            </div>
+            <div className="price">{formatMoney(this.props.item.price)}</div>
             <AddToCart itemId={this.props.item.itemId} />
           </PurchaseDiv>
         </ContentCard>
-      </Main>
+      </Canvas>
     );
   }
 }

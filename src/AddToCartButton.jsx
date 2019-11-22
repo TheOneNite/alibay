@@ -3,24 +3,36 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 
-const AddButton = styled.button`
+const AddButton = styled.div`
   border: none;
   display: flex;
-  padding: 15px;
-  border-radius: 4px;
-  top: 0;
-  left: 280px;
-  width: 150px;
-  height: 50px;
+  align-items: center;
+  padding: 13px;
   color: white;
   background-color: #696969;
-  #check {
+  cursor: pointer;
+  border: 1px solid #696969;
+  &:hover {
+    border-style: inset;
+  }
+  &:focus {
+    outline: transparent;
+  }
+  #check,
+  #cross {
     stroke-dasharray: 180;
     stroke-dashoffset: 180;
-    transition: stroke-dashoffset 0.5s;
+    animation: draw 0.7s linear forwards;
+  }
+  @keyframes draw {
+    100% {
+      stroke-dashoffset: 0;
+    }
   }
   .icon {
-    margin: 5px;
+    margin: 10px;
+    width: 20px;
+    height: 20px;
   }
 `;
 
@@ -48,7 +60,11 @@ class UnconnectedAddToCart extends Component {
       });
       if (cartCheck.length > 0) {
         console.log("item already in cart");
-        this.setState({ status: "fail" });
+        this.setState({ status: "loading" }, () => {
+          setTimeout(() => {
+            this.setState({ status: "fail" });
+          }, 1000);
+        });
         return;
       }
       let data = new FormData();
@@ -66,29 +82,31 @@ class UnconnectedAddToCart extends Component {
         this.setState({ status: "fail" });
         return;
       }
-      this.setState({ status: "success" });
+      setTimeout(() => {
+        this.setState({ status: "success" }, () => {
+          this.updateCart();
+        });
+      }, 700);
     });
-    this.updateCart();
   };
   renderIcon = () => {
     console.log("rendering icon");
     switch (this.state.status) {
       case "none": {
-        return <></>;
+        return <div className="icon" />;
       }
       case "loading": {
         console.log("renderload");
         return (
-          <svg width="12" height="12">
+          <svg className="icon">
             <circle
-              cx="6"
-              cy="6"
-              r="6"
+              cx="10"
+              cy="10"
+              r="10"
               stroke="whitesmoke"
               strokeWidth="4"
               strokeDasharray="180"
               fill="transparent"
-              className="icon"
             />
             <animateTransform
               attributeType="xml"
@@ -105,50 +123,26 @@ class UnconnectedAddToCart extends Component {
       case "success": {
         console.log("rendercheck");
         return (
-          <svg
-            id="check"
-            width="12px"
-            height="12px"
-            viewBox="0 0 99 73"
-            fill="none"
-            className="icon"
-          >
-            <path d="M1 27L39 71L98 1" stroke="whitesmoke" strokeWidth="10">
-              <animate
-                attributeName="stroke-dashoffset"
-                values="180;0"
-                dur="0.9s"
-                repeatCount="once"
-              />
-            </path>
+          <svg className="icon" id="check" viewBox="0 0 99 73" fill="none">
+            <path
+              d="M1 27L39 71L98 1"
+              stroke="whitesmoke"
+              strokeWidth="15px"
+            ></path>
           </svg>
         ); //this will be the checkmark
       }
       case "fail":
         {
           return (
-            <svg
-              width="12px"
-              height="12px"
-              viewBox="0 0 61 79"
-              fill="none"
-              className="icon"
-            >
+            <svg className="icon" id="cross" viewBox="0 0 61 79" fill="none">
               <path
-                id="cross"
                 d="M1 77.5L60 1M1 1L60 77.5"
                 stroke="whitesmoke"
-                strokeWidth="20px"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  values="180;0"
-                  dur=".9s"
-                  repeatCount="once"
-                />
-              </path>
+                strokeWidth="15px"
+              ></path>
             </svg>
-          ); //this will be the X
+          );
         }
         return;
     }

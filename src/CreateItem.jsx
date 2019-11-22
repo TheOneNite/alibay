@@ -179,6 +179,7 @@ class unconnectedCreateItem extends Component {
                   placeholder="Title"
                   className="input-base"
                   required
+                  maxlength="30"
                   value={this.state.title}
                   onChange={this.handleChange}
                 />

@@ -43,9 +43,8 @@ let cart = () => {
 let content = () => {
   return (
     <div className="content">
-      <div>
-        <Search />
-      </div>
+      <Search />
+
       <DisplayedItems />
     </div>
   );
@@ -95,6 +94,12 @@ class UnconnectedApp extends Component {
         type: "login-success",
         currentUser: bod.user.displayName
       });
+      let response = await fetch("/fetch-cart", {
+        method: "GET"
+      });
+      let body = await response.text();
+      let cart = JSON.parse(body);
+      this.props.dispatch({ type: "updateCart", cart });
     }
   };
   render = () => {
