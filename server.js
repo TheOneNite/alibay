@@ -414,17 +414,23 @@ app.get("/reviews", (req, res) => {
     .toArray((err, result) => {
       if (err) {
         console.log(err);
-        res.send(JSON.stringify({ success: false }));
+        res.send(
+          JSON.stringify({ success: false, msg: "error retreiving from db" })
+        );
         return;
       }
-      console.log("review found");
+      if (result.length < 1) {
+        res.send(JSON.stringify({ success: false, msg: "no reviews found" }));
+        return;
+      }
       console.log(result[0]);
+      let review = result[0];
       let pkgReview = {
         title: review.title,
         review: review.review
       };
       console.log(result);
-      res.send(JSON.stringify(pkgReview));
+      res.send(JSON.stringify({ success: true, review: pkgReview }));
       return;
     });
 });

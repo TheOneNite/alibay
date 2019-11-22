@@ -4,6 +4,43 @@ import styled from "styled-components";
 
 const Main = styled.div`
   background-color: inherit;
+  .input-base {
+    padding: 5px;
+    box-sizing: border-box;
+    background-color: inherit;
+    border: 2px solid #696969;
+    border-radius: 5px;
+    margin: 5px;
+    width: 100%;
+    &:focus {
+      outline-color: transparent;
+    }
+  }
+  .input-multi {
+    padding: 5px;
+    box-sizing: border-box;
+    margin: 5px;
+    background-color: inherit;
+    border: 2px solid #696969;
+    border-radius: 5px;
+    min-height: 50px;
+    width: 100%;
+    &:focus {
+      outline-color: transparent;
+    }
+  }
+  .button-base {
+    background-color: #696969;
+    border: none;
+    border-radius: 7px;
+    color: whitesmoke;
+    padding: 10px;
+    text-align: center;
+  }
+  .button-base:hover {
+    background-color: #3b3837;
+    color: whitesmoke;
+  }
 `;
 
 class UnconnectedReviewForm extends Component {
@@ -60,8 +97,7 @@ class UnconnectedReviewForm extends Component {
               onChange={this.inputHandler}
               className="input-base"
             />
-            <input
-              type="textarea"
+            <textarea
               placeholder="Your Review"
               name="review"
               value={this.state.review}
@@ -74,9 +110,11 @@ class UnconnectedReviewForm extends Component {
       );
     }
     return (
-      <button className="button=base" onClick={this.toggleActive}>
-        Add a Review
-      </button>
+      <Main>
+        <button className="button-base" onClick={this.toggleActive}>
+          Add a Review
+        </button>
+      </Main>
     );
   };
 }

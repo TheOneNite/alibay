@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import ReviewForm from "./ReviewForm.jsx";
 import { connect } from "react-redux";
+import styled from "styled-components";
+
+const Main = styled.div`
+  border-top: 1px solid white;
+`;
 
 class UnconnectedReview extends Component {
   constructor(props) {
@@ -13,7 +18,6 @@ class UnconnectedReview extends Component {
     let res = await fetch(path, { method: "GET", credentials: "include" });
     let bod = await res.text();
     bod = JSON.parse(bod);
-    console.log(bod);
     if (bod.success) {
       console.log("found review");
       this.setState({ reviewData: bod.review });
@@ -30,10 +34,11 @@ class UnconnectedReview extends Component {
     console.log(this.state);
     if (this.state.reviewData) {
       return (
-        <div>
+        <Main>
+          <h3>Your Review:</h3>
           <h4>{this.state.reviewData.title}</h4>
           <p>{this.state.reviewData.review}</p>
-        </div>
+        </Main>
       );
     }
     if (this.state.loaded) {
