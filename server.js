@@ -210,6 +210,7 @@ app.post("/signup", upload.none(), async (req, res) => {
               }
               console.log("user auth info stored");
               let pkg = { success: true };
+              res.cookie("sid", tools.generateId(6));
               res.send(JSON.stringify(pkg));
             }
           );
@@ -699,10 +700,11 @@ app.post("/checkout", upload.none(), (req, res) => {
 });
 
 app.get("/update-vendor", (req, res) => {
-  console.log("GET: /setup-payout");
+  console.log("GET: /update-orders");
   const uid = sessions[req.cookies.sid];
+  //if (req.query.state === uid) {
   console.log(req.query);
-  const userCode = req.query;
+  const userCode = req.query.code;
   stripe.oauth
     .token({
       grant_type: "authorization_code",
@@ -724,6 +726,9 @@ app.get("/update-vendor", (req, res) => {
           }
         );
     });
+  //}
+  //console.log("state mismatch for vendor signup");
+  res.redirect("/");
 });
 
 app.get("/payout", (req, res) => {

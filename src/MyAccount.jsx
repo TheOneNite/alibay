@@ -89,7 +89,9 @@ class unconnectedMyAccount extends Component {
       username: "",
       oldPassword: "",
       newPassword: "",
-      email: ""
+      email: "",
+      uri:
+        "https://connect.stripe.com/express/oauth/authorize?redirect_uri=http://localhost:4000/account&client_id=ca_GDrtmQU5LkOjEsa9VzuxZvNY0TyXEAuy&state="
     };
   }
   componentDidMount = async () => {
@@ -104,7 +106,8 @@ class unconnectedMyAccount extends Component {
       address: userInfo.location,
       payment: userInfo.paymentMethods,
       orders: userInfo.orders,
-      payout: userInfo.payout
+      payout: userInfo.payout,
+      uri: this.state.uri + userInfo.userId
     });
   };
   onChangeUsername = event => {
@@ -181,7 +184,14 @@ class unconnectedMyAccount extends Component {
     }
   };
   cashout = async () => {
-    await fetch("/payout", { method: "GET", credentials: "include" });
+    let res = await fetch("/payout", { method: "GET", credentials: "include" });
+    let bod = await res.text();
+    bod = JSON.parse(bod);
+  };
+  updatePayout = () => {
+    if (this.state.payout) {
+      console.log("payout details exist");
+    }
   };
 
   render = () => {
@@ -194,7 +204,12 @@ class unconnectedMyAccount extends Component {
             <button onClick={this.cashout} className="button">
               Claim
             </button>
-            <button className="button">Payment Details</button>
+
+            <a href={this.state.uri}>
+              <button className="button" onClick={this.updatePayout}>
+                Payment Details
+              </button>
+            </a>
           </div>
         </div>
 
