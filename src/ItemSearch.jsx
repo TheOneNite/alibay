@@ -15,7 +15,7 @@ const Card = styled.div`
   padding: 0px;
   height: 310px;
   width: 250px;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 14px 14px 0 rgba(0, 0, 0, 0.19);
   .link {
     text-decoration: none;
   }
@@ -55,6 +55,12 @@ const Card = styled.div`
   #cross {
     stroke-dasharray: 180;
     stroke-dashoffset: 180;
+    animation: draw 0.7s linear forwards;
+  }
+  @keyframes draw {
+    100% {
+      stroke-dashoffset: 0;
+    }
   }
 `;
 const Image = styled.img`
@@ -118,33 +124,28 @@ class UnconnectedItemSearch extends Component {
             viewBox="0 0 99 73"
             fill="none"
           >
-            <path d="M1 27L39 71L98 1" stroke="whitesmoke" strokeWidth="20px">
-              <animate
-                attributeName="stroke-dashoffset"
-                values="180;0"
-                dur=".9s"
-                repeatCount="once"
-              />
-            </path>
+            <path
+              d="M1 27L39 71L98 1"
+              stroke="whitesmoke"
+              strokeWidth="20px"
+            ></path>
           </svg>
         ); //this will be the checkmark
       }
       case "fail": {
         return (
-          <svg width="12px" height="12px" viewBox="0 0 61 79" fill="none">
+          <svg
+            id="cross"
+            width="12px"
+            height="12px"
+            viewBox="0 0 61 79"
+            fill="none"
+          >
             <path
-              id="cross"
               d="M1 77.5L60 1M1 1L60 77.5"
               stroke="whitesmoke"
               strokeWidth="20px"
-            >
-              <animate
-                attributeName="stroke-dashoffset"
-                values="180;0"
-                dur=".9s"
-                repeatCount="once"
-              />
-            </path>
+            ></path>
           </svg>
         ); //this will be the X
       }
@@ -185,13 +186,18 @@ class UnconnectedItemSearch extends Component {
           return item.itemId === this.props.item.itemId;
         })[0] !== undefined
       ) {
-        console.log("item already in cart");
-        this.setState({ status: "fail" });
+        this.setState({ status: "loading" }, () => {
+          setTimeout(() => {
+            this.setState({ status: "fail" });
+          }, 1000);
+        });
         return;
       }
       let newCart = await addToCart(this.props.item.itemId);
       this.props.dispatch({ type: "updateCart", cart: newCart });
-      this.setState({ status: "success" });
+      setTimeout(() => {
+        this.setState({ status: "success" });
+      }, 700);
     });
   };
   render() {

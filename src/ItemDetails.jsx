@@ -53,7 +53,7 @@ const PurchaseDiv = styled.div`
   grid-template-columns: 1fr auto;
   border-top: 1px solid;
 `;
-const Main = styled.div`
+const Canvas = styled.div`
   display: flex;
   margin: 20px;
   padding: 15px;
@@ -69,94 +69,17 @@ const Main = styled.div`
     text-align: center;
     margin: 10px;
   }
-  .add {
-    display: flex;
-    padding: 5px;
-    border-radius: 4px;
-    top: 0;
-    left: 280px;
-    width: 150px;
-    height: 50px;
-    color: white;
-    background-color: #696969;
-    transition: left 0.3s;
-  }
   .price {
     margin: 15px;
   }
 `;
 
-/**THINGS TO DISPLAY
- * image
- * name
- * description
- * price
- * reviews
- * add to cart button
- * seller details + link
- */
-
 class UnconnectedItemDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = { display: "details" }; //can display item description, reviews, i dunno
+    this.state = { display: "details" };
   }
-  renderAddIcon = () => {
-    switch (this.state.status) {
-      case "none": {
-        return <></>;
-      }
-      case "loading": {
-        return (
-          <svg width="12" height="12">
-            <circle
-              cx="6"
-              cy="6"
-              r="6"
-              stroke="whitesmoke"
-              strokeWidth="4"
-              strokeDasharray="180"
-              fill="transparent"
-            />
-            <animateTransform
-              attributeType="xml"
-              attributeName="transform"
-              type="rotate"
-              from="0"
-              to="360"
-              dur="1s"
-              repeatCount="indefinite"
-            />
-          </svg>
-        );
-      }
-      case "success": {
-        return (
-          <svg
-            id="check"
-            width="12px"
-            height="12px"
-            viewBox="0 0 99 73"
-            fill="none"
-          >
-            <path d="M1 27L39 71L98 1" stroke="whitesmoke" strokeWidth="10">
-              <animate
-                attributeName="stroke-dashoffset"
-                values="180;0"
-                dur="0.9s"
-                repeatCount="once"
-              />
-            </path>
-          </svg>
-        ); //this will be the checkmark
-      }
-      case "fail":
-        {
-          return; //this will be the X
-        }
-        return;
-    }
-  };
+
   displayContent = () => {
     switch (this.state.display) {
       case "details": {
@@ -197,7 +120,7 @@ class UnconnectedItemDetails extends Component {
       return <div>Loading Item Details....</div>;
     }
     return (
-      <Main>
+      <Canvas>
         <img src={this.props.item.largeImage} className="image-main" />
         <ContentCard>
           <Nav>{this.renderNavButtons()}</Nav>
@@ -212,7 +135,7 @@ class UnconnectedItemDetails extends Component {
             <AddToCart itemId={this.props.item.itemId} />
           </PurchaseDiv>
         </ContentCard>
-      </Main>
+      </Canvas>
     );
   }
 }
