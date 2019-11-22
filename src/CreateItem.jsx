@@ -1,52 +1,57 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import formatMoney from "./formatMoney.js";
 import styled from "styled-components";
 
 const SaleForm = styled.div`
   display: flex;
   margin-top: 50px;
-  margin-right: 20vw;
-  margin-left: 20vw;
-  justify-content: space-around;
-  border: 5px solid #696969;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.19);
+  justify-content: center;
+  #file {
+    display: none;
+  }
+  .label {
+    cursor: pointer;
+  }
   input {
+    box-sizing: border-box;
     &:focus {
       outline: transparent;
     }
   }
-  background-color: rgba(255, 255, 255, 0.55);
-
+  img {
+    object-fit: scale-down;
+    width: 400px;
+    border-radius: 3px;
+    background-color: rgb(170, 170, 170);
+  }
+  .card {
+    border: 5px solid #696969;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.19);
+    background-color: rgba(255, 255, 255, 0.55);
+    width: 400px;
+  }
   .image-upload {
     text-align: center;
     justify-content: center;
-    min-height: 40vh;
   }
   .form-data {
     justify-content: space-around;
     display: flex;
     flex-direction: column;
   }
-  .wrap-horozontial {
-    width: 100%;
+  .wrap-horizontal {
     display: flex;
     justify-content: space-around;
   }
   .input-base {
     padding: 5px;
-    box-sizing: border-box;
     background-color: inherit;
     border: 2px solid #696969;
     border-radius: 5px;
     margin: 5px;
-    width: 100%;
-    &:focus {
-      outline-color: transparent;
-    }
   }
   .input-multi {
     padding: 5px;
@@ -56,10 +61,6 @@ const SaleForm = styled.div`
     border: 2px solid #696969;
     border-radius: 5px;
     min-height: 50px;
-    width: 100%;
-    &:focus {
-      outline-color: transparent;
-    }
   }
   .button-base {
     background-color: #696969;
@@ -80,8 +81,8 @@ class unconnectedCreateItem extends Component {
   state = {
     title: "",
     description: "",
-    image: "",
-    largeImage: "",
+    image: "./nophoto.png",
+    largeImage: "./nophoto.png",
     imgMsg: "Upload an Image of your Product",
     price: "",
     city: ""
@@ -153,74 +154,74 @@ class unconnectedCreateItem extends Component {
       <SaleForm>
         {!me && <h1>Must be signed in to create items to sell</h1>}
         {me && (
-          <form onSubmit={this.sendData}>
-            <div className="image-upload">
-              {this.state.imgMsg}
-              <div>
-                <input
-                  type="file"
-                  id="file"
-                  name="file"
-                  placeholder="Upload an Image"
-                  required
-                  onChange={this.uploadFile}
-                />
-              </div>
-              {this.state.image && (
-                <img src={this.state.image} width="200" alt="Preview" />
-              )}
-            </div>
-            <div className="form-data">
-              <div>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  placeholder="Title"
-                  className="input-base"
-                  required
-                  maxlength="30"
-                  value={this.state.title}
-                  onChange={this.handleChange}
-                />
-              </div>
+          <div className="upload card">
+            <div>
+              <div className="image-upload">
+                <label className="label">
+                  <img src={this.state.image} alt="Preview" />
+                  <div>{this.state.imgMsg}</div>
+                  <div>
+                    <input
+                      type="file"
+                      id="file"
+                      name="file"
+                      placeholder="Upload an Image"
+                      required
+                      onChange={this.uploadFile}
+                    ></input>
+                  </div>
+                </label>
+                <div className="form-data">
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="Title"
+                    className="input-base"
+                    required
+                    maxlength="30"
+                    value={this.state.title}
+                    onChange={this.handleChange}
+                  />
 
-              <textarea
-                id="description"
-                name="description"
-                placeholder="Please enter a description"
-                className="input-multi"
-                required
-                value={this.state.description}
-                onChange={this.handleChange}
-              />
-              <div className="wrap-horozontial">
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  placeholder="Ships From"
-                  className="input-base"
-                  required
-                  value={this.state.city}
-                  onChange={this.handleChange}
-                />
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  placeholder="Price"
-                  className="input-base"
-                  required
-                  value={this.state.price}
-                  onChange={this.handleChange}
-                />
+                  <textarea
+                    id="description"
+                    name="description"
+                    placeholder="Please enter a description"
+                    className="input-multi"
+                    required
+                    value={this.state.description}
+                    onChange={this.handleChange}
+                  />
+                  <div className="wrap-horizontal">
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      placeholder="Ships From"
+                      className="input-base"
+                      required
+                      value={this.state.city}
+                      onChange={this.handleChange}
+                    />
+                    <input
+                      type="number"
+                      id="price"
+                      name="price"
+                      placeholder="Price"
+                      className="input-base"
+                      required
+                      value={this.state.price}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <button onClick={this.sendData} className="button-base">
+                    SUBMIT
+                  </button>
+                </div>
               </div>
-              <button type="submit" className="button-base">
-                SUBMIT
-              </button>
             </div>
-          </form>
+          </div>
         )}
       </SaleForm>
     );
