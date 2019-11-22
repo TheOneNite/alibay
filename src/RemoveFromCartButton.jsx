@@ -1,5 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import styled from "styled-components";
+
+const DeleteButton = styled.button`
+  font-size: 3rem;
+  background: none;
+  border: 0;
+  &:hover {
+    color: #696969;
+    cursor: pointer;
+  }
+`;
 
 class UnconnectedRemoveFromCart extends Component {
   updateCart = async () => {
@@ -34,7 +45,7 @@ class UnconnectedRemoveFromCart extends Component {
   };
 
   render() {
-    return <button onClick={this.remove}>remove</button>;
+    return <DeleteButton onClick={this.remove}>&times;</DeleteButton>;
   }
 }
 

@@ -5,7 +5,6 @@ import Login from "./Login.jsx";
 import Signup from "./Signup.jsx";
 import Nav from "./Nav.jsx";
 import ItemDetails from "./ItemDetails.jsx";
-import ItemSearch from "./ItemSearch.jsx";
 import CreateItem from "./CreateItem.jsx";
 import DisplayedItems from "./DisplayedItems.jsx";
 import Search from "./Search.jsx";
@@ -45,8 +44,9 @@ let cart = () => {
 
 let content = () => {
   return (
-    <div>
+    <div className="content">
       <Search />
+
       <DisplayedItems />
     </div>
   );
@@ -95,7 +95,29 @@ class UnconnectedApp extends Component {
     let item = this.findItemByID(routerData.match.params.itemId);
     return <ItemDetails item={item} />;
   };
+  checkCookie = async () => {
+    const res = await fetch("/autologin", {
+      method: "GET",
+      credentials: "include"
+    });
+    let bod = await res.text();
+    bod = JSON.parse(bod);
+    if (bod.success) {
+      console.log("found active login session");
+      this.props.dispatch({
+        type: "login-success",
+        currentUser: bod.user.displayName
+      });
+      let response = await fetch("/fetch-cart", {
+        method: "GET"
+      });
+      let body = await response.text();
+      let cart = JSON.parse(body);
+      this.props.dispatch({ type: "updateCart", cart });
+    }
+  };
   render = () => {
+    this.checkCookie();
     return (
       <BrowserRouter>
         <div>

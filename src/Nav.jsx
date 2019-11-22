@@ -98,8 +98,8 @@ class unconnectedNav extends Component {
         {me && (
           <>
             <Link to="/sell">Sell an Item</Link>
-            <Link to="/orders">{me}'s' Orders</Link>
-            <Link to="/account">{me}'s' Account</Link>
+            <Link to="/orders">{me}'s Orders</Link>
+            <Link to="/account">{me}'s Account</Link>
             <Link to="/cart">Cart</Link>
             <button onClick={this.signout}>Sign Out</button>
           </>

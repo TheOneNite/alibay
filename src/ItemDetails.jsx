@@ -1,45 +1,54 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
 import AddToCart from "./AddToCartButton.jsx";
+import SellerReview from "./SellerReviews.jsx";
 
 // STYLED COMPONENTS
-const ItemCard = styled.div``;
 
-const Title = styled.h3`
+const Title = styled.div`
   margin: 5px;
+  font-size: 24px;
+  font-variant: small-caps;
+  height: min-content;
+  margin-right: 10px;
+  margin-left: 10px;
 `;
-
 const ContentCard = styled.div`
-  width: 50vw;
-  height: 100%;
+  width: 33%;
+  background-color: #ebebeb;
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  background-color: rgb(0, 162, 255);
+  grid-template-rows: auto auto 1fr;
   border-radius: 5px;
-  border: 1px solid;
+  margin-left: 15px;
+  border: 2px solid;
   overflow: hidden;
+  overflow-y: auto;
 `;
 const Nav = styled.div`
   display: grid;
-  grid-template-columns: 34% 33% 33%;
-`;
-const SelectedNavButton = styled.button`
-border-width: 0px;
-border-left: 1px solid;
-border-right: 1px solid;
-background-color: rgb(0, 162, 255);
-}
-`;
-const NavButton = styled.button`
-  border-width: 0px;
-  border-left: 1px solid;
-  border-right: 1px solid;
-  background-color: teal
-  &:hover {
-    background-color: rgb(0, 162, 255);
+  grid-template-columns: 50% 50%;
+  button {
+    padding: 5px;
+    font-variant: small-caps;
+    border-style: none;
+    border-top: 2px solid;
+    &:focus {
+      outline: transparent;
+    }
+  }
+  .selected {
+    background-color: inherit;
+  }
+  .unselected {
+    background-color: #696969;
+    border-color: black;
+    color: whitesmoke;
+    &:hover {
+      background-color: #606060;
+      cursor: pointer;
+    }
   }
 `;
 const PurchaseDiv = styled.div`
@@ -47,81 +56,136 @@ const PurchaseDiv = styled.div`
   grid-template-columns: 1fr auto;
   border-top: 1px solid;
 `;
-const Main = styled.div`
+const Canvas = styled.div`
   display: flex;
+  margin: 20px;
   padding: 15px;
+  max-width: 100vw;
+  height: 80vh;
+  .image-main {
+    background-color: rgb(170, 170, 170);
+    width: 66%;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  .text-detail {
+    max-height: 80%;
+    text-align: center;
+    margin: 10px;
+    overflow: hidden;
+    overflow-y: auto;
+    ::-webkit-scrollbar {
+      display: hidden;
+    }
+  }
+  .price {
+    display: flex;
+    margin: 15px;
+    font-size: 25px;
+    justify-content: flex-end;
+    align-items: center;
+  }
 `;
-
-/**THINGS TO DISPLAY
- * image
- * name
- * description
- * price
- * reviews
- * add to cart button
- * seller details + link
- */
 
 class UnconnectedItemDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = { display: "details" }; //can display item description, reviews, i dunno
+    this.state = { display: "details", reviews: undefined };
   }
+
   displayContent = () => {
     switch (this.state.display) {
       case "details": {
         return <div>{this.props.item.description}</div>;
       }
-      case "reviews": {
-        return <div>{"no reviews. Be the first!"}</div>;
-      }
-      case "seller": {
-        return <div>{"Seller info"}</div>;
-        //<Link to={"/" + this.item.seller}>{this.item.seller}</Link>;
+      case "seller info": {
+        return <div>{this.renderSellerInfo()}</div>;
       }
     }
   };
   clickHandler = ev => {
     this.setState({ display: ev.target.id });
   };
+  renderSellerInfo = () => {
+    const fetchReviews = async sellerId => {
+      console.log("fetching seller reviews");
+      const res = await fetch("/seller-reviews?itemId=" + sellerId);
+      let bod = await res.text();
+      bod = JSON.parse(bod);
+      if (bod.success) {
+        console.log(bod);
+        this.setState({ reviews: bod.reviews });
+        return;
+      }
+      console.log("review fetch failed");
+      this.setState({ reviews: [] });
+      return;
+    };
+    if (this.state.reviews) {
+      if (this.state.reviews.length > 0) {
+        return this.state.reviews.map(review => {
+          return <SellerReview reviewData={review} />;
+        });
+      }
+      return (
+        <div>
+          <div>This seller has no reviewed products.</div> <div>Good Luck!</div>
+        </div>
+      );
+    }
+    fetchReviews(this.props.item.sellerId);
+    return <div>Loading Reviews...</div>;
+
+    return; //<Link to={"/" + this.item.seller}>{this.item.seller}</Link>;
+  };
   renderNavButtons = () => {
-    let buttons = ["details", "reviews", "seller"];
+    let buttons = ["details", "seller info"];
     return buttons.map(button => {
       if (button === this.state.display) {
         return (
-          <SelectedNavButton id={button} onClick={this.clickHandler}>
+          <button className="selected" id={button} onClick={this.clickHandler}>
             {button}
-          </SelectedNavButton>
+          </button>
         );
       }
       return (
-        <NavButton id={button} onClick={this.clickHandler}>
+        <button className="unselected" id={button} onClick={this.clickHandler}>
           {button}
-        </NavButton>
+        </button>
       );
     });
   };
-
+  fetchItems = async () => {
+    let data = new FormData();
+    // data.append("search", this.props.searchQuery)
+    let response = await fetch("/items", {
+      method: "POST",
+      body: data
+    });
+    let body = await response.text();
+    let allItems = JSON.parse(body);
+    this.props.dispatch({ type: "allItems", items: allItems });
+  };
   render() {
+    if (this.props.item === undefined) {
+      this.fetchItems();
+      return <div>Loading Item Details....</div>;
+    }
     return (
-      <Main>
-        <div margin="15px" className="detailedImage">
-          <img height="200px" src={this.props.item.largeImage} />
-        </div>
-        <ItemCard>
+      <Canvas>
+        <img src={this.props.item.largeImage} className="image-main" />
+        <ContentCard>
           <Title>{this.props.item.title}</Title>
-          <ContentCard>
-            <Nav>{this.renderNavButtons()}</Nav>
-            <div>{this.displayContent()}</div>
-            <PurchaseDiv>
-              <div className="price" text-align="right">
-                {formatMoney(this.props.item.price)}
-              </div>
-              <AddToCart itemId={this.props.item.itemId} />
-            </PurchaseDiv>
-          </ContentCard>
-        </ItemCard>
-      </Main>
+          <Nav>{this.renderNavButtons()}</Nav>
+          <div>
+            <div className="text-detail">{this.displayContent()}</div>
+          </div>
+          <PurchaseDiv>
+            <div className="price">{formatMoney(this.props.item.price)}</div>
+            <AddToCart itemId={this.props.item.itemId} />
+          </PurchaseDiv>
+        </ContentCard>
+      </Canvas>
     );
   }
 }
