@@ -35,6 +35,9 @@ let UpdatePop = styled.div`
       border-radius: 8px;
     }
   }
+  .wrap-horozontial{
+      display:flex;
+  }
   .button {
 			background-color: rgba(0,0,0,0.4);
 			color: rgba(256,256,256,1);
@@ -74,12 +77,9 @@ let UpdatePop = styled.div`
       padding: 3px;
       &:focus {
         outline-color: transparent;
-        
       }
     }
- 
   }
-
 `;
 
 class unconnectedMyAccount extends Component {
@@ -99,6 +99,7 @@ class unconnectedMyAccount extends Component {
     let userInfo = JSON.parse(body);
     console.log("userInfo", userInfo);
     this.setState({
+      userRef: userInfo,
       username: userInfo.displayName,
       address: userInfo.location,
       payment: userInfo.paymentMethods,
@@ -179,6 +180,14 @@ class unconnectedMyAccount extends Component {
       window.alert("something went wrong");
     }
   };
+  cashout = async () => {
+    if (this.state.userRef.vendorAcct === undefined) {
+      "https://connect.stripe.com/express/oauth/authorize?redirecturi=&lcient_id=&state=" +
+        this.state.userRef.userId;
+    } else {
+      await fetch("/payout", { method: "GET", credentials: "include" });
+    }
+  };
 
   render() {
     return (
@@ -186,9 +195,12 @@ class unconnectedMyAccount extends Component {
         <div className="modal-content">
           <h4>Your Pending Payout:</h4>
           <div>{formatMoney(this.state.payout)}</div>
-          <button onClick={this.cashout} className="button">
-            Claim
-          </button>
+          <div className="wrap-horozontial">
+            <button onClick={this.cashout} className="button">
+              Claim
+            </button>
+            <button className="button">Payment Details</button>
+          </div>
         </div>
 
         <div className="modal-content">

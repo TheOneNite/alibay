@@ -579,6 +579,34 @@ app.post("/checkout", upload.none(), (req, res) => {
   });
 });
 
+app.get("/update-payout", (req, res) => {
+  console.log("GET: /setup-payout");
+  const uid = sessions[req.cookies.sid];
+  console.log(req.query);
+  const userCode = req.query;
+  stripe.oauth
+    .token({
+      grant_type: "authorization_code",
+      code: userCode
+    })
+    .then(userAcctRef => {
+      const userAcct = userAcctRef.stripe_user_id;
+      aliDb
+        .collection("users")
+        .updateOne(
+          { userId: uid },
+          { $set: { vendorAcct: userAcct } },
+          (err, result) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            console.log("vendor account information updated");
+          }
+        );
+    });
+});
+
 app.get("/orders", (req, res) => {
   // sends an array of order data objects
   console.log("GET: /orders");
