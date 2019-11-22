@@ -1,11 +1,20 @@
 import { createStore } from "redux";
 
+const INITIAL_STATE = {
+  currentUser: "",
+  loggedIn: false,
+  allItems: [],
+  searchQuery: "",
+  orders: [],
+  cart: []
+};
+
 let reducer = (state, action) => {
   if (action.type === "login-success") {
     return { ...state, loggedIn: true, currentUser: action.currentUser };
   }
   if (action.type === "signout") {
-    return { ...state, loggedIn: false, currentUser: "" };
+    return INITIAL_STATE;
   }
   if (action.type === "allItems") {
     return { ...state, allItems: action.items };
@@ -24,14 +33,7 @@ let reducer = (state, action) => {
 
 const store = createStore(
   reducer,
-  {
-    currentUser: "",
-    loggedIn: false,
-    allItems: [],
-    searchQuery: "",
-    orders: [],
-    cart: []
-  },
+  INITIAL_STATE,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
