@@ -9,6 +9,7 @@ import {
 import formatMoney from "./formatMoney";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import Review from "./Review.jsx";
 
 const OrderStyles = styled.div`
   max-width: 1000px;
@@ -51,8 +52,20 @@ const OrderStyles = styled.div`
 
 class unconectedOrder extends Component {
   //orderId = routerData.match.params.orderId
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  renderReview = itemData => {
+    if (itemData.reviewed) {
+      return <Review itemId={itemData.itemId}></Review>;
+    }
+  };
+  addReview = () => {
+    this.setState({ displayReview: true });
+  };
   render() {
-    console.log("props", this.props.orders);
+    console.log("order props", this.props.orders);
 
     let order = this.props.orders.filter(order => {
       return order.orderId === this.props.orderId;
@@ -92,6 +105,12 @@ class unconectedOrder extends Component {
                   <p>Price: {formatMoney(item.price)}</p>
 
                   <p>{item.description}</p>
+                  <Review
+                    item={item}
+                    itemId={item.itemId}
+                    sellerId={item.sellerId}
+                    orderId={this.props.orderId}
+                  />
                 </div>
               </div>
             ))}
