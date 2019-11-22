@@ -17,9 +17,9 @@ const Title = styled.div`
 `;
 const ContentCard = styled.div`
   width: 33%;
+  background-color: #ebebeb;
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  background-color: inherit;
+  grid-template-rows: auto auto 1fr;
   border-radius: 5px;
   margin-left: 15px;
   border: 2px solid;
@@ -28,24 +28,26 @@ const ContentCard = styled.div`
 const Nav = styled.div`
   display: grid;
   grid-template-columns: 50% 50%;
-`;
-const SelectedNavButton = styled.button`
-  padding: 5px;
-  background-color: #696969;
-  font-variant: small-caps;
-  color: white;
-  border: none;
-`;
-const NavButton = styled.button`
-  padding: 5px;
-  border-width: 0px;
-  font-variant: small-caps;
-  border-left: 1px solid;
-  border-right: 1px solid;
-  background-color: inherit;
-  border-bottom: 2px solid;
-  &:hover {
-    background-color: whitesmoke;
+  button {
+    padding: 5px;
+    font-variant: small-caps;
+    border-style: none;
+    border-top: 2px solid;
+    &:focus {
+      outline: transparent;
+    }
+  }
+  .selected {
+    background-color: inherit;
+  }
+  .unselected {
+    background-color: #696969;
+    border-color: black;
+    color: whitesmoke;
+    &:hover {
+      background-color: #606060;
+      cursor: pointer;
+    }
   }
 `;
 const PurchaseDiv = styled.div`
@@ -70,7 +72,11 @@ const Canvas = styled.div`
     margin: 10px;
   }
   .price {
+    display: flex;
     margin: 15px;
+    font-size: 25px;
+    justify-content: flex-end;
+    align-items: center;
   }
 `;
 
@@ -102,36 +108,45 @@ class UnconnectedItemDetails extends Component {
     return buttons.map(button => {
       if (button === this.state.display) {
         return (
-          <SelectedNavButton id={button} onClick={this.clickHandler}>
+          <button className="selected" id={button} onClick={this.clickHandler}>
             {button}
-          </SelectedNavButton>
+          </button>
         );
       }
       return (
-        <NavButton id={button} onClick={this.clickHandler}>
+        <button className="unselected" id={button} onClick={this.clickHandler}>
           {button}
-        </NavButton>
+        </button>
       );
     });
   };
-
+  fetchItems = async () => {
+    let data = new FormData();
+    // data.append("search", this.props.searchQuery)
+    let response = await fetch("/items", {
+      method: "POST",
+      body: data
+    });
+    let body = await response.text();
+    let allItems = JSON.parse(body);
+    this.props.dispatch({ type: "allItems", items: allItems });
+  };
   render() {
     if (this.props.item === undefined) {
+      this.fetchItems();
       return <div>Loading Item Details....</div>;
     }
     return (
       <Canvas>
         <img src={this.props.item.largeImage} className="image-main" />
         <ContentCard>
+          <Title>{this.props.item.title}</Title>
           <Nav>{this.renderNavButtons()}</Nav>
           <div>
-            <Title>{this.props.item.title}</Title>
             <div className="text-detail">{this.displayContent()}</div>
           </div>
           <PurchaseDiv>
-            <div className="price" text-align="right">
-              {formatMoney(this.props.item.price)}
-            </div>
+            <div className="price">{formatMoney(this.props.item.price)}</div>
             <AddToCart itemId={this.props.item.itemId} />
           </PurchaseDiv>
         </ContentCard>

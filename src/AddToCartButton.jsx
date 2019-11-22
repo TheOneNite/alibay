@@ -22,7 +22,7 @@ const AddButton = styled.div`
   #cross {
     stroke-dasharray: 180;
     stroke-dashoffset: 180;
-    animation: draw 1s linear forwards;
+    animation: draw 0.7s linear forwards;
   }
   @keyframes draw {
     100% {
@@ -127,7 +127,7 @@ class UnconnectedAddToCart extends Component {
             <path
               d="M1 27L39 71L98 1"
               stroke="whitesmoke"
-              strokeWidth="10px"
+              strokeWidth="15px"
             ></path>
           </svg>
         ); //this will be the checkmark
