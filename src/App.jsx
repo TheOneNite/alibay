@@ -44,7 +44,6 @@ let content = () => {
   return (
     <div className="content">
       <Search />
-
       <DisplayedItems />
     </div>
   );
@@ -107,7 +106,9 @@ class UnconnectedApp extends Component {
     return (
       <BrowserRouter>
         <div>
-          <Nav />
+          <div className="header">
+            <Nav />
+          </div>
           <Route exact={true} path="/" render={content} />
           <Route exact={true} path="/item/:itemId" render={this.itemDetail} />
           <Route exact={true} path="/login" render={login} />
