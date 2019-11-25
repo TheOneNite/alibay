@@ -210,7 +210,9 @@ app.post("/signup", upload.none(), async (req, res) => {
               }
               console.log("user auth info stored");
               let pkg = { success: true };
-              res.cookie("sid", tools.generateId(6));
+              let newSid = tools.generateId(6);
+              res.cookie("sid", newSid);
+              sessions[newSid] = uid;
               res.send(JSON.stringify(pkg));
             }
           );
@@ -526,7 +528,7 @@ app.post("/review", upload.none(), (req, res) => {
   });
 });
 
-app.get("/checkout", (req, res) => {
+app.get("/fetch-checkout", (req, res) => {
   // sends an array of payment method objects and and array of
   const uid = sessions[req.cookies.sid];
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
@@ -743,6 +745,26 @@ app.get("/payout", (req, res) => {
           (err, payout) => {
             if (err) {
               console.log(err);
+              aliDb
+                .collection("users")
+                .updateOne(
+                  { userId: userData.userId },
+                  { $set: { payout: 0 } },
+                  (err, uUser) => {
+                    if (err) {
+                      console.log(err);
+                      res.send(
+                        JSON.parse({
+                          success: true,
+                          msg: "updating user payout failed"
+                        })
+                      );
+                      return;
+                    }
+                    console.log("merchant data updated");
+                    res.send(JSON.parse({ success: true, userData: uUser }));
+                  }
+                );
               return;
             }
             console.log("payout successful");
