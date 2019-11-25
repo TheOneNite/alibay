@@ -71,7 +71,7 @@ class UnconnectedReviewForm extends Component {
     bod = JSON.parse(bod);
     if (bod.success) {
       console.log("getting updated orders");
-      let ores = await fetch("/orders", {
+      let ores = await fetch("/fetch-orders", {
         method: "GET",
         credentials: "include"
       });

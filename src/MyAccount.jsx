@@ -120,7 +120,7 @@ class unconnectedMyAccount extends Component {
   }
   componentDidMount = async () => {
     //fetch the userinfo from database
-    let response = await fetch("/account");
+    let response = await fetch("/fetch-account");
     let body = await response.text();
     let userInfo = JSON.parse(body);
     console.log("userInfo", userInfo);
