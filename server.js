@@ -739,7 +739,7 @@ app.get("/payout", (req, res) => {
       let userData = dbResult.data;
       if (userData.vendorAcct) {
         stripe.payouts.create(
-          { amount: userData.payout, currency: "cad" },
+          { amount: 1000, currency: "cad" },
           (err, payout) => {
             if (err) {
               console.log(err);

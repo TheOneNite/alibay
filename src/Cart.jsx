@@ -169,8 +169,8 @@ class UnconnectedCart extends Component {
                 <StripeCheckout
                   amount={total}
                   name="Stuff Zone"
-                  stripeKey="pk_test_Hix3x69AC2ga6zwVuJn5Ya1i00PmSOBgCh"
-                  currency="USD"
+                  stripeKey="pk_test_EmkxA3zWWzVPX7FbgCtezWBL00JBBqKgtZ"
+                  currency="cad"
                   email="no@dice.com"
                   token={res => this.onToken(res)}
                 >
