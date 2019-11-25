@@ -28,6 +28,7 @@ let UpdatePop = styled.div`
     padding: 20px;
     border: 1px solid #888;
     width: 33vw; /* Could be more or less, depending on screen size */
+    max-width:400px;
     text-align: center;
     input {
       
