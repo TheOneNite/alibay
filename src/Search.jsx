@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 const SearchWrapper = styled.div`
-  margin-top: 10px;
+  margin-top: 15px;
   padding: 5px;
   display: flex;
   justify-self: stretch;

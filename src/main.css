@@ -4,7 +4,25 @@ body {
   font-family: garamond, "Times New Roman", Times, serif;
   margin: 0;
 }
-
+.header {
+  min-width: 100vw;
+  height: 60px;
+  padding: 0;
+  margin: 0;
+}
+/* .middle {
+  height: auto;
+} */
+.footer {
+  height: 20vh;
+}
+.content {
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: scroll;
+}
 .overlay {
   z-index: 50;
   position: fixed;
@@ -24,14 +42,30 @@ body {
   background-color: white;
 }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.content:-webkit-scrollbar {
+  width: 5px;
+  height: 0px;
+}
+.content-webkit-scrollbar-track {
+  background-image: url("/bg01.png");
+  background-color: #d6d6d6;
 }
 
-.header {
-  height: 50px;
-  padding: 0;
-  margin: 0;
+.content-webkit-scrollbar-thumb {
+  background: #696969;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 0px;
+}
+::-webkit-scrollbar-track {
+  background-image: url("/bg01.png");
+  background-color: #ebebeb;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #696969;
+  border-radius: 10px;
 }

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 
-const NavStyles = styled.ul`
+const NavStyles = styled.div`
   background-color: #ebebeb;
   background-image: url("/bg01.png");
   box-shadow: 0 4px 4px 1px rgba(0, 0, 0, 0.2);
@@ -13,16 +13,25 @@ const NavStyles = styled.ul`
   margin: 0;
   padding: 0;
   width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  justify-self: end;
+  display: grid;
+  grid-template-columns: 1fr repeat(6, auto);
   font-size: 1rem;
+  overflow-x: scroll;
+  ::-webkit-scrollbar {
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background-image: url("/bg01.png");
+  background-color: #ebebeb;
+}
+::-webkit-scrollbar-thumb {
+  background: #696969;
+  border-radius: 10px;
+}
 }
   
   a,
-  link,
-  button,
-  ul {
+  button {
     border-radius: 10px;
     text-decoration: none;
     color: #696969;
@@ -35,15 +44,15 @@ const NavStyles = styled.ul`
     font-size: 1em;
     background: none;
     border: 0;
+    margin: 5px 0 0 0;
     cursor: pointer;
     &:hover {
     background: white;
-  }
-    /* &:focus {
-      .underline {
-        width: calc(100% - 60px);
-      }
-    } */
+    }
+    div {
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
   
 `;
@@ -90,36 +99,39 @@ class unconnectedNav extends Component {
 
     return (
       <NavStyles>
+        <Link to="/">
+          <div>Logo holder</div>
+        </Link>
         <Link id="shop" onClick={this.clickHandler} to="/">
-          Shop <Underline id="shop" display={this.state.display} />
+          <div>Shop</div> <Underline id="shop" display={this.state.display} />
         </Link>
         {me && (
           <>
             <Link id="sell" onClick={this.clickHandler} to="/sell">
-              Sell an Item
+              <div>Sell an Item</div>
               <Underline id="sell" display={this.state.display} />
             </Link>
             <Link id="orders" onClick={this.clickHandler} to="/orders">
-              {me}'s Orders
+              <div>{me}'s Orders</div>
               <Underline id="orders" display={this.state.display} />
             </Link>
             <Link id="account" onClick={this.clickHandler} to="/account">
-              {me}'s Account
+              <div>{me}'s Account</div>
               <Underline id="account" display={this.state.display} />
             </Link>
             <Link id="cart" onClick={this.clickHandler} to="/cart">
-              Cart
+              <div>Cart</div>
               <Underline id="cart" display={this.state.display} />
             </Link>
             <button id="sign out" onClick={this.signout}>
-              Sign Out
+              <div>Sign Out</div>
               <Underline id="sign out" display={this.state.display} />
             </button>
           </>
         )}
         {!me && (
           <Link id="sign in" onClick={this.clickHandler} to="/login">
-            Sign In
+            <div>Sign In</div>
             <Underline id="sign in" display={this.state.display} />
           </Link>
         )}
