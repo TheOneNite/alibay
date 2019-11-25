@@ -15,14 +15,6 @@ import Order from "./Order.jsx";
 
 //import history from "./History.jsx";
 
-let login = () => {
-  return <Login />;
-};
-
-let signup = () => {
-  return <Signup />;
-};
-
 let createItem = () => {
   return <CreateItem />;
 };
@@ -105,14 +97,14 @@ class UnconnectedApp extends Component {
     this.checkCookie();
     return (
       <BrowserRouter>
+        <Login />
+        <Signup />
         <div>
           <div className="header">
             <Nav />
           </div>
           <Route exact={true} path="/" render={content} />
           <Route exact={true} path="/item/:itemId" render={this.itemDetail} />
-          <Route exact={true} path="/login" render={login} />
-          <Route exact={true} path="/signup" render={signup} />
           <Route exact={true} path="/sell" render={createItem} />
           <Route exact={true} path="/account" render={myAccount} />
           <Route exact={true} path="/cart" render={cart} />

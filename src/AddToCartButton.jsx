@@ -148,7 +148,10 @@ class UnconnectedAddToCart extends Component {
     }
   };
   login = () => {
-    this.props.history.push("/login");
+    this.props.dispatch({
+      type: "showLogin",
+      show: true
+    });
   };
   renderButton = () => {
     if (this.props.isLoggedIn) {

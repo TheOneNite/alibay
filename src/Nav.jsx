@@ -66,6 +66,7 @@ const NavStyles = styled.div`
     font-weight: bold;
     &:hover {
       background: #ebebeb;
+      cursor: default;
     }
   }
 `;
@@ -102,52 +103,59 @@ class unconnectedNav extends Component {
     this.props.dispatch({
       type: "signout"
     });
-    this.props.history.push("/login");
   };
   clickHandler = ev => {
     this.setState({ display: ev.target.id });
   };
+
   render() {
     let me = this.props.currentUser;
 
     return (
       <NavStyles>
-        <Link className="logoContainer" to="/">
+        <div className="logoContainer">
           <img className="logo" src="./icon.png" />
           Stuff Zone
-        </Link>
+        </div>
         <Link id="shop" onClick={this.clickHandler} to="/">
-          <div>Shop</div> <Underline id="shop" display={this.state.display} />
+          <div id="shop">Shop</div>{" "}
+          <Underline id="shop" display={this.state.display} />
         </Link>
         {me && (
           <>
             <Link id="sell" onClick={this.clickHandler} to="/sell">
-              <div>Sell an Item</div>
+              <div id="sell">Sell an Item</div>
               <Underline id="sell" display={this.state.display} />
             </Link>
             <Link id="orders" onClick={this.clickHandler} to="/orders">
-              <div>{me}'s Orders</div>
+              <div id="orders">{me}'s Orders</div>
               <Underline id="orders" display={this.state.display} />
             </Link>
             <Link id="account" onClick={this.clickHandler} to="/account">
-              <div>{me}'s Account</div>
+              <div id="account">{me}'s Account</div>
               <Underline id="account" display={this.state.display} />
             </Link>
             <Link id="cart" onClick={this.clickHandler} to="/cart">
-              <div>Cart</div>
+              <div id="cart">Cart</div>
               <Underline id="cart" display={this.state.display} />
             </Link>
             <a id="sign out" onClick={this.signout}>
-              <div>Sign Out</div>
+              <div id="sign out">Sign Out</div>
               <Underline id="sign out" display={this.state.display} />
             </a>
           </>
         )}
         {!me && (
-          <Link id="sign in" onClick={this.clickHandler} to="/login">
-            <div>Sign In</div>
+          <a
+            className="loginButton"
+            id="sign in"
+            onClick={() => {
+              this.props.dispatch({ type: "showModal", show: "login" });
+            }}
+          >
+            <div id="sign in">Sign In</div>
             <Underline id="sign in" display={this.state.display} />
-          </Link>
+          </a>
         )}
       </NavStyles>
     );

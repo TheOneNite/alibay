@@ -175,8 +175,10 @@ class UnconnectedItemSearch extends Component {
   clickHandler = () => {
     if (!this.props.isLoggedIn) {
       console.log("to login page");
-      this.props.history.push("/item/" + this.props.item.itemId);
-      this.props.history.push("/login");
+      this.props.dispatch({
+        type: "showLogin",
+        show: true
+      });
       return;
     }
     console.log("...click handler, adding to cart: ", this.props.item.itemId);

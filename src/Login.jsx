@@ -1,35 +1,43 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 
 let LogPop = styled.div`
-  /* The Modal (background) */
-  .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    
-  }
+  display: ${props => {
+    if (props.show === "login") return "block";
+    return "none";
+  }}; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto;
+  background-color: rgba(0,0,0);
+  background-color: rgba(0,0,0,0.4);
 
-  /* Modal Content/Box */
   .modal-content {
-    background-color: rgba(255, 255, 255, 0.55);
+    background-color: rgba(255, 255, 255);
     border-radius: 10px;
-    margin: 5% auto; /* 15% from the top and centered */
+    margin: 5% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 300px; /* Could be more or less, depending on screen size */
+    width: 300px; 
     text-align: center;
+    #close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    #close:hover {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
     input {
-      
-      
       border-radius: 8px;
     }
   }
@@ -47,9 +55,8 @@ let LogPop = styled.div`
 			opacity: 1;
 			visibility: visible;
 			-webkit-transition: all .3s ease;
-			
+      transition: all .3s ease;
 			&:hover {
-				transition: all .3s ease;
 				background-color: #696969;
 			}
 		}
@@ -72,10 +79,8 @@ let LogPop = styled.div`
       padding: 3px;
       &:focus {
         outline-color: transparent;
-        
       }
     }
- 
   }
 
 `;
@@ -119,16 +124,33 @@ class UnconnectedLogin extends Component {
       type: "login-success",
       currentUser: body.user.displayName
     });
-    console.log(this.props.history);
-    this.props.history.goBack();
-    //this.props.history.push("/");
+    this.props.dispatch({
+      type: "showModal",
+      show: "none"
+    });
+  };
+  closeHandler = ev => {
+    if (ev.target.id !== "close") return;
+    this.props.dispatch({
+      type: "showModal",
+      show: "none"
+    });
+  };
+  toSignup = () => {
+    this.props.dispatch({
+      type: "showModal",
+      show: "signup"
+    });
   };
   render = () => {
     return (
       <>
-        <LogPop className="modal">
+        <LogPop className="modal" show={this.props.display}>
           <div className="modal-content">
-            <h3>Sign-in</h3>
+            <span id="close" onClick={this.closeHandler}>
+              &times;
+            </span>
+            <h3>Sign in</h3>
             <div className="form-holder">
               <form onSubmit={this.handleSubmit}>
                 <input
@@ -136,7 +158,6 @@ class UnconnectedLogin extends Component {
                   placeholder="Username"
                   onChange={this.handleUsernameChange}
                 />
-
                 <input
                   type="password"
                   placeholder="Password"
@@ -145,9 +166,9 @@ class UnconnectedLogin extends Component {
                 <input type="submit" className="button" />
               </form>
             </div>
-            <Link to={"/signup/"}>
+            <a onClick={this.toSignup}>
               Need to sign up for an account? Click Here
-            </Link>
+            </a>
           </div>
         </LogPop>
       </>
@@ -155,6 +176,12 @@ class UnconnectedLogin extends Component {
   };
 }
 
-let Login = connect()(UnconnectedLogin);
+let mapStateToProps = st => {
+  return {
+    display: st.displayModal
+  };
+};
+
+let Login = connect(mapStateToProps)(UnconnectedLogin);
 
 export default withRouter(Login);
