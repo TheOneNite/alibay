@@ -733,6 +733,53 @@ app.get("/update-vendor", (req, res) => {
 
 app.get("/payout", (req, res) => {
   console.log("GET: /payout");
+  const uid = sessions[req.cookies.sid];
+  retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    if (dbResult.success) {
+      let userData = dbResult.data;
+      if (userData.vendorAcct) {
+        stripe.payouts.create(
+          { amount: 1000, currency: "cad" },
+          (err, payout) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            console.log("payout successful");
+            aliDb
+              .collection("users")
+              .updateOne(
+                { userId: userData.userId },
+                { $set: { payout: 0 } },
+                (err, uUser) => {
+                  if (err) {
+                    console.log(err);
+                    res.send(
+                      JSON.parse({
+                        success: true,
+                        msg: "updating user payout failed"
+                      })
+                    );
+                    return;
+                  }
+                  console.log("merchant data updated");
+                  res.send(JSON.parse({ success: true, userData: uUser }));
+                }
+              );
+          }
+        );
+      }
+      console.log("user does not have payout acct setup");
+      res.send(
+        JSON.stringify({
+          success: false,
+          msg: "user needs to set up payout account"
+        })
+      );
+      return;
+    }
+    console.log("could not retreive user info for payout");
+  });
 });
 
 app.get("/orders", (req, res) => {
