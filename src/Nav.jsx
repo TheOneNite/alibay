@@ -14,7 +14,7 @@ const NavStyles = styled.div`
   padding: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr repeat(6, auto);
+  grid-template-columns: 1fr repeat(7, auto);
   font-size: 1rem;
   overflow-x: scroll;
   ::-webkit-scrollbar {
@@ -37,7 +37,8 @@ const NavStyles = styled.div`
     height: 100%;
     object-fit: cover;
   }
-  a {
+  a,
+  .logoContainer {
     border-radius: 10px;
     text-decoration: none;
     color: #696969;
@@ -46,18 +47,25 @@ const NavStyles = styled.div`
     align-items: center;
     position: relative;
     text-transform: uppercase;
-    font-weight: 250;
     font-size: 1em;
     background: none;
     border: 0;
     margin: 5px 0 0 0;
     cursor: pointer;
     &:hover {
-      background: white;
+      background: whitesmoke;
     }
     div {
       white-space: nowrap;
       overflow: hidden;
+    }
+  }
+  .logoContainer {
+    padding: 0;
+    color: black;
+    font-weight: bold;
+    &:hover {
+      background: #ebebeb;
     }
   }
 `;
@@ -104,9 +112,10 @@ class unconnectedNav extends Component {
 
     return (
       <NavStyles>
-        <div className="logoContainer">
-          <img className="logo" src="./logo.png" />
-        </div>
+        <Link className="logoContainer" to="/">
+          <img className="logo" src="./icon.png" />
+          Stuff Zone
+        </Link>
         <Link id="shop" onClick={this.clickHandler} to="/">
           <div>Shop</div> <Underline id="shop" display={this.state.display} />
         </Link>
