@@ -18,20 +18,26 @@ const NavStyles = styled.div`
   font-size: 1rem;
   overflow-x: scroll;
   ::-webkit-scrollbar {
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background-image: url("/bg01.png");
-  background-color: #ebebeb;
-}
-::-webkit-scrollbar-thumb {
-  background: #696969;
-  border-radius: 10px;
-}
-}
-  
-  a,
-  button {
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background-image: url("/bg01.png");
+    background-color: #ebebeb;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #696969;
+    border-radius: 10px;
+  }
+  .logoContainer {
+    height: 50px;
+    width: 50px;
+  }
+  .logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  a {
     border-radius: 10px;
     text-decoration: none;
     color: #696969;
@@ -47,14 +53,13 @@ const NavStyles = styled.div`
     margin: 5px 0 0 0;
     cursor: pointer;
     &:hover {
-    background: white;
+      background: white;
     }
     div {
       white-space: nowrap;
       overflow: hidden;
     }
   }
-  
 `;
 const Underline = styled.div`
   height: 3px;
@@ -99,9 +104,9 @@ class unconnectedNav extends Component {
 
     return (
       <NavStyles>
-        <Link to="/">
-          <div>Logo holder</div>
-        </Link>
+        <div className="logoContainer">
+          <img className="logo" src="./logo.png" />
+        </div>
         <Link id="shop" onClick={this.clickHandler} to="/">
           <div>Shop</div> <Underline id="shop" display={this.state.display} />
         </Link>
@@ -123,10 +128,10 @@ class unconnectedNav extends Component {
               <div>Cart</div>
               <Underline id="cart" display={this.state.display} />
             </Link>
-            <button id="sign out" onClick={this.signout}>
+            <a id="sign out" onClick={this.signout}>
               <div>Sign Out</div>
               <Underline id="sign out" display={this.state.display} />
-            </button>
+            </a>
           </>
         )}
         {!me && (
