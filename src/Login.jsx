@@ -4,10 +4,22 @@ import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 
 let LogPop = styled.div`
-  display: ${props => {
-    if (props.show === "login") return "block";
-    return "none";
+  opacity: 0;
+  visibility: hidden;
+  z-index: -1;
+  animation: ${props => {
+    if (props.show === "login") return "appear .3s ease forwards";
+    return "0";
   }}; 
+  @keyframes appear {
+  1% {
+    z-index: 15;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
   position: fixed; 
   z-index: 10; 
   left: 0;
@@ -52,15 +64,13 @@ let LogPop = styled.div`
 			border:0;
 			border-radius: 15px;
 			margin: 15px; 
-			padding: 15px ;
+			padding: 15px;
 			width: 50%;
 			font-size: 13px;
 			font-weight: bold;
 			cursor: pointer;
-			opacity: 1;
-			visibility: visible;
-			-webkit-transition: all .3s ease;
-      transition: all .3s ease;
+			-webkit-transition: background-color .3s ease;
+      transition: background-color .3s ease;
 			&:hover {
 				background-color: #696969;
 			}

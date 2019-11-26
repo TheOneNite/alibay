@@ -4,10 +4,22 @@ import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 
 let SignPop = styled.div`
-  display: ${props => {
-    if (props.show === "signup") return "block";
-    return "none";
+  opacity: 0;
+  visibility: hidden;
+  z-index: -1;
+  animation: ${props => {
+    if (props.show === "signup") return "appear .3s ease forwards";
+    return "0";
   }}; 
+  @keyframes appear {
+  1% {
+    z-index: 15;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
   position: fixed; 
   z-index: 10; 
   left: 0;
@@ -57,12 +69,8 @@ let SignPop = styled.div`
 			font-size: 13px;
 			font-weight: bold;
 			cursor: pointer;
-			opacity: 1;
-			visibility: visible;
-			-webkit-transition: all .3s ease;
-			
 			&:hover {
-				transition: all .3s ease;
+				transition: background-color .3s ease;
 				background-color: #696969;
 			}
 		}
