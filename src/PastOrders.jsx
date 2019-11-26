@@ -85,7 +85,7 @@ class unconnectedPastOrders extends Component {
 
   componentDidMount() {
     let fetchAll = async () => {
-      let response = await fetch("/orders", {
+      let response = await fetch("/fetch-orders", {
         method: "GET"
       });
       let body = await response.text();
