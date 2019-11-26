@@ -17,7 +17,11 @@ let SignPop = styled.div`
   overflow: auto; 
   background-color: rgba(0,0,0);
   background-color: rgba(0,0,0,0.4);
-
+  a {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+  }
   .modal-content {
     background-color: rgba(255, 255, 255);
     border-radius: 10px;

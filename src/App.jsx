@@ -32,7 +32,7 @@ let cart = () => {
 
 let content = () => {
   return (
-    <div className="content">
+    <>
       <div className="banner">
         <div className="overlay">
           <div>Stuff for the People, from the People</div>
@@ -40,7 +40,7 @@ let content = () => {
       </div>
       <Search />
       <DisplayedItems />
-    </div>
+    </>
   );
 };
 
@@ -106,13 +106,15 @@ class UnconnectedApp extends Component {
           <div className="header">
             <Nav />
           </div>
-          <Route exact={true} path="/" render={content} />
-          <Route exact={true} path="/item/:itemId" render={this.itemDetail} />
-          <Route exact={true} path="/sell" render={createItem} />
-          <Route exact={true} path="/account" render={myAccount} />
-          <Route exact={true} path="/cart" render={cart} />
-          <Route exact={true} path="/orders" render={pastOrders} />
-          <Route exact={true} path="/orders/:orderId" render={order} />
+          <div className="content">
+            <Route exact={true} path="/" render={content} />
+            <Route exact={true} path="/item/:itemId" render={this.itemDetail} />
+            <Route exact={true} path="/sell" render={createItem} />
+            <Route exact={true} path="/account" render={myAccount} />
+            <Route exact={true} path="/cart" render={cart} />
+            <Route exact={true} path="/orders" render={pastOrders} />
+            <Route exact={true} path="/orders/:orderId" render={order} />
+          </div>
         </div>
       </BrowserRouter>
     );
