@@ -38,9 +38,6 @@ body {
   user-select: none;
 }
 
-.footer {
-  height: 20vh;
-}
 .content {
   height: calc(100vh - 60px);
   overflow-y: scroll;
@@ -49,15 +46,6 @@ body {
 .content:-webkit-scrollbar {
   width: 5px;
   height: 0px;
-}
-.content-webkit-scrollbar-track {
-  background-image: url("/bg01.png");
-  background-color: #d6d6d6;
-}
-
-.content-webkit-scrollbar-thumb {
-  background: #696969;
-  border-radius: 10px;
 }
 
 ::-webkit-scrollbar {
