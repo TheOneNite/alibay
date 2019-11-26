@@ -804,7 +804,7 @@ app.get("/payout", (req, res) => {
   });
 });
 
-app.get("/orders", (req, res) => {
+app.get("/fetch-orders", (req, res) => {
   // sends an array of order data objects
   console.log("GET: /orders");
   let uid = sessions[req.cookies.sid];
@@ -878,7 +878,7 @@ app.post("/account", upload.none(), (req, res) => {
     }
   });
 });
-app.get("/account", (req, res) => {
+app.get("/fetch-account", (req, res) => {
   //sends current user data to populate form
   let uid = sessions[req.cookies.sid];
   aliDb.collection("users").findOne({ userId: uid }, (err, dbResult) => {
