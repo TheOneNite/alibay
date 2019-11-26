@@ -13,8 +13,6 @@ import Cart from "./Cart.jsx";
 import PastOrders from "./PastOrders.jsx";
 import Order from "./Order.jsx";
 
-//import history from "./History.jsx";
-
 let createItem = () => {
   return <CreateItem />;
 };
@@ -35,6 +33,11 @@ let cart = () => {
 let content = () => {
   return (
     <div className="content">
+      <div className="banner">
+        <div className="overlay">
+          <div>Stuff for the People, from the People</div>
+        </div>
+      </div>
       <Search />
       <DisplayedItems />
     </div>
@@ -99,7 +102,7 @@ class UnconnectedApp extends Component {
       <BrowserRouter>
         <Login />
         <Signup />
-        <div>
+        <div className="main">
           <div className="header">
             <Nav />
           </div>

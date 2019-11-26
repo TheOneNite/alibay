@@ -4,15 +4,38 @@ body {
   font-family: garamond, "Times New Roman", Times, serif;
   margin: 0;
 }
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
 .header {
   min-width: 100vw;
   height: 60px;
   padding: 0;
   margin: 0;
 }
-/* .middle {
-  height: auto;
-} */
+.banner {
+  min-height: 100vh;
+  min-width: 100%;
+  background: url("/banner.jpeg") center top;
+  background-size: cover;
+}
+.overlay {
+  z-index: 1;
+  color: whitesmoke;
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100%;
+  position: relative;
+}
+.overlay div {
+  font-size: 50px;
+  text-align: right;
+  position: absolute;
+  bottom: 40px;
+  right: 50px;
+}
+
 .footer {
   height: 20vh;
 }
@@ -23,16 +46,6 @@ body {
   justify-content: center;
   overflow-y: scroll;
 }
-.overlay {
-  z-index: 50;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
 .popup {
   z-index: 100;
   position: fixed;
