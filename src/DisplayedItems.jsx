@@ -7,7 +7,6 @@ const SearchDisplay = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  height: calc(100vh - 117px);
 `;
 
 class UnconnecteDisplayedItems extends Component {
