@@ -422,10 +422,10 @@ app.post("/getId", upload.none(), (req, res) => {
   aliDb.collection("users").findOne({ displayName: name }, (err, dbResult) => {
     if (err) {
       console.log(err);
-      res.send("user auth retrevied err");
+      res.send("user info retrevied err");
       return;
     }
-    console.log("user auth retrevied", dbResult);
+    console.log("user info retrevied", dbResult);
     let id = dbResult.id;
     res.send(JSON.stringify({ id: id }));
   });
