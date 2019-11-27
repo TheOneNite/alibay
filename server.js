@@ -419,7 +419,7 @@ app.post("/cart", upload.none(), (req, res) => {
 app.post("/getId", upload.none(), (req, res) => {
   let name = req.body.username;
   console.log("get id", "username:", name);
-  aliDb.collection("auth").findOne({ username: name }, (err, dbResult) => {
+  aliDb.collection("auth").findOne({ displayName: name }, (err, dbResult) => {
     if (err) {
       console.log(err);
       res.send("user auth retrevied err");
