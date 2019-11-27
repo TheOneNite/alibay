@@ -5,10 +5,14 @@ import styled from "styled-components";
 const Main = styled.div`
   border-bottom: 1px solid white;
   text-align: left;
+  width: 300px;
   .header {
     font-variant: small-caps;
     font-size: 18px;
     font-weight: bold;
+  }
+  div {
+    word-wrap: wrap;
   }
 `;
 
