@@ -161,7 +161,7 @@ class UnconnectedAddToCart extends Component {
         </AddButton>
       );
     }
-    return <AddButton onClick={this.login}>Log in to add to cart</AddButton>;
+    return <AddButton onClick={this.login}>Sign in to buy</AddButton>;
   };
   render = () => {
     return this.renderButton();
