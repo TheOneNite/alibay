@@ -176,8 +176,8 @@ class UnconnectedItemSearch extends Component {
     if (!this.props.isLoggedIn) {
       console.log("to login page");
       this.props.dispatch({
-        type: "showLogin",
-        show: true
+        type: "showModal",
+        show: "login"
       });
       return;
     }

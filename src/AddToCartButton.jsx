@@ -149,8 +149,8 @@ class UnconnectedAddToCart extends Component {
   };
   login = () => {
     this.props.dispatch({
-      type: "showLogin",
-      show: true
+      type: "showModal",
+      show: "login"
     });
   };
   renderButton = () => {
