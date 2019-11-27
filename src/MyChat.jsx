@@ -89,7 +89,7 @@ class MyChat extends Component {
     let itemId = chat.itemId;
     let buyerId = chat.buyerId;
     let path = "/chat/:" + sellerId + "$" + buyerId + "$" + itemId;
-    return window.open(path, "_blank", "height=500, width=400");
+    return window.open(path, "_blank", "height=500, width=500");
   };
   render() {
     return (
