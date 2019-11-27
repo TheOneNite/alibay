@@ -39,7 +39,7 @@ app.use("/", express.static("public")); // Needed for local assets
 //global vars grr
 let sessions = {};
 //array of objedct:  message = {"itemId":"", "sellerId":"", "buyer":"", "msgs":[]}
-let messages = [];
+//let messages = [];
 
 //modules and stuff
 const itemSearch = searchObj => {
@@ -138,6 +138,7 @@ app.get("/autologin", (req, res) => {
       res.send(JSON.stringify({ success: false, msg: "no session found" }));
     });
   }
+  res.send(JSON.stringify({ success: false, msg: "no session found" }));
 });
 
 app.post("/login", upload.none(), (req, res) => {
@@ -201,6 +202,10 @@ app.post("/signup", upload.none(), async (req, res) => {
       } else {
         let hpass = auth.generate(req.body.password);
         let uid = tools.generateId(6);
+        let newSid = tools.generateId(6);
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        sessions[newSid] = uid;
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         aliDb
           .collection("auth")
           .insertOne(
@@ -212,6 +217,7 @@ app.post("/signup", upload.none(), async (req, res) => {
               console.log("user auth info stored");
               let pkg = { success: true };
               res.cookie("sid", tools.generateId(6));
+
               res.send(JSON.stringify(pkg));
             }
           );
@@ -425,6 +431,7 @@ app.post("/getId", upload.none(), (req, res) => {
 });
 //new chat message----------------------------------------------------------------------------
 app.post("/newMessage", upload.none(), (req, res) => {
+  console.log("/new mwssage go here!!!!!!!");
   //data:{"itemId":"", "sellerId":"", "buyerId":"", "msg":""}
   console.log("body", req.body);
   let chatInfo = req.body;
@@ -447,46 +454,93 @@ app.post("/newMessage", upload.none(), (req, res) => {
       itemId: chatInfo.itemId,
       sellerId: chatInfo.sellerId,
       buyerId: chatInfo.buyerId,
-      chat: { sender: senderName, msg: chatInfo.msg }
+      chat: { sender: senderName, msg: chatInfo.msg, senderId: senderId }
     };
     console.log("new message", newMsg);
-    messages.push(newMsg);
-    console.log("updated messages", messages);
-    res.send(JSON.stringify({ success: true }));
+    //push msg data to the data base------------------------------------
+    aliDb.collection("messages").insertOne(newMsg, (err, dbResult) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("message info stored");
+      res.send(JSON.stringify({ success: true }));
+    });
+    // messages.push(newMsg)
+    // console.log("updated messages", messages);
+    // res.send(JSON.stringify({ success: true }));
   });
 });
+
 //messages----------------------------------------------------------------------------------------------
 app.post("/messages", upload.none(), (req, res) => {
   //send the messages with unique itemsId, seller, buyer
+  let chaterId = sessions[req.cookies.sid];
   console.log("messages/POST", req.body);
   let chatInfo = req.body;
   console.log("chatInfo", chatInfo);
   let itemId = chatInfo.itemId;
   let sellerId = chatInfo.sellerId;
   let buyerId = chatInfo.buyerId;
-  let result = messages.filter(message => {
-    if (
-      message.itemId === itemId &&
-      message.sellerId === sellerId &&
-      message.buyerId === buyerId
-    )
-      return true;
-    return false;
-  });
-  console.log("get result", result);
-  let msgs = result.map(r => r.chat);
-  console.log("send frontend messages", msgs);
-  res.send(JSON.stringify(msgs));
+  //retrive all messages from database----------------
+
+  // let result = messages.filter(message => {
+  //   if (
+  //     message.itemId === itemId &&
+  //     message.sellerId === sellerId &&
+  //     message.buyerId === buyerId
+  //   )
+  //     return true;
+  //   return false;
+  // });
+  aliDb
+    .collection("messages")
+    .find({ itemId: itemId, sellerId: sellerId, buyerId: buyerId })
+    .toArray((err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("message data retreived " + data.length + " messages");
+      let msgs = data.map(r => r.chat);
+      for (let i = 0; i < msgs.length; i++) {
+        if (msgs[i].senderId === chaterId) {
+          console.log(
+            "chater is sender go here!!!!!!!!",
+            chaterId,
+            msgs[i].senderId
+          );
+          msgs[i].chaterIsSender = true;
+        } else {
+          console.log(
+            "chater isnotnpm start sender go here!!!!!!!!",
+            chaterId,
+            msgs[i].senderId
+          );
+          msgs[i].chaterIsSender = false;
+        }
+      }
+      console.log("send frontend messages", msgs);
+      res.send(JSON.stringify(msgs));
+    });
+  //msgs is an array of object{sender: senderName, msg: chatInfo.msg, senderId:senderId}
 });
 //mychat---------------------------------------------------------------------
 //messages is array of object:{"itemId":"", "sellerId":"", "buyerId":"", chat:{sender: "", msg:""}}}
 app.get("/getmychat", (req, res) => {
   let uid = sessions[req.cookies.sid];
-  let chatsAsSeller = messages.filter(m => m.sellerId === uid);
-  let chatAsBuyer = messages.filter(m => m.buyerId === uid);
-  let mychats = { asSeller: chatsAsSeller, asBuyer: chatAsBuyer };
-  console.log("mychats for frontend", mychats);
-  res.send(JSON.stringify(mychats));
+  aliDb
+    .collection("messages")
+    .find({})
+    .toArray((err, messages) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("messages data retreived " + messages.length + " messages");
+      let chatsAsSeller = messages.filter(m => m.sellerId === uid);
+      let chatAsBuyer = messages.filter(m => m.buyerId === uid);
+      let mychats = { asSeller: chatsAsSeller, asBuyer: chatAsBuyer };
+      console.log("mychats for frontend", mychats);
+      res.send(JSON.stringify(mychats));
+    });
 });
 // check out------------------------------------------------------------------------------------------------
 

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
 import addToCart from "./addToCart.js";
 import { withRouter } from "react-router-dom";
+import ChatButton from "./ChatButton.jsx";
 
 const Card = styled.div`
   background-color: #ebebeb;
@@ -212,12 +213,12 @@ class UnconnectedItemSearch extends Component {
             <h3>{item.title}</h3>
           </Link>
           <Description>{this.renderDesc(item.description)}</Description>
+          <ChatButton item={this.props.item} />
         </div>
         <PriceDiv>
           <div>{formatMoney(item.price)}</div>
           {this.renderButton()}
         </PriceDiv>
-        <ChatButton item={this.props.item}/>
       </Card>
     );
   }

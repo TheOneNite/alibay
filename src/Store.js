@@ -30,7 +30,7 @@ let reducer = (state, action) => {
   }
   return state;
 };
-
+localStorage.removeItem("alibay_state");
 const store = createStore(
   reducer,
   INITIAL_STATE,

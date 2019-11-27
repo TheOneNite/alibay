@@ -72,7 +72,7 @@ let order = routerData => {
 };
 let chat = routerData => {
   //props of chatroom : chatInfo: {sellerId:"", buyerId:"", itemId:""}
-  let info = routerData.match.params.info;
+  let info = routerData.match.params.info.slice(1);
   let infoBody = info.split("$");
   let chatInfo = {
     sellerId: infoBody[0],

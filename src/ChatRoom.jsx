@@ -1,7 +1,22 @@
 import React, { Component } from "react";
 import ChatMessages from "./ChatMessages.jsx";
 import ChatForm from "./ChatForm.jsx";
+import styled from "styled-components";
 import MyChat from "./MyChat.jsx";
+const StyledTop = styled.div`
+  position: fixed;
+  background: white;
+  top: 0px;
+  width: 100%;
+  z-index: 99;
+`;
+const StyledBottom = styled.div`
+  position: fixed;
+  background: white;
+  bottom: 0px;
+  width: 100%;
+  z-index: 99;
+`;
 class ChatRoom extends Component {
   //props of chatroom : chatInfo: {sellerId:"", buyerId:"", itemId:""}
 
@@ -11,16 +26,20 @@ class ChatRoom extends Component {
 
     return (
       <div>
-        <button
-          onClick={() =>
-            window.open("/mychat", "_blank", "height=800, width=600")
-          }
-        >
-          {" "}
-          my chats
-        </button>
+        <StyledTop>
+          <button
+            onClick={() =>
+              window.open("/mychat", "_blank", "height=540, width=500")
+            }
+          >
+            {" "}
+            my chats
+          </button>
+        </StyledTop>
         <ChatMessages chatInfo={chatInfo} />
-        <ChatForm chatInfo={chatInfo} />
+        <StyledBottom>
+          <ChatForm chatInfo={chatInfo} />
+        </StyledBottom>
       </div>
     );
   };

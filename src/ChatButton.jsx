@@ -24,7 +24,7 @@ class UnconnectedChatButton extends Component {
     console.log("fectch Id for ", this.props.buyer);
     let buyerId = await fetchId(this.props.buyer);
     let path = "/chat/:" + sellerId + "$" + buyerId + "$" + itemId;
-    return window.open(path, "_blank", "height=400, width=300");
+    return window.open(path, "_blank", "height=500, width=400");
   };
   render() {
     if (this.props.isLoggedIn) {
