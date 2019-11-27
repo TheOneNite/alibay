@@ -4,6 +4,7 @@ import styled from "styled-components";
 import formatMoney from "./formatMoney.js";
 import AddToCart from "./AddToCartButton.jsx";
 import SellerReview from "./SellerReviews.jsx";
+import ChatButton from "./ChatButton.jsx";
 
 // STYLED COMPONENTS
 

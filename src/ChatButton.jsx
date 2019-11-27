@@ -30,7 +30,7 @@ class UnconnectedChatButton extends Component {
     if (this.props.isLoggedIn) {
       return <button onClick={this.handleClick}>chat</button>;
     }
-    return <button disabled={true}>Log in to chat</button>;
+    return <button disabled={true}>chat</button>;
   }
 }
 

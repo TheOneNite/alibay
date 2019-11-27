@@ -214,12 +214,13 @@ class UnconnectedItemSearch extends Component {
             </div>
             <h3>{item.title}</h3>
           </Link>
-          <Description>{this.renderDesc(item.description)}</Description>
-          <ChatButton item={this.props.item} />
+          <Description>
+            {this.renderDesc(item.description)}
+            <ChatButton item={this.props.item} />
+          </Description>
         </div>
         <PriceDiv>
-          <div>{formatMoney(item.price)}</div>
-          {this.renderButton()}
+          <div>{formatMoney(item.price)}</div> {this.renderButton()}
         </PriceDiv>
       </Card>
     );
