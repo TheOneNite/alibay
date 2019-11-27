@@ -14,16 +14,7 @@ import PastOrders from "./PastOrders.jsx";
 import Order from "./Order.jsx";
 import ChatRoom from "./ChatRoom.jsx";
 import MyChat from "./MyChat.jsx";
-
-//import history from "./History.jsx";
-
-let login = () => {
-  return <Login />;
-};
-
-let signup = () => {
-  return <Signup />;
-};
+import Footer from "./Footer.jsx";
 
 let createItem = () => {
   return <CreateItem />;
@@ -44,11 +35,15 @@ let cart = () => {
 
 let content = () => {
   return (
-    <div className="content">
+    <>
+      <div className="banner">
+        <div className="overlay">
+          <div>Stuff for the People, from the People</div>
+        </div>
+      </div>
       <Search />
-
       <DisplayedItems />
-    </div>
+    </>
   );
 };
 
@@ -120,19 +115,24 @@ class UnconnectedApp extends Component {
     this.checkCookie();
     return (
       <BrowserRouter>
-        <div>
-          <Route exact={true} path="/mychat" component={MyChat} />
-          <Route exact={true} path="/chat/:info" render={chat} />
-          <Nav />
-          <Route exact={true} path="/" render={content} />
-          <Route exact={true} path="/item/:itemId" render={this.itemDetail} />
-          <Route exact={true} path="/login" render={login} />
-          <Route exact={true} path="/signup" render={signup} />
-          <Route exact={true} path="/sell" render={createItem} />
-          <Route exact={true} path="/account" render={myAccount} />
-          <Route exact={true} path="/cart" render={cart} />
-          <Route exact={true} path="/orders" render={pastOrders} />
-          <Route exact={true} path="/orders/:orderId" render={order} />
+        <Route exact={true} path="/mychat" component={MyChat} />
+        <Route exact={true} path="/chat/:info" render={chat} />
+        <Login />
+        <Signup />
+        <div className="main">
+          <div className="header">
+            <Nav />
+          </div>
+          <div className="content">
+            <Route exact={true} path="/" render={content} />
+            <Route exact={true} path="/item/:itemId" render={this.itemDetail} />
+            <Route exact={true} path="/sell" render={createItem} />
+            <Route exact={true} path="/account" render={myAccount} />
+            <Route exact={true} path="/cart" render={cart} />
+            <Route exact={true} path="/orders" render={pastOrders} />
+            <Route exact={true} path="/orders/:orderId" render={order} />
+            <Footer />
+          </div>
         </div>
       </BrowserRouter>
     );

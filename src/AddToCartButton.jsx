@@ -148,7 +148,10 @@ class UnconnectedAddToCart extends Component {
     }
   };
   login = () => {
-    this.props.history.push("/login");
+    this.props.dispatch({
+      type: "showModal",
+      show: "login"
+    });
   };
   renderButton = () => {
     if (this.props.isLoggedIn) {
@@ -158,7 +161,7 @@ class UnconnectedAddToCart extends Component {
         </AddButton>
       );
     }
-    return <AddButton onClick={this.login}>Log in to add to cart</AddButton>;
+    return <AddButton onClick={this.login}>Sign in to buy</AddButton>;
   };
   render = () => {
     return this.renderButton();

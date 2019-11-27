@@ -1,35 +1,61 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 
 let SignPop = styled.div`
-  /* The Modal (background) */
-  .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
+  opacity: 0;
+  visibility: hidden;
+  z-index: -1;
+  animation: ${props => {
+    if (props.show === "signup") return "appear .3s ease forwards";
+    return "0";
+  }}; 
+  @keyframes appear {
+  1% {
+    z-index: 15;
   }
-
-  /* Modal Content/Box */
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+  position: fixed; 
+  z-index: 10; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+  a {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+  }
   .modal-content {
-    background-color: rgba(255, 255, 255, 0.55);
+    background-color: rgba(255, 255, 255);
     border-radius: 10px;
-    margin: 5% auto; /* 15% from the top and centered */
+    margin: 5% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 300px; /* Could be more or less, depending on screen size */
+    width: 300px; 
     text-align: center;
     input {
-      
-      
       border-radius: 8px;
+    }
+    #close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    #close:hover {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
     }
   }
   .button {
@@ -43,12 +69,8 @@ let SignPop = styled.div`
 			font-size: 13px;
 			font-weight: bold;
 			cursor: pointer;
-			opacity: 1;
-			visibility: visible;
-			-webkit-transition: all .3s ease;
-			
 			&:hover {
-				transition: all .3s ease;
+				transition: background-color .3s ease;
 				background-color: #696969;
 			}
 		}
@@ -74,9 +96,7 @@ let SignPop = styled.div`
         
       }
     }
- 
   }
-
 `;
 
 class unconnectedSignup extends Component {
@@ -124,13 +144,32 @@ class unconnectedSignup extends Component {
       type: "login-success",
       currentUser: this.state.username
     });
-    this.props.history.push("/");
+    this.props.dispatch({
+      type: "showModal",
+      show: "none"
+    });
+  };
+  closeHandler = ev => {
+    if (ev.target.id !== "close") return;
+    this.props.dispatch({
+      type: "showModal",
+      show: "none"
+    });
+  };
+  toLogin = () => {
+    this.props.dispatch({
+      type: "showModal",
+      show: "login"
+    });
   };
   render = () => {
     return (
       <>
-        <SignPop>
+        <SignPop show={this.props.display}>
           <div className="modal-content">
+            <span id="close" onClick={this.closeHandler}>
+              &times;
+            </span>
             <h3>Sign up for an account</h3>
             <div className="form-holder">
               <form onSubmit={this.handleSubmit}>
@@ -154,13 +193,17 @@ class unconnectedSignup extends Component {
                 <input type="submit" className="button" />
               </form>
             </div>
-            <Link to={"/login/"}>Already have an account? Click Here!</Link>
+            <a onClick={this.toLogin}>Already have an account? Click Here!</a>
           </div>
         </SignPop>
       </>
     );
   };
 }
-
-let Signup = connect()(unconnectedSignup);
+let mapStateToProps = st => {
+  return {
+    display: st.displayModal
+  };
+};
+let Signup = connect(mapStateToProps)(unconnectedSignup);
 export default withRouter(Signup);

@@ -216,8 +216,9 @@ app.post("/signup", upload.none(), async (req, res) => {
               }
               console.log("user auth info stored");
               let pkg = { success: true };
-              res.cookie("sid", tools.generateId(6));
-
+              let newSid = tools.generateId(6);
+              res.cookie("sid", newSid);
+              sessions[newSid] = uid;
               res.send(JSON.stringify(pkg));
             }
           );
@@ -663,7 +664,7 @@ app.post("/review", upload.none(), (req, res) => {
   });
 });
 
-app.get("/checkout", (req, res) => {
+app.get("/fetch-checkout", (req, res) => {
   // sends an array of payment method objects and and array of
   const uid = sessions[req.cookies.sid];
   aliDb.collection("users").findOne({ userId: uid }, (err, result) => {
@@ -870,9 +871,76 @@ app.get("/update-vendor", (req, res) => {
 
 app.get("/payout", (req, res) => {
   console.log("GET: /payout");
+  const uid = sessions[req.cookies.sid];
+  retreive("users", { userId: uid }, aliDb).then(dbResult => {
+    if (dbResult.success) {
+      let userData = dbResult.data;
+      if (userData.vendorAcct) {
+        stripe.payouts.create(
+          { amount: 1000, currency: "cad" },
+          (err, payout) => {
+            if (err) {
+              console.log(err);
+              aliDb
+                .collection("users")
+                .updateOne(
+                  { userId: userData.userId },
+                  { $set: { payout: 0 } },
+                  (err, uUser) => {
+                    if (err) {
+                      console.log(err);
+                      res.send(
+                        JSON.parse({
+                          success: true,
+                          msg: "updating user payout failed"
+                        })
+                      );
+                      return;
+                    }
+                    console.log("merchant data updated");
+                    res.send(JSON.parse({ success: true, userData: uUser }));
+                  }
+                );
+              return;
+            }
+            console.log("payout successful");
+            aliDb
+              .collection("users")
+              .updateOne(
+                { userId: userData.userId },
+                { $set: { payout: 0 } },
+                (err, uUser) => {
+                  if (err) {
+                    console.log(err);
+                    res.send(
+                      JSON.parse({
+                        success: true,
+                        msg: "updating user payout failed"
+                      })
+                    );
+                    return;
+                  }
+                  console.log("merchant data updated");
+                  res.send(JSON.parse({ success: true, userData: uUser }));
+                }
+              );
+          }
+        );
+      }
+      console.log("user does not have payout acct setup");
+      res.send(
+        JSON.stringify({
+          success: false,
+          msg: "user needs to set up payout account"
+        })
+      );
+      return;
+    }
+    console.log("could not retreive user info for payout");
+  });
 });
 
-app.get("/orders", (req, res) => {
+app.get("/fetch-orders", (req, res) => {
   // sends an array of order data objects
   console.log("GET: /orders");
   let uid = sessions[req.cookies.sid];
@@ -946,7 +1014,7 @@ app.post("/account", upload.none(), (req, res) => {
     }
   });
 });
-app.get("/account", (req, res) => {
+app.get("/fetch-account", (req, res) => {
   //sends current user data to populate form
   let uid = sessions[req.cookies.sid];
   aliDb.collection("users").findOne({ userId: uid }, (err, dbResult) => {

@@ -27,7 +27,8 @@ let UpdatePop = styled.div`
     margin: 5% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 300px; /* Could be more or less, depending on screen size */
+    width: 33vw; /* Could be more or less, depending on screen size */
+    max-width:400px;
     text-align: center;
     input {
       
@@ -57,9 +58,32 @@ let UpdatePop = styled.div`
 				transition: all .3s ease;
 				background-color: #696969;
 			}
+    }
+    .link-button {
+			background-color: rgba(0,0,0,0.4);
+			color: rgba(256,256,256,1);
+			border:0;
+			border-radius: 15px;
+			padding: 15px ;
+			width: 100%;
+			font-size: 13px;
+			font-weight: bold;
+			cursor: pointer;
+			opacity: 1;
+			visibility: visible;
+			-webkit-transition: all .3s ease;
+			
+			&:hover {
+				transition: all .3s ease;
+				background-color: #696969;
+			}
 		}
-	}
-
+  }
+  .link-wrapper{
+      padding:0px;
+      margin: 15px;
+      width:50%
+    }
   .form-holder {
     display: flex;
     justify-content: center;
@@ -96,7 +120,7 @@ class unconnectedMyAccount extends Component {
   }
   componentDidMount = async () => {
     //fetch the userinfo from database
-    let response = await fetch("/account");
+    let response = await fetch("/fetch-account");
     let body = await response.text();
     let userInfo = JSON.parse(body);
     console.log("userInfo", userInfo);
@@ -187,11 +211,13 @@ class unconnectedMyAccount extends Component {
     let res = await fetch("/payout", { method: "GET", credentials: "include" });
     let bod = await res.text();
     bod = JSON.parse(bod);
-  };
-  updatePayout = () => {
-    if (this.state.payout) {
-      console.log("payout details exist");
+    if (bod.success) {
+      userInfo = bod.userData;
+      this.setState({
+        payout: userInfo.payout
+      });
     }
+    alert("payout success!");
   };
 
   render = () => {
@@ -205,8 +231,8 @@ class unconnectedMyAccount extends Component {
               Claim
             </button>
 
-            <a href={this.state.uri}>
-              <button className="button" onClick={this.updatePayout}>
+            <a href={this.state.uri} className="link-wrapper">
+              <button className="link-button" onClick={this.updatePayout}>
                 Payment Details
               </button>
             </a>
